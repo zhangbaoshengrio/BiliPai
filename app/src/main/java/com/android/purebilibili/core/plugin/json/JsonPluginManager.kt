@@ -16,6 +16,7 @@ import java.io.File
 import java.net.URL
 
 private const val TAG = "JsonPluginManager"
+private const val STATS_PREFS = "json_plugin_stats"
 
 /**
  * 🔌 JSON 规则插件管理器
@@ -47,6 +48,8 @@ object JsonPluginManager {
         
         // 加载已保存的插件
         loadSavedPlugins()
+        // 🆕 加载持久化统计
+        loadFilterStats()
         Logger.d(TAG, "🔌 JsonPluginManager initialized")
     }
     
@@ -176,6 +179,9 @@ object JsonPluginManager {
             }
         }
         
+        // 🆕 保存统计到持久化存储
+        saveFilterStats()
+        
         // 🆕 更新最近过滤数量
         _lastFilteredCount.value = filteredCount
         if (filteredCount > 0) {
@@ -206,13 +212,46 @@ object JsonPluginManager {
     }
     
     /**
-     * 🆕 重置统计
+     * 🆕 重置统计（同时清除持久化数据）
      */
     fun resetStats(pluginId: String? = null) {
         if (pluginId != null) {
             _filterStats.value = _filterStats.value - pluginId
         } else {
             _filterStats.value = emptyMap()
+        }
+        // 🆕 同步持久化
+        saveFilterStats()
+        Logger.d(TAG, "🔄 统计已重置: ${pluginId ?: "全部"}")
+    }
+    
+    /**
+     * 🆕 测试插件规则（用于验证插件是否生效）
+     * 
+     * @param pluginId 要测试的插件 ID
+     * @param sampleVideos 测试用的视频列表（来自首页）
+     * @return Pair(原始数量, 过滤后数量)
+     */
+    fun testPluginRules(pluginId: String, sampleVideos: List<VideoItem>): Pair<Int, Int> {
+        val loaded = _plugins.value.find { it.plugin.id == pluginId }
+            ?: return Pair(sampleVideos.size, sampleVideos.size)
+        
+        val filtered = sampleVideos.filter { video ->
+            RuleEngine.shouldShowVideo(video, loaded.plugin.rules)
+        }
+        
+        return Pair(sampleVideos.size, filtered.size)
+    }
+    
+    /**
+     * 🆕 获取被测试过滤的视频列表（用于展示哪些视频会被过滤）
+     */
+    fun getFilteredVideosByPlugin(pluginId: String, sampleVideos: List<VideoItem>): List<VideoItem> {
+        val loaded = _plugins.value.find { it.plugin.id == pluginId }
+            ?: return emptyList()
+        
+        return sampleVideos.filter { video ->
+            !RuleEngine.shouldShowVideo(video, loaded.plugin.rules)
         }
     }
     
@@ -271,6 +310,41 @@ object JsonPluginManager {
         
         _plugins.value = loaded
         Logger.d(TAG, "📦 加载了 ${loaded.size} 个 JSON 插件")
+    }
+    
+    /**
+     * 🆕 加载持久化过滤统计
+     */
+    private fun loadFilterStats() {
+        val prefs = appContext.getSharedPreferences(STATS_PREFS, Context.MODE_PRIVATE)
+        val statsMap = mutableMapOf<String, Int>()
+        
+        prefs.all.forEach { (key, value) ->
+            if (value is Int) {
+                statsMap[key] = value
+            }
+        }
+        
+        _filterStats.value = statsMap
+        Logger.d(TAG, "📊 加载了 ${statsMap.size} 个插件的过滤统计")
+    }
+    
+    /**
+     * 🆕 保存过滤统计到持久化存储
+     */
+    private fun saveFilterStats() {
+        val prefs = appContext.getSharedPreferences(STATS_PREFS, Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+        
+        // 清空旧数据
+        editor.clear()
+        
+        // 写入新数据
+        _filterStats.value.forEach { (pluginId, count) ->
+            editor.putInt(pluginId, count)
+        }
+        
+        editor.apply()
     }
 }
 

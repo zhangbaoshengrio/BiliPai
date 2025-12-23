@@ -20,6 +20,8 @@ import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Extension
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Science
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -64,6 +66,11 @@ fun PluginsScreen(
     
     // 🔥🔥 [修复] 编辑插件状态移至顶层，避免在 LazyColumn 内嵌套 LazyColumn 导致闪退
     var editingPlugin by remember { mutableStateOf<com.android.purebilibili.core.plugin.json.JsonRulePlugin?>(null) }
+    
+    // 🆕 测试对话框状态
+    var testingPluginId by remember { mutableStateOf<String?>(null) }
+    var testResult by remember { mutableStateOf<Triple<Int, Int, List<com.android.purebilibili.data.model.response.VideoItem>>?>(null) }
+    var testingSampleVideos by remember { mutableStateOf<List<com.android.purebilibili.data.model.response.VideoItem>>(emptyList()) }
     
     // 🆕 如果正在编辑插件，显示编辑器全屏覆盖
     editingPlugin?.let { plugin ->
@@ -278,6 +285,47 @@ fun PluginsScreen(
                                         com.android.purebilibili.core.plugin.json.JsonPluginManager.removePlugin(
                                             loadedPlugin.plugin.id
                                         )
+                                    },
+                                    onResetStats = {
+                                        com.android.purebilibili.core.plugin.json.JsonPluginManager.resetStats(loadedPlugin.plugin.id)
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            "统计已重置",
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
+                                    },
+                                    onTest = {
+                                        // 🔥 获取首页样本视频进行测试
+                                        scope.launch {
+                                            try {
+                                                // 从 API 获取样本视频
+                                                val result = com.android.purebilibili.data.repository.VideoRepository.getHomeVideos(0)
+                                                result.onSuccess { videos ->
+                                                    val sampleVideos = videos.take(20)
+                                                    testingSampleVideos = sampleVideos
+                                                    val (original, filtered) = com.android.purebilibili.core.plugin.json.JsonPluginManager.testPluginRules(
+                                                        loadedPlugin.plugin.id, sampleVideos
+                                                    )
+                                                    val blockedVideos = com.android.purebilibili.core.plugin.json.JsonPluginManager.getFilteredVideosByPlugin(
+                                                        loadedPlugin.plugin.id, sampleVideos
+                                                    )
+                                                    testResult = Triple(original, filtered, blockedVideos)
+                                                    testingPluginId = loadedPlugin.plugin.id
+                                                }.onFailure {
+                                                    android.widget.Toast.makeText(
+                                                        context,
+                                                        "获取测试数据失败",
+                                                        android.widget.Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            } catch (e: Exception) {
+                                                android.widget.Toast.makeText(
+                                                    context,
+                                                    "测试失败: ${e.message}",
+                                                    android.widget.Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
                                     }
                                 )
                                 if (index < jsonPlugins.lastIndex) {
@@ -408,6 +456,23 @@ fun PluginsScreen(
             }
         )
     }
+    
+    // 🔥 测试结果对话框
+    testingPluginId?.let { pluginId ->
+        testResult?.let { (original, filtered, blockedVideos) ->
+            val pluginName = jsonPlugins.find { it.plugin.id == pluginId }?.plugin?.name ?: "未知插件"
+            TestResultDialog(
+                pluginName = pluginName,
+                originalCount = original,
+                filteredCount = filtered,
+                filteredVideos = blockedVideos,
+                onDismiss = {
+                    testingPluginId = null
+                    testResult = null
+                }
+            )
+        }
+    }
 }
 
 @Composable
@@ -533,96 +598,175 @@ private fun JsonPluginItem(
     filterCount: Int,
     onToggle: (Boolean) -> Unit,
     onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onResetStats: () -> Unit = {},
+    onTest: () -> Unit = {}
 ) {
     val plugin = loaded.plugin
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(false) }
     
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onEdit() }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // 图标
-        Box(
+    Column {
+        Row(
             modifier = Modifier
-                .size(36.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(iOSPurple.copy(alpha = 0.12f)),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .clickable { isExpanded = !isExpanded }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Outlined.Code,
-                contentDescription = null,
-                tint = iOSPurple,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-        
-        Spacer(modifier = Modifier.width(14.dp))
-        
-        // 信息
-        Column(modifier = Modifier.weight(1f)) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            // 图标
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(iOSPurple.copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = plugin.name,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = "v${plugin.version}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                Icon(
+                    imageVector = Icons.Outlined.Code,
+                    contentDescription = null,
+                    tint = iOSPurple,
+                    modifier = Modifier.size(20.dp)
                 )
             }
-            Text(
-                text = plugin.description.ifEmpty { plugin.type },
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "by ${plugin.author}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = iOSPurple
-                )
-                // 🆕 过滤统计显示
-                if (filterCount > 0) {
-                    Spacer(modifier = Modifier.width(8.dp))
+            
+            Spacer(modifier = Modifier.width(14.dp))
+            
+            // 信息
+            Column(modifier = Modifier.weight(1f)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
-                        text = "• 已过滤 $filterCount 项",
+                        text = plugin.name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "v${plugin.version}",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                     )
                 }
+                Text(
+                    text = plugin.description.ifEmpty { plugin.type },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "by ${plugin.author}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = iOSPurple
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    // 🔥 统计始终显示
+                    Surface(
+                        shape = RoundedCornerShape(4.dp),
+                        color = if (filterCount > 0) 
+                            iOSGreen.copy(alpha = 0.15f)
+                        else 
+                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    ) {
+                        Text(
+                            text = "已过滤 $filterCount 项",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (filterCount > 0) iOSGreen else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
+                }
             }
+            
+            // 开关
+            CupertinoSwitch(
+                checked = loaded.enabled,
+                onCheckedChange = onToggle
+            )
+            
+            // 展开箭头
+            Icon(
+                imageVector = if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                contentDescription = if (isExpanded) "收起" else "展开",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                modifier = Modifier
+                    .padding(start = 4.dp)
+                    .size(20.dp)
+            )
         }
         
-        // 开关
-        CupertinoSwitch(
-            checked = loaded.enabled,
-            onCheckedChange = onToggle
-        )
-        
-        // 删除按钮
-        IconButton(
-            onClick = { showDeleteDialog = true },
-            modifier = Modifier.size(32.dp)
+        // 🔥 展开的操作区域
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = expandVertically(),
+            exit = shrinkVertically()
         ) {
-            Icon(
-                imageVector = Icons.Outlined.Delete,
-                contentDescription = "删除",
-                tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f),
-                modifier = Modifier.size(18.dp)
-            )
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 66.dp, end = 16.dp, bottom = 8.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    // 测试规则按钮
+                    TextButton(
+                        onClick = onTest,
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = iOSBlue
+                        )
+                    ) {
+                        Icon(Icons.Outlined.Science, null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("测试规则", style = MaterialTheme.typography.labelMedium)
+                    }
+                    
+                    // 重置统计按钮
+                    TextButton(
+                        onClick = onResetStats,
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = iOSOrange
+                        )
+                    ) {
+                        Icon(Icons.Outlined.Refresh, null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("重置统计", style = MaterialTheme.typography.labelMedium)
+                    }
+                    
+                    // 编辑按钮
+                    TextButton(
+                        onClick = onEdit,
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = iOSPurple
+                        )
+                    ) {
+                        Icon(Icons.Outlined.Code, null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("编辑", style = MaterialTheme.typography.labelMedium)
+                    }
+                    
+                    // 删除按钮
+                    TextButton(
+                        onClick = { showDeleteDialog = true },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Icon(Icons.Outlined.Delete, null, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("删除", style = MaterialTheme.typography.labelMedium)
+                    }
+                }
+            }
         }
     }
     
@@ -647,5 +791,165 @@ private fun JsonPluginItem(
             }
         )
     }
+}
+
+/**
+ * 🔥 测试结果对话框
+ */
+@Composable
+private fun TestResultDialog(
+    pluginName: String,
+    originalCount: Int,
+    filteredCount: Int,
+    filteredVideos: List<com.android.purebilibili.data.model.response.VideoItem>,
+    onDismiss: () -> Unit
+) {
+    val blockedCount = originalCount - filteredCount
+    
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = { 
+            Icon(
+                Icons.Outlined.Science, 
+                contentDescription = null,
+                tint = iOSBlue
+            ) 
+        },
+        title = { Text("规则测试结果") },
+        text = {
+            Column {
+                Text(
+                    text = "插件：$pluginName",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                
+                // 统计卡片
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "$originalCount",
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = "测试视频",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "$blockedCount",
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = if (blockedCount > 0) iOSGreen else MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = "被过滤",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "$filteredCount",
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = "保留",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+                
+                // 被过滤的视频列表
+                if (filteredVideos.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "被过滤的视频示例：",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Column {
+                        filteredVideos.take(3).forEach { video ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    Icons.Outlined.Delete,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f),
+                                    modifier = Modifier.size(14.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = video.title,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        maxLines = 1,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text(
+                                        text = "时长: ${formatDuration(video.duration)}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                        if (filteredVideos.size > 3) {
+                            Text(
+                                text = "... 还有 ${filteredVideos.size - 3} 个视频",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
+                    }
+                } else if (blockedCount == 0) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "✅ 当前测试样本中没有符合过滤条件的视频",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = iOSGreen
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("确定")
+            }
+        }
+    )
+}
+
+/**
+ * 格式化时长（秒 -> 分:秒）
+ */
+private fun formatDuration(seconds: Int): String {
+    val mins = seconds / 60
+    val secs = seconds % 60
+    return "${mins}分${secs}秒"
 }
 
