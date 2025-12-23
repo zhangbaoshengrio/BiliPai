@@ -64,15 +64,17 @@ fun MiniPlayerOverlay(
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     
-    // 🔥🔥 [核心检查] 只有在设置中开启后台播放时才显示小窗
-    // 使用 initial = true 避免设置加载前误杀小窗
-    val bgPlayEnabled by com.android.purebilibili.core.store.SettingsManager.getBgPlay(context)
-        .collectAsState(initial = true)
+    // 🔥🔥 [调试] 打印当前模式状态
+    val currentMode = miniPlayerManager.getCurrentMode()
+    com.android.purebilibili.core.util.Logger.d("MiniPlayerOverlay", 
+        "🎬 Overlay: mode=$currentMode, isMiniMode=${miniPlayerManager.isMiniMode}, isActive=${miniPlayerManager.isActive}")
     
-    // 🔥 如果后台播放未启用，不渲染小窗
-    if (!bgPlayEnabled) {
+    // 🔥🔥 [重构] 使用新的模式判断方法，替代原来的 bgPlay 检查
+    // 小窗模式为 OFF 时不渲染
+    if (miniPlayerManager.isMiniPlayerDisabled()) {
         return
     }
+
     
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
@@ -88,8 +90,16 @@ fun MiniPlayerOverlay(
     val miniPlayerHeightPx = with(density) { miniPlayerHeight.toPx() }
     val paddingPx = with(density) { padding.toPx() }
 
-    // 🔥 位置状态 - 用于拖动移动
-    var offsetX by remember { mutableFloatStateOf(screenWidthPx - miniPlayerWidthPx - paddingPx) }
+    // 🔥 获取入场方向（在计算初始位置前获取）
+    val entryFromLeft = miniPlayerManager.entryFromLeft
+    
+    // 🔥🔥 [修复] 位置状态 - 根据卡片位置决定初始位置
+    // 左边视频 → 小窗在左侧，右边视频 → 小窗在右侧
+    var offsetX by remember(entryFromLeft) { 
+        mutableFloatStateOf(
+            if (entryFromLeft) paddingPx else screenWidthPx - miniPlayerWidthPx - paddingPx
+        ) 
+    }
     var offsetY by remember { mutableFloatStateOf(screenHeightPx - miniPlayerHeightPx - paddingPx - 100.dp.value * density.density) }
     
     // 控制按钮显示状态
@@ -148,10 +158,16 @@ fun MiniPlayerOverlay(
         label = "offsetY"
     )
 
+
     AnimatedVisibility(
         visible = miniPlayerManager.isMiniMode && miniPlayerManager.isActive,
-        enter = slideInHorizontally(initialOffsetX = { it }) + fadeIn(),
-        exit = slideOutHorizontally(targetOffsetX = { it }) + fadeOut(),
+        // 🔥🔥 根据入场方向决定动画方向
+        enter = slideInHorizontally(
+            initialOffsetX = { if (entryFromLeft) -it else it }  // 左边视频从左入，右边视频从右入
+        ) + fadeIn(),
+        exit = slideOutHorizontally(
+            targetOffsetX = { if (entryFromLeft) -it else it }
+        ) + fadeOut(),
         modifier = modifier.zIndex(100f)
     ) {
         Card(

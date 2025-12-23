@@ -15,7 +15,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.ChatBubbleOutline
@@ -27,6 +33,9 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.BrokenImage
+import androidx.compose.material.icons.outlined.ChatBubble
+import androidx.compose.material.icons.outlined.Repeat
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -72,13 +81,19 @@ fun DynamicScreen(
     viewModel: DynamicViewModel = viewModel(),
     onVideoClick: (String) -> Unit,
     onUserClick: (Long) -> Unit = {},
-    onLiveClick: (roomId: Long, title: String, uname: String) -> Unit = { _, _, _ -> },  // 🔥 直播点击
+    onLiveClick: (roomId: Long, title: String, uname: String) -> Unit = { _, _, _ -> },
     onBack: () -> Unit,
-    onLoginClick: () -> Unit = {}
+    onLoginClick: () -> Unit = {},
+    onHomeClick: () -> Unit = {}  // 🔥 返回视频首页
 ) {
     val state by viewModel.uiState.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val listState = rememberLazyListState()
+    
+    // 🔥 侧边栏状态
+    val followedUsers by viewModel.followedUsers.collectAsState()
+    val selectedUserId by viewModel.selectedUserId.collectAsState()
+    val isSidebarExpanded by viewModel.isSidebarExpanded.collectAsState()
     
     // 🔥 Tab选择
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -103,13 +118,18 @@ fun DynamicScreen(
             .build()
     }
     
-    // 过滤视频动态
-    val filteredItems = remember(state.items, selectedTab) {
+    // 🔥 过滤动态（Tab + 用户选择）
+    val filteredItems = remember(state.items, selectedTab, selectedUserId) {
+        var items = state.items
+        // Tab 过滤
         if (selectedTab == 1) {
-            state.items.filter { it.type == "DYNAMIC_TYPE_AV" }
-        } else {
-            state.items
+            items = items.filter { it.type == "DYNAMIC_TYPE_AV" }
         }
+        // 用户过滤
+        selectedUserId?.let { uid ->
+            items = items.filter { it.modules.module_author?.mid == uid }
+        }
+        items
     }
     
     // 加载更多
@@ -127,14 +147,30 @@ fun DynamicScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-        PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = { viewModel.refresh() },
-            state = pullRefreshState,
+        Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            // 🔥 左侧边栏
+            DynamicSidebar(
+                users = followedUsers,
+                selectedUserId = selectedUserId,
+                isExpanded = isSidebarExpanded,
+                onUserClick = { viewModel.selectUser(it) },
+                onToggleExpand = { viewModel.toggleSidebar() },
+                modifier = Modifier.padding(top = statusBarHeight)
+            )
+            
+            // 🔥 右侧内容区
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = { viewModel.refresh() },
+                state = pullRefreshState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+            ) {
             LazyColumn(
                 state = listState,
                 contentPadding = PaddingValues(
@@ -155,7 +191,7 @@ fun DynamicScreen(
                 }
                 
                 // 动态卡片列表
-                items(filteredItems, key = { it.id_str }) { item ->
+                items(filteredItems, key = { "dynamic_${it.id_str}" }) { item ->
                     DynamicCardV2(
                         item = item,
                         onVideoClick = onVideoClick,
@@ -203,6 +239,7 @@ fun DynamicScreen(
                 selectedTab = selectedTab,
                 tabs = tabs,
                 onTabSelected = { selectedTab = it },
+                onBackClick = onHomeClick,  // 🔥 返回视频首页
                 modifier = Modifier.align(Alignment.TopCenter)
             )
             
@@ -221,7 +258,8 @@ fun DynamicScreen(
                     }
                 }
             }
-        }
+            }
+        }  // End Row
     }
 }
 
@@ -233,6 +271,7 @@ fun DynamicTopBarWithTabs(
     selectedTab: Int,
     tabs: List<String>,
     onTabSelected: (Int) -> Unit,
+    onBackClick: () -> Unit = {},  // 🔥 返回首页回调
     modifier: Modifier = Modifier
 ) {
     val density = LocalDensity.current
@@ -246,14 +285,36 @@ fun DynamicTopBarWithTabs(
         Column {
             Spacer(modifier = Modifier.height(statusBarHeight))
             
-            // 标题
-            Text(
-                "动态",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
-            )
+            // 🔥 标题行：返回按钮 + 标题
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // 🔥 返回视频首页按钮
+                IconButton(
+                    onClick = onBackClick,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "返回首页",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                
+                Spacer(modifier = Modifier.width(4.dp))
+                
+                // 标题
+                Text(
+                    "动态",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
             
             // Tab栏
             Row(
@@ -287,6 +348,202 @@ fun DynamicTopBarWithTabs(
                     }
                 }
             }
+        }
+    }
+}
+
+/**
+ * 🔥 动态侧边栏 - 显示关注的UP主（支持展开/收起、在线状态）
+ */
+@Composable
+fun DynamicSidebar(
+    users: List<SidebarUser>,
+    selectedUserId: Long?,
+    isExpanded: Boolean,
+    onUserClick: (Long?) -> Unit,
+    onToggleExpand: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val expandedWidth = 72.dp
+    val collapsedWidth = 56.dp
+    val animatedWidth by animateFloatAsState(
+        targetValue = if (isExpanded) expandedWidth.value else collapsedWidth.value,
+        label = "sidebarWidth"
+    )
+    
+    Surface(
+        modifier = modifier
+            .width(animatedWidth.dp)
+            .fillMaxHeight(),
+        color = MaterialTheme.colorScheme.surface,
+        shadowElevation = 2.dp
+    ) {
+        LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(vertical = 8.dp),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // 🔥 展开/收起按钮
+            item {
+                IconButton(
+                    onClick = onToggleExpand,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        if (isExpanded) Icons.AutoMirrored.Filled.KeyboardArrowLeft 
+                        else Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = if (isExpanded) "收起" else "展开",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+            
+            // 🔥 "全部" 选项
+            item {
+                SidebarItem(
+                    icon = "全部",
+                    label = if (isExpanded) "全部" else null,
+                    isSelected = selectedUserId == null,
+                    isLive = false,
+                    onClick = { onUserClick(null) }
+                )
+            }
+            
+            // 🔥 关注的UP主列表
+            items(users, key = { "sidebar_${it.uid}" }) { user ->
+                SidebarUserItem(
+                    user = user,
+                    isSelected = selectedUserId == user.uid,
+                    showLabel = isExpanded,
+                    onClick = { onUserClick(user.uid) }
+                )
+            }
+        }
+    }
+}
+
+/**
+ * 🔥 侧边栏项目（文字图标）
+ */
+@Composable
+fun SidebarItem(
+    icon: String,
+    label: String?,
+    isSelected: Boolean,
+    isLive: Boolean,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(
+                    if (isSelected) BiliPink.copy(alpha = 0.15f)
+                    else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = icon,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = if (isSelected) BiliPink else MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        
+        if (label != null) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = label,
+                fontSize = 10.sp,
+                color = if (isSelected) BiliPink else MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+/**
+ * 🔥 侧边栏用户项（头像 + 在线状态）
+ */
+@Composable
+fun SidebarUserItem(
+    user: SidebarUser,
+    isSelected: Boolean,
+    showLabel: Boolean,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 8.dp)
+    ) {
+        Box {
+            // 头像
+            AsyncImage(
+                model = coil.request.ImageRequest.Builder(LocalContext.current)
+                    .data(user.face.let { if (it.startsWith("http://")) it.replace("http://", "https://") else it })
+                    .crossfade(true)
+                    .build(),
+                contentDescription = user.name,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .then(
+                        if (isSelected) Modifier.background(
+                            BiliPink.copy(alpha = 0.3f),
+                            CircleShape
+                        ) else Modifier
+                    ),
+                contentScale = ContentScale.Crop
+            )
+            
+            // 🔥 在线状态指示器（红点）
+            if (user.isLive) {
+                Box(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .align(Alignment.TopEnd)
+                        .background(Color.Red, CircleShape)
+                        .padding(2.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White, CircleShape)
+                            .padding(2.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Red, CircleShape)
+                        )
+                    }
+                }
+            }
+        }
+        
+        if (showLabel) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = user.name,
+                fontSize = 10.sp,
+                color = if (isSelected) BiliPink else MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
         }
     }
 }
@@ -804,7 +1061,7 @@ fun VideoCardSmall(
 }
 
 /**
- * 🔥 操作按钮
+ * 🍎 iOS 风格操作按钮 - 现代化胶囊设计
  */
 @Composable
 fun ActionButton(
@@ -813,25 +1070,73 @@ fun ActionButton(
     label: String,
     activeColor: Color = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.6f)
 ) {
+    val isLike = label == "点赞"
+    val isForward = label == "转发"
+    val isComment = label == "评论"
+    
+    // 🍎 iOS 风格按压动画
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.92f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "actionButtonScale"
+    )
+    
+    // 🍎 iOS 风格颜色
+    val buttonColor = when {
+        isLike -> BiliPink
+        isForward -> iOSBlue
+        isComment -> MaterialTheme.colorScheme.primary
+        else -> activeColor
+    }
+    
+    // 🍎 优雅的图标
+    val buttonIcon = when {
+        isLike -> Icons.Outlined.FavoriteBorder
+        isForward -> Icons.Outlined.Repeat
+        isComment -> Icons.Outlined.ChatBubble
+        else -> icon
+    }
+    
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
         modifier = Modifier
-            .clip(RoundedCornerShape(20.dp))
-            .clickable { /* TODO */ }
-            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .scale(scale)
+            .clip(RoundedCornerShape(24.dp))
+            .background(
+                color = buttonColor.copy(alpha = 0.08f)
+            )
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) { /* TODO: 添加点击事件 */ }
+            .padding(horizontal = 14.dp, vertical = 8.dp)
     ) {
+        // 🍎 使用 SF Symbols 风格图标
         Icon(
-            icon,
+            imageVector = buttonIcon,
             contentDescription = label,
             modifier = Modifier.size(18.dp),
-            tint = activeColor
+            tint = buttonColor
         )
+        
         if (count > 0) {
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(5.dp))
             Text(
-                if (count >= 10000) "${count / 10000}万" else count.toString(),
-                fontSize = 12.sp,
-                color = activeColor
+                text = when {
+                    count >= 10000 -> "${count / 10000}万"
+                    count >= 1000 -> String.format("%.1fk", count / 1000f)
+                    else -> count.toString()
+                },
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
+                color = buttonColor,
+                letterSpacing = (-0.3).sp  // 🍎 iOS 紧凑字距
             )
         }
     }

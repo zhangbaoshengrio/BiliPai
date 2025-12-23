@@ -81,4 +81,11 @@ object CardPositionManager {
         lastClickedCardCenter = null
         isReturningFromDetail = false
     }
+    
+    /**
+     * 🔥 判断最后点击的卡片是否在屏幕左侧
+     * 用于小窗入场动画方向
+     */
+    val isCardOnLeft: Boolean
+        get() = (lastClickedCardCenter?.x ?: 0.5f) < 0.5f
 }

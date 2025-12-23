@@ -402,23 +402,7 @@ fun FullscreenPlayerOverlay(
                     }
                 }
                 
-                // 中间播放/暂停按钮
-                Surface(
-                    onClick = {
-                        lastInteractionTime = System.currentTimeMillis()
-                        player?.let { if (it.isPlaying) it.pause() else it.play() }
-                    },
-                    modifier = Modifier.align(Alignment.Center),
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
-                ) {
-                    Icon(
-                        imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                        contentDescription = if (isPlaying) "暂停" else "播放",
-                        tint = Color.White,
-                        modifier = Modifier.padding(16.dp).size(48.dp)
-                    )
-                }
+                // 🔥🔥 [修改] 移除中间大按钮，改为在底部控制栏左侧显示
                 
                 // 底部进度条和控制按钮
                 Box(
@@ -436,6 +420,25 @@ fun FullscreenPlayerOverlay(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxWidth()
                         ) {
+                            // 🔥🔥 [新增] 左下角播放/暂停按钮
+                            Surface(
+                                onClick = {
+                                    lastInteractionTime = System.currentTimeMillis()
+                                    player?.let { if (it.isPlaying) it.pause() else it.play() }
+                                },
+                                shape = CircleShape,
+                                color = Color.Transparent
+                            ) {
+                                Icon(
+                                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                    contentDescription = if (isPlaying) "暂停" else "播放",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+                            
+                            Spacer(modifier = Modifier.width(8.dp))
+                            
                             Text(FormatUtils.formatDuration((currentPosition / 1000).toInt()), color = Color.White, fontSize = 12.sp)
                             
                             var isDragging by remember { mutableStateOf(false) }

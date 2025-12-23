@@ -198,10 +198,17 @@ fun AppNavigation(
             // 🔥 使用顶层定义的 cardTransitionEnabled（已在 line 68 定义）
 
             // 🔥 进入视频详情页时通知 MainActivity
+            // 🔥🔥 [修复] 使用 Activity 引用检测配置变化（如旋转）
+            val activity = context as? android.app.Activity
             DisposableEffect(Unit) {
                 onVideoDetailEnter()
                 onDispose {
                     onVideoDetailExit()
+                    // 🔥🔥 [修复] 只有在真正退出页面时才进入小窗模式
+                    // 配置变化（如旋转）不应触发小窗模式
+                    if (activity?.isChangingConfigurations != true) {
+                        miniPlayerManager?.enterMiniMode()
+                    }
                 }
             }
 
@@ -219,8 +226,7 @@ fun AppNavigation(
                     onBack = { 
                         // 🔥 标记正在返回，跳过首页卡片入场动画
                         CardPositionManager.markReturning()
-                        // 🔥 返回时进入小窗模式（而非直接停止播放）
-                        miniPlayerManager?.enterMiniMode()
+                        // 🔥🔥 [修复] 不再在这里调用 enterMiniMode，由 onDispose 统一处理
                         navController.popBackStack() 
                     }
                 )
@@ -323,7 +329,8 @@ fun AppNavigation(
                     navController.navigate(ScreenRoutes.Live.createRoute(roomId, title, uname))
                 },
                 onBack = { navController.popBackStack() },
-                onLoginClick = { navController.navigate(ScreenRoutes.Login.route) }  // 🔥 跳转登录
+                onLoginClick = { navController.navigate(ScreenRoutes.Login.route) },  // 🔥 跳转登录
+                onHomeClick = { navController.popBackStack() }  // 🔥 返回首页
             )
         }
 

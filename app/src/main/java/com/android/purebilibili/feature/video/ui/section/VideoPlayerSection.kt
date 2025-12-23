@@ -56,6 +56,8 @@ fun VideoPlayerSection(
     onToggleFullscreen: () -> Unit,
     onQualityChange: (Int, Long) -> Unit,
     onBack: () -> Unit,
+    // 🔗 [新增] 分享功能
+    bvid: String = "",
     // 🧪 实验性功能：双击点赞
     onDoubleTapLike: () -> Unit = {},
     // 🚀 空降助手
@@ -455,7 +457,9 @@ fun VideoPlayerSection(
                 onDanmakuDisplayAreaChange = { danmakuManager.displayArea = it },
                 // 🔥 视频比例调节
                 currentAspectRatio = currentAspectRatio,
-                onAspectRatioChange = { currentAspectRatio = it }
+                onAspectRatioChange = { currentAspectRatio = it },
+                // 🔗 [新增] 分享功能
+                bvid = bvid
             )
         }
         

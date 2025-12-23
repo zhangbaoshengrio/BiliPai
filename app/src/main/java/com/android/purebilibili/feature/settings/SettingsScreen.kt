@@ -144,12 +144,14 @@ fun SettingsScreen(
             // 🔥🔥 [修复] 添加底部导航栏内边距，确保沉浸式效果
             contentPadding = WindowInsets.navigationBars.asPaddingValues()
         ) {
-            // 🔥 作者联系方式 (置顶)
+            // ═══════════════════════════════════════════════════
+            //  关注作者
+            // ═══════════════════════════════════════════════════
             item { SettingsSectionTitle("关注作者") }
             item {
                 SettingsGroup {
-                    // 🔥 根据主题动态选择图标 (使用 background 亮度判断)
-                    val isDarkTheme = MaterialTheme.colorScheme.background.red < 0.5f
+                    // 🔥 根据系统主题选择图标
+                    val isDarkTheme = androidx.compose.foundation.isSystemInDarkTheme()
                     val telegramIcon = if (isDarkTheme) {
                         com.android.purebilibili.R.drawable.ic_telegram_squircle_dark
                     } else {
@@ -160,7 +162,7 @@ fun SettingsScreen(
                         title = "Telegram 频道",
                         value = "@BiliPai",
                         onClick = { uriHandler.openUri("https://t.me/BiliPai") },
-                        iconTint = Color.Unspecified  // 🔥 使用图标原始颜色
+                        iconTint = Color.Unspecified
                     )
                     Divider()
                     SettingClickableItem(
@@ -173,8 +175,10 @@ fun SettingsScreen(
                 }
             }
             
-            // 🍎 iOS 风格快捷入口
-            item { SettingsSectionTitle("设置") }
+            // ═══════════════════════════════════════════════════
+            // ⚙️ 常规设置
+            // ═══════════════════════════════════════════════════
+            item { SettingsSectionTitle("常规") }
             item {
                 SettingsGroup {
                     SettingClickableItem(
@@ -192,47 +196,19 @@ fun SettingsScreen(
                         onClick = onPlaybackClick,
                         iconTint = iOSGreen
                     )
-                    Divider()
-                    SettingClickableItem(
-                        icon = Icons.Outlined.Security,
-                        title = "权限管理",
-                        value = "查看应用权限",
-                        onClick = onPermissionClick,
-                        iconTint = iOSTeal
-                    )
-                    Divider()
-                    // 🔌 插件中心
-                    SettingClickableItem(
-                        icon = Icons.Outlined.Extension,
-                        title = "插件中心",
-                        value = "${com.android.purebilibili.core.plugin.PluginManager.getEnabledCount()} 个已启用",
-                        onClick = onPluginsClick,
-                        iconTint = iOSPurple
-                    )
                 }
             }
-            item { SettingsSectionTitle("高级选项") }
+            
+            // ═══════════════════════════════════════════════════
+            // 🔒 隐私与安全
+            // ═══════════════════════════════════════════════════
+            item { SettingsSectionTitle("隐私与安全") }
             item {
-                // 🔥 获取崩溃追踪和 Analytics 设置状态
-                val crashTrackingEnabled by com.android.purebilibili.core.store.SettingsManager
-                    .getCrashTrackingEnabled(context).collectAsState(initial = true)
-                val analyticsEnabled by com.android.purebilibili.core.store.SettingsManager
-                    .getAnalyticsEnabled(context).collectAsState(initial = true)
-                // 🔒 隐私无痕模式
                 val privacyModeEnabled by com.android.purebilibili.core.store.SettingsManager
                     .getPrivacyModeEnabled(context).collectAsState(initial = false)
                 val scope = rememberCoroutineScope()
                 
                 SettingsGroup {
-                    SettingClickableItem(
-                        icon = Icons.Outlined.DeleteOutline,
-                        title = "清除缓存",
-                        value = state.cacheSize,
-                        onClick = { showCacheDialog = true },
-                        iconTint = iOSPink
-                    )
-                    Divider()
-                    // 🔒 隐私无痕模式开关
                     SettingSwitchItem(
                         icon = Icons.Outlined.VisibilityOff,
                         title = "隐私无痕模式",
@@ -247,7 +223,44 @@ fun SettingsScreen(
                         iconTint = iOSPurple
                     )
                     Divider()
-                    // 🔥 崩溃追踪开关
+                    SettingClickableItem(
+                        icon = Icons.Outlined.Security,
+                        title = "权限管理",
+                        value = "查看应用权限",
+                        onClick = onPermissionClick,
+                        iconTint = iOSTeal
+                    )
+                }
+            }
+            
+            // ═══════════════════════════════════════════════════
+            // 💾 数据与存储
+            // ═══════════════════════════════════════════════════
+            item { SettingsSectionTitle("数据与存储") }
+            item {
+                SettingsGroup {
+                    SettingClickableItem(
+                        icon = Icons.Outlined.DeleteOutline,
+                        title = "清除缓存",
+                        value = state.cacheSize,
+                        onClick = { showCacheDialog = true },
+                        iconTint = iOSPink
+                    )
+                }
+            }
+            
+            // ═══════════════════════════════════════════════════
+            // 🛠 开发者选项
+            // ═══════════════════════════════════════════════════
+            item { SettingsSectionTitle("开发者选项") }
+            item {
+                val crashTrackingEnabled by com.android.purebilibili.core.store.SettingsManager
+                    .getCrashTrackingEnabled(context).collectAsState(initial = true)
+                val analyticsEnabled by com.android.purebilibili.core.store.SettingsManager
+                    .getAnalyticsEnabled(context).collectAsState(initial = true)
+                val scope = rememberCoroutineScope()
+                
+                SettingsGroup {
                     SettingSwitchItem(
                         icon = Icons.Outlined.BugReport,
                         title = "崩溃追踪",
@@ -263,7 +276,6 @@ fun SettingsScreen(
                         iconTint = iOSTeal
                     )
                     Divider()
-                    // 📊 用户行为分析开关
                     SettingSwitchItem(
                         icon = Icons.Outlined.Analytics,
                         title = "使用情况统计",
@@ -279,6 +291,22 @@ fun SettingsScreen(
                         iconTint = iOSBlue
                     )
                     Divider()
+                    SettingClickableItem(
+                        icon = Icons.Outlined.Extension,
+                        title = "插件中心",
+                        value = "${com.android.purebilibili.core.plugin.PluginManager.getEnabledCount()} 个已启用",
+                        onClick = onPluginsClick,
+                        iconTint = iOSPurple
+                    )
+                }
+            }
+            
+            // ═══════════════════════════════════════════════════
+            // ℹ️ 关于
+            // ═══════════════════════════════════════════════════
+            item { SettingsSectionTitle("关于") }
+            item {
+                SettingsGroup {
                     SettingClickableItem(
                         icon = Icons.Outlined.Description,
                         title = "开源许可证",
@@ -301,48 +329,6 @@ fun SettingsScreen(
                         value = "v${com.android.purebilibili.BuildConfig.VERSION_NAME}",
                         onClick = null,
                         iconTint = iOSTeal
-                    )
-                }
-            }
-            
-            // 🧪 实验性功能
-            item { SettingsSectionTitle("实验性功能") }
-            item {
-                SettingsGroup {
-                    SettingSwitchItem(
-                        icon = Icons.Outlined.HighQuality,
-                        title = "登录用户默认 1080P",
-                        subtitle = "已登录时自动选择最高画质",
-                        checked = state.auto1080p,
-                        onCheckedChange = { viewModel.toggleAuto1080p(it) },
-                        iconTint = iOSBlue
-                    )
-                    Divider()
-                    SettingSwitchItem(
-                        icon = Icons.Outlined.SkipNext,
-                        title = "自动跳过片头片尾",
-                        subtitle = "视频开头/结尾时自动跳过 (部分视频)",
-                        checked = state.autoSkipOpEd,
-                        onCheckedChange = { viewModel.toggleAutoSkipOpEd(it) },
-                        iconTint = iOSOrange
-                    )
-                    Divider()
-                    SettingSwitchItem(
-                        icon = Icons.Outlined.Speed,
-                        title = "预加载下一个视频",
-                        subtitle = "提前缓存推荐视频，消耗更多流量",
-                        checked = state.prefetchVideo,
-                        onCheckedChange = { viewModel.togglePrefetchVideo(it) },
-                        iconTint = iOSGreen
-                    )
-                    Divider()
-                    SettingSwitchItem(
-                        icon = Icons.Outlined.ThumbUp,
-                        title = "双击点赞",
-                        subtitle = "双击视频画面快捷点赞",
-                        checked = state.doubleTapLike,
-                        onCheckedChange = { viewModel.toggleDoubleTapLike(it) },
-                        iconTint = iOSPink
                     )
                 }
             }

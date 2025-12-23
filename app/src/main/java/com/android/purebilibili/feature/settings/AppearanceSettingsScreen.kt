@@ -166,10 +166,7 @@ fun AppearanceSettingsScreen(
                                 )
                             }
                         }
-                        // 分割线
-                        if (index < DisplayMode.entries.size - 1) {
-                            Divider(modifier = Modifier.padding(start = 16.dp)) 
-                        }
+                        // 🔥 已移除分割线
                     }
                 }
             }

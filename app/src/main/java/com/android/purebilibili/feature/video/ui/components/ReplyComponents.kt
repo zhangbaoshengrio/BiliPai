@@ -2,6 +2,7 @@ package com.android.purebilibili.feature.video.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,7 +16,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
@@ -61,7 +64,8 @@ fun ReplyItemView(
     item: ReplyItem,
     emoteMap: Map<String, String> = emptyMap(),
     onClick: () -> Unit,
-    onSubClick: (ReplyItem) -> Unit
+    onSubClick: (ReplyItem) -> Unit,
+    onTimestampClick: ((Long) -> Unit)? = null  // 🔥 新增：时间戳点击回调
 ) {
     val localEmoteMap = remember(item.content.emote, emoteMap) {
         val mergedMap = emoteMap.toMutableMap()
@@ -109,12 +113,13 @@ fun ReplyItemView(
                 
                 Spacer(modifier = Modifier.height(6.dp))
 
-                // 正文
-                EmojiText(
+                // 🔥🔥 正文 - 使用增强版 RichCommentText 支持时间戳点击
+                RichCommentText(
                     text = item.content.message,
                     fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.onSurface,  // 🔥 适配深色模式
-                    emoteMap = localEmoteMap
+                    color = MaterialTheme.colorScheme.onSurface,
+                    emoteMap = localEmoteMap,
+                    onTimestampClick = onTimestampClick
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -170,6 +175,13 @@ fun ReplyItemView(
                             .padding(12.dp)
                     ) {
                         item.replies?.take(3)?.forEach { subReply ->
+                            // 🔥🔥 [修复] 子评论也使用自己的表情映射
+                            val subEmoteMap = remember(subReply.content.emote, emoteMap) {
+                                val map = emoteMap.toMutableMap()
+                                subReply.content.emote?.forEach { (key, value) -> map[key] = value.url }
+                                map
+                            }
+                            
                             Row(modifier = Modifier.padding(vertical = 2.dp)) {
                                 // 🔥 子评论用户名 - 使用统一的次要色
                                 Text(
@@ -183,13 +195,14 @@ fun ReplyItemView(
                                     fontSize = 13.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                // 子评论内容
-                                Text(
+                                // 🔥🔥 [修复] 子评论内容也使用 RichCommentText 显示表情
+                                RichCommentText(
                                     text = subReply.content.message,
                                     fontSize = 13.sp,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                                    emoteMap = subEmoteMap,
                                     maxLines = 2,
-                                    lineHeight = 18.sp
+                                    onTimestampClick = onTimestampClick
                                 )
                             }
                         }
@@ -216,13 +229,24 @@ fun ReplyItemView(
     )
 }
 
+/**
+ * 🔥🔥 [新增] 富文本评论组件
+ * 支持：表情渲染、时间戳点击跳转
+ */
 @Composable
-fun EmojiText(
+fun RichCommentText(
     text: String,
     fontSize: TextUnit,
     color: Color = MaterialTheme.colorScheme.onSurface,
-    emoteMap: Map<String, String>
+    emoteMap: Map<String, String>,
+    maxLines: Int = Int.MAX_VALUE,
+    onTimestampClick: ((Long) -> Unit)? = null
 ) {
+    val timestampColor = MaterialTheme.colorScheme.primary
+    
+    // 🔥 时间戳正则: 支持 "1:23", "12:34", "1:23:45" 格式
+    val timestampPattern = """(?<!\d)(\d{1,2}):(\d{2})(?::(\d{2}))?(?!\d)""".toRegex()
+    
     val annotatedString = buildAnnotatedString {
         // 高亮 "回复 @某人 :"
         val replyPattern = "^回复 @(.*?) :".toRegex()
@@ -237,17 +261,64 @@ fun EmojiText(
 
         val remainingText = text.substring(startIndex)
         val emotePattern = """\[(.*?)\]""".toRegex()
-        var lastIndex = 0
-        emotePattern.findAll(remainingText).forEach { matchResult ->
-            append(remainingText.substring(lastIndex, matchResult.range.first))
-            val emojiKey = matchResult.value
-            if (emoteMap.containsKey(emojiKey)) {
-                appendInlineContent(id = emojiKey, alternateText = emojiKey)
-            } else {
-                append(emojiKey)
-            }
-            lastIndex = matchResult.range.last + 1
+        
+        // 🔥 收集所有匹配（表情 + 时间戳）并按位置排序
+        data class MatchInfo(val range: IntRange, val type: String, val value: String, val seconds: Long = 0)
+        val allMatches = mutableListOf<MatchInfo>()
+        
+        // 收集表情匹配
+        emotePattern.findAll(remainingText).forEach { match ->
+            allMatches.add(MatchInfo(match.range, "emote", match.value))
         }
+        
+        // 收集时间戳匹配
+        timestampPattern.findAll(remainingText).forEach { match ->
+            val hours = match.groupValues[3].takeIf { it.isNotEmpty() }?.toIntOrNull() ?: 0
+            val minutes = match.groupValues[1].toIntOrNull() ?: 0
+            val seconds = match.groupValues[2].toIntOrNull() ?: 0
+            val totalSeconds = if (match.groupValues[3].isNotEmpty()) {
+                // 格式: H:MM:SS
+                match.groupValues[1].toInt() * 3600 + match.groupValues[2].toInt() * 60 + match.groupValues[3].toInt()
+            } else {
+                // 格式: MM:SS
+                minutes * 60 + seconds
+            }
+            allMatches.add(MatchInfo(match.range, "timestamp", match.value, totalSeconds.toLong()))
+        }
+        
+        // 按位置排序
+        allMatches.sortBy { it.range.first }
+        
+        var lastIndex = 0
+        allMatches.forEach { matchInfo ->
+            // 添加匹配之前的普通文本
+            if (lastIndex < matchInfo.range.first) {
+                append(remainingText.substring(lastIndex, matchInfo.range.first))
+            }
+            
+            when (matchInfo.type) {
+                "emote" -> {
+                    if (emoteMap.containsKey(matchInfo.value)) {
+                        appendInlineContent(id = matchInfo.value, alternateText = matchInfo.value)
+                    } else {
+                        append(matchInfo.value)
+                    }
+                }
+                "timestamp" -> {
+                    // 🔥 时间戳使用特殊样式并添加点击注解
+                    val annotationStart = length
+                    pushStringAnnotation(tag = "TIMESTAMP", annotation = matchInfo.seconds.toString())
+                    withStyle(SpanStyle(color = timestampColor, fontWeight = FontWeight.Medium)) {
+                        append(matchInfo.value)
+                    }
+                    pop()
+                }
+            }
+            
+            lastIndex = matchInfo.range.last + 1
+        }
+        
+        // 添加剩余文本
         if (lastIndex < remainingText.length) {
             append(remainingText.substring(lastIndex))
         }
@@ -268,43 +339,82 @@ fun EmojiText(
         }
     }
 
+    // 🔥 使用 Text + pointerInput 实现带表情的可点击文本
+    var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+    
     Text(
         text = annotatedString,
         inlineContent = inlineContent,
         fontSize = fontSize,
         color = color,
-        lineHeight = (fontSize.value * 1.5).sp
+        lineHeight = (fontSize.value * 1.5).sp,
+        maxLines = maxLines,
+        onTextLayout = { textLayoutResult = it },
+        // 🔥🔥 [修复] 添加 padding 确保点击区域足够大
+        modifier = Modifier.then(
+            if (onTimestampClick != null) {
+                Modifier.pointerInput(annotatedString) {
+                    detectTapGestures { offset ->
+                        textLayoutResult?.let { layoutResult ->
+                            val position = layoutResult.getOffsetForPosition(offset)
+                            // 🔥🔥 [修复] 扩大搜索范围，允许一定的点击容差
+                            val searchStart = maxOf(0, position - 1)
+                            val searchEnd = minOf(annotatedString.length, position + 1)
+                            annotatedString.getStringAnnotations(
+                                tag = "TIMESTAMP", 
+                                start = searchStart, 
+                                end = searchEnd
+                            )
+                                .firstOrNull()?.let { annotation ->
+                                    val seconds = annotation.item.toLongOrNull() ?: 0L
+                                    onTimestampClick(seconds * 1000)  // 转换为毫秒
+                                }
+                        }
+                    }
+                }
+            } else Modifier
+        )
     )
 }
 
-// 🔥 优化后的等级标签 - 无边框，使用柔和的背景色
+/**
+ * 🔥 [兼容] 旧版 EmojiText (保持向后兼容)
+ */
+@Composable
+fun EmojiText(
+    text: String,
+    fontSize: TextUnit,
+    color: Color = MaterialTheme.colorScheme.onSurface,
+    emoteMap: Map<String, String>
+) {
+    RichCommentText(
+        text = text,
+        fontSize = fontSize,
+        color = color,
+        emoteMap = emoteMap,
+        onTimestampClick = null
+    )
+}
+
+// 🔥🔥 [重构] 精简等级标签 - 纯文字显示，无背景边框
 @Composable
 fun LevelTag(level: Int) {
-    // 根据等级设置不同颜色 (适配 DarkMode: 使用容器色)
-    val bgColor = when {
-        level >= 6 -> BiliPink.copy(alpha = 0.15f)
-        level >= 4 -> Color(0xFFFF9500).copy(alpha = 0.15f)
-        else -> MaterialTheme.colorScheme.surfaceVariant
-    }
-    
+    // 🎨 B站官方配色方案 - 纯颜色文字
     val textColor = when {
-        level >= 6 -> BiliPink
-        level >= 4 -> Color(0xFFFF9500)
-        else -> MaterialTheme.colorScheme.onSurfaceVariant
+        level >= 6 -> Color(0xFFFF6699)  // 粉色 (硬核用户)
+        level >= 5 -> Color(0xFFFF9500)  // 橙色
+        level >= 4 -> Color(0xFF22C3AA)  // 青绿色 (B站LV5标准色)
+        level >= 3 -> Color(0xFF7BC549)  // 绿色
+        level >= 2 -> Color(0xFF5EAADE)  // 蓝色
+        else -> Color(0xFF969696)  // 灰色 (新用户)
     }
     
-    Surface(
-        color = bgColor,
-        shape = RoundedCornerShape(3.dp)
-    ) {
-        Text(
-            text = "LV$level",
-            fontSize = 9.sp,
-            fontWeight = FontWeight.Bold,
-            color = textColor,
-            modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp)
-        )
-    }
+    Text(
+        text = "LV$level",
+        fontSize = 10.sp,
+        fontWeight = FontWeight.Bold,
+        color = textColor
+    )
 }
 
 fun formatTime(timestamp: Long): String {

@@ -255,7 +255,8 @@ fun VideoDetailScreen(
                     cover = info.pic,
                     owner = info.owner.name,
                     cid = info.cid,  // 🔥🔥 传递 cid 用于弹幕加载
-                    externalPlayer = playerState.player
+                    externalPlayer = playerState.player,
+                    fromLeft = com.android.purebilibili.core.util.CardPositionManager.isCardOnLeft  // 🔥🔥 传递入场方向
                 )
                 // 🔥🔥 [新增] 缓存完整 UI 状态，用于从小窗返回时恢复
                 miniPlayerManager.cacheUiState(success)
@@ -344,6 +345,8 @@ fun VideoDetailScreen(
                     onToggleFullscreen = { toggleOrientation() },
                     onQualityChange = { qid, pos -> viewModel.changeQuality(qid, pos) },
                     onBack = { toggleOrientation() },
+                    // 🔗 [新增] 分享功能
+                    bvid = bvid,
                     // 🧪 实验性功能：双击点赞
                     onDoubleTapLike = { viewModel.toggleLike() }
                     // 🚀 空降助手 - 已由插件系统自动处理
@@ -413,6 +416,8 @@ fun VideoDetailScreen(
                                 onToggleFullscreen = { toggleOrientation() },
                                 onQualityChange = { qid, pos -> viewModel.changeQuality(qid, pos) },
                                 onBack = handleBack,
+                                // 🔗 [新增] 分享功能
+                                bvid = bvid,
                                 onDoubleTapLike = { viewModel.toggleLike() }
                                 // 🚀 空降助手 - 已由插件系统自动处理
                                 // sponsorSegment = sponsorSegment,
@@ -485,7 +490,12 @@ fun VideoDetailScreen(
                                     onRelatedVideoClick = { vid -> viewModel.loadVideo(vid) },
                                     onSubReplyClick = { commentViewModel.openSubReply(it) },
                                     onLoadMoreReplies = { commentViewModel.loadComments() },
-                                    onDownloadClick = { viewModel.openDownloadDialog() }
+                                    onDownloadClick = { viewModel.openDownloadDialog() },
+                                    // 🔥🔥 [新增] 时间戳点击跳转
+                                    onTimestampClick = { positionMs ->
+                                        playerState.player.seekTo(positionMs)
+                                        playerState.player.play()
+                                    }
                                 )
                             }
 
@@ -577,7 +587,13 @@ fun VideoDetailScreen(
                 state = subReplyState,
                 emoteMap = successState?.emoteMap ?: emptyMap(),
                 onDismiss = { commentViewModel.closeSubReply() },
-                onLoadMore = { commentViewModel.loadMoreSubReplies() }
+                onLoadMore = { commentViewModel.loadMoreSubReplies() },
+                // 🔥🔥 [新增] 时间戳点击跳转
+                onTimestampClick = { positionMs ->
+                    playerState.player.seekTo(positionMs)
+                    playerState.player.play()
+                    commentViewModel.closeSubReply()  // 关闭弹窗以便看视频
+                }
             )
         }
         
@@ -667,7 +683,8 @@ fun VideoContentSection(
     onRelatedVideoClick: (String) -> Unit,
     onSubReplyClick: (ReplyItem) -> Unit,
     onLoadMoreReplies: () -> Unit,
-    onDownloadClick: () -> Unit = {}  // 🔥 下载点击
+    onDownloadClick: () -> Unit = {},  // 🔥 下载点击
+    onTimestampClick: ((Long) -> Unit)? = null  // 🔥🔥 [新增] 时间戳点击跳转
 ) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -840,7 +857,8 @@ fun VideoContentSection(
                         item = reply,
                         emoteMap = emoteMap,
                         onClick = {},
-                        onSubClick = { onSubReplyClick(reply) }
+                        onSubClick = { onSubReplyClick(reply) },
+                        onTimestampClick = onTimestampClick  // 🔥🔥 传递时间戳点击回调
                     )
                 }
                 

@@ -102,28 +102,44 @@ class DanmakuManager private constructor(
         get() = config.opacity
         set(value) {
             config.opacity = value
-            controller?.let { config.applyTo(it.config) }
+            controller?.let { 
+                config.applyTo(it.config)
+                it.invalidateView()
+                Log.w(TAG, "📋 Opacity changed to $value")
+            }
         }
     
     var fontScale: Float
         get() = config.fontScale
         set(value) {
             config.fontScale = value
-            controller?.let { config.applyTo(it.config) }
+            controller?.let { 
+                config.applyTo(it.config)
+                it.invalidateView()
+                Log.w(TAG, "📋 FontScale changed to $value")
+            }
         }
     
     var speedFactor: Float
         get() = config.speedFactor
         set(value) {
             config.speedFactor = value
-            controller?.let { config.applyTo(it.config) }
+            controller?.let { 
+                config.applyTo(it.config)
+                it.invalidateView()
+                Log.w(TAG, "📋 SpeedFactor changed to $value")
+            }
         }
     
     var displayArea: Float
         get() = config.displayAreaRatio
         set(value) {
             config.displayAreaRatio = value
-            controller?.let { config.applyTo(it.config) }
+            controller?.let { 
+                config.applyTo(it.config)
+                it.invalidateView()
+                Log.w(TAG, "📋 DisplayArea changed to $value")
+            }
         }
     
     /**

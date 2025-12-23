@@ -14,6 +14,7 @@ import com.android.purebilibili.core.plugin.SkipAction
 import com.android.purebilibili.core.util.AnalyticsHelper
 import com.android.purebilibili.core.util.CrashReporter
 import com.android.purebilibili.core.util.Logger
+import com.android.purebilibili.core.util.NetworkUtils
 import com.android.purebilibili.data.model.VideoLoadError
 import com.android.purebilibili.data.model.response.*
 import com.android.purebilibili.data.repository.VideoRepository
@@ -112,6 +113,7 @@ class PlayerViewModel : ViewModel() {
     private var currentCid = 0L
     private var exoPlayer: ExoPlayer? = null
     private var heartbeatJob: Job? = null
+    private var appContext: android.content.Context? = null  // 🔥🔥 [新增] 保存 Context 用于网络检测
     
     // ========== Public API ==========
     
@@ -119,6 +121,7 @@ class PlayerViewModel : ViewModel() {
      * 初始化持久化存储（需要在使用前调用一次）
      */
     fun initWithContext(context: android.content.Context) {
+        appContext = context.applicationContext  // 🔥🔥 [新增] 保存应用 Context
         playbackUseCase.initWithContext(context)
     }
     
@@ -165,7 +168,10 @@ class PlayerViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.value = PlayerUiState.Loading.Initial
             
-            when (val result = playbackUseCase.loadVideo(bvid)) {
+            // 🔥🔥 [网络感知] 根据网络类型选择默认清晰度
+            val defaultQuality = appContext?.let { NetworkUtils.getDefaultQualityId(it) } ?: 64
+            
+            when (val result = playbackUseCase.loadVideo(bvid, defaultQuality)) {
                 is VideoLoadResult.Success -> {
                     currentCid = result.info.cid
                     
@@ -446,7 +452,10 @@ class PlayerViewModel : ViewModel() {
             if (result != null) {
                 _uiState.value = current.copy(
                     playUrl = result.videoUrl, audioUrl = result.audioUrl,
-                    currentQuality = result.actualQuality, isQualitySwitching = false, requestedQuality = null
+                    currentQuality = result.actualQuality, isQualitySwitching = false, requestedQuality = null,
+                    // 🔥🔥 [修复] 更新缓存的DASH流，否则后续画质切换可能失败
+                    cachedDashVideos = result.cachedDashVideos.ifEmpty { current.cachedDashVideos },
+                    cachedDashAudios = result.cachedDashAudios.ifEmpty { current.cachedDashAudios }
                 )
                 val label = current.qualityLabels.getOrNull(current.qualityIds.indexOf(result.actualQuality)) ?: "${result.actualQuality}"
                 toast(if (result.wasFallback) "⚠️ 已切换至 $label" else "✓ 已切换至 $label")

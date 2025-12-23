@@ -37,13 +37,13 @@ import com.android.purebilibili.core.store.SettingsManager
 import com.android.purebilibili.core.theme.BiliPink
 import com.android.purebilibili.core.theme.PureBiliBiliTheme
 import com.android.purebilibili.feature.settings.AppThemeMode
-import com.android.purebilibili.feature.video.ui.overlay.FullscreenPlayerOverlay
 import com.android.purebilibili.navigation.AppNavigation
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
 import com.android.purebilibili.feature.video.MiniPlayerManager
 import com.android.purebilibili.feature.video.ui.overlay.MiniPlayerOverlay
+import com.android.purebilibili.feature.video.ui.overlay.FullscreenPlayerOverlay
 import com.android.purebilibili.core.ui.SharedTransitionProvider
 import com.android.purebilibili.feature.plugin.EyeProtectionOverlay
 import coil.compose.AsyncImage
@@ -157,7 +157,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
-                    
                     // 🔥 小窗全屏状态
                     var showFullscreen by remember { mutableStateOf(false) }
                     
@@ -183,8 +182,9 @@ class MainActivity : ComponentActivity() {
                                 // 🔥 关闭全屏覆盖层并导航到视频详情页
                                 showFullscreen = false
                                 miniPlayerManager.currentBvid?.let { bvid ->
-                                    // 🔥 导航到视频详情页，播放器通过 MiniPlayerManager 复用
-                                    navController.navigate("video/$bvid?cid=0&cover=") {
+                                    // 🔥🔥 [修复] 使用正确的 cid，而不是 0
+                                    val cid = miniPlayerManager.currentCid
+                                    navController.navigate("video/$bvid?cid=$cid&cover=") {
                                         launchSingleTop = true
                                     }
                                 }
@@ -205,14 +205,13 @@ class MainActivity : ComponentActivity() {
         
         Logger.d(TAG, "👋 onUserLeaveHint 触发, isInVideoDetail=$isInVideoDetail")
         
-        // 🔥 使用 runBlocking 从 DataStore 读取设置 (仅在 onUserLeaveHint 中短暂使用)
-        val bgPlayEnabled = runBlocking {
-            SettingsManager.getBgPlay(this@MainActivity).first()
-        }
+        // 🔥🔥 [重构] 使用新的模式判断方法
+        val shouldEnterPip = miniPlayerManager.shouldEnterPip()
+        val currentMode = miniPlayerManager.getCurrentMode()
         
-        Logger.d(TAG, "📺 bgPlayEnabled=$bgPlayEnabled, API=${Build.VERSION.SDK_INT}")
+        Logger.d(TAG, "📺 miniPlayerMode=$currentMode, shouldEnterPip=$shouldEnterPip, API=${Build.VERSION.SDK_INT}")
         
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isInVideoDetail && bgPlayEnabled) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isInVideoDetail && shouldEnterPip) {
             try {
                 Logger.d(TAG, "🎬 尝试进入 PiP 模式...")
                 
@@ -231,7 +230,7 @@ class MainActivity : ComponentActivity() {
                 com.android.purebilibili.core.util.Logger.e(TAG, "❌ 进入 PiP 失败", e)
             }
         } else {
-            Logger.d(TAG, "⏳ 未满足 PiP 条件: API>=${Build.VERSION_CODES.O}=${Build.VERSION.SDK_INT >= Build.VERSION_CODES.O}, inVideoDetail=$isInVideoDetail, bgPlay=$bgPlayEnabled")
+            Logger.d(TAG, "⏳ 未满足 PiP 条件: API>=${Build.VERSION_CODES.O}=${Build.VERSION.SDK_INT >= Build.VERSION_CODES.O}, inVideoDetail=$isInVideoDetail, shouldEnterPip=$shouldEnterPip")
         }
     }
     

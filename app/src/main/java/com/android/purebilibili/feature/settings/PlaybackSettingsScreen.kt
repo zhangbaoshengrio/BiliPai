@@ -8,8 +8,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.*
@@ -17,15 +20,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.purebilibili.core.theme.iOSGreen
 import com.android.purebilibili.core.theme.iOSTeal
 import com.android.purebilibili.core.theme.iOSOrange
 import com.android.purebilibili.core.theme.iOSSystemGray
+import kotlinx.coroutines.launch
 
 /**
  * 🍎 播放设置二级页面
@@ -166,29 +172,132 @@ fun PlaybackSettingsScreen(
                 }
             }
             
-            // 🍎 后台播放
-            item { SettingsSectionTitle("后台播放") }
+            // 🍎 小窗播放
+            item { SettingsSectionTitle("小窗播放") }
             item {
+                val scope = rememberCoroutineScope()
+                val miniPlayerMode by com.android.purebilibili.core.store.SettingsManager
+                    .getMiniPlayerMode(context).collectAsState(
+                        initial = com.android.purebilibili.core.store.SettingsManager.MiniPlayerMode.IN_APP_ONLY
+                    )
+                
+                // 模式选项
+                val modeOptions = com.android.purebilibili.core.store.SettingsManager.MiniPlayerMode.entries
+                var isExpanded by remember { mutableStateOf(false) }
+                
                 SettingsGroup {
-                    SettingSwitchItem(
-                        icon = Icons.Outlined.PictureInPicture,
-                        title = "后台/画中画播放",
-                        subtitle = "应用切到后台时继续播放",
-                        checked = state.bgPlay,
-                        onCheckedChange = { isChecked ->
-                            if (isChecked) {
-                                if (checkPipPermission()) {
-                                    viewModel.toggleBgPlay(true)
-                                } else {
-                                    viewModel.toggleBgPlay(true)
-                                    showPipPermissionDialog = true
-                                }
-                            } else {
-                                viewModel.toggleBgPlay(false)
-                            }
-                        },
+                    // 🍎 点击展开模式选择
+                    SettingClickableItem(
+                        icon = Icons.Outlined.PictureInPictureAlt,
+                        title = "小窗模式",
+                        value = miniPlayerMode.label,
+                        onClick = { isExpanded = !isExpanded },
                         iconTint = iOSTeal
                     )
+                    
+                    // 🍎 展开的模式选择列表
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = androidx.compose.animation.expandVertically() + androidx.compose.animation.fadeIn(),
+                        exit = androidx.compose.animation.shrinkVertically() + androidx.compose.animation.fadeOut()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            modeOptions.forEach { mode ->
+                                val isSelected = mode == miniPlayerMode
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(
+                                            if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                                            else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                                        )
+                                        .clickable {
+                                            scope.launch {
+                                                com.android.purebilibili.core.store.SettingsManager
+                                                    .setMiniPlayerMode(context, mode)
+                                            }
+                                            // 如果选择系统PiP，检查权限
+                                            if (mode == com.android.purebilibili.core.store.SettingsManager.MiniPlayerMode.SYSTEM_PIP) {
+                                                if (!checkPipPermission()) {
+                                                    showPipPermissionDialog = true
+                                                }
+                                            }
+                                            isExpanded = false
+                                        }
+                                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            mode.label,
+                                            fontSize = 15.sp,
+                                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                                            color = if (isSelected) MaterialTheme.colorScheme.primary 
+                                                    else MaterialTheme.colorScheme.onSurface
+                                        )
+                                        Text(
+                                            mode.description,
+                                            fontSize = 12.sp,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                                        )
+                                    }
+                                    if (isSelected) {
+                                        Icon(
+                                            Icons.Outlined.Check,
+                                            contentDescription = "已选择",
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    // 🔥 权限提示（仅当选择系统PiP且无权限时显示）
+                    if (miniPlayerMode == com.android.purebilibili.core.store.SettingsManager.MiniPlayerMode.SYSTEM_PIP 
+                        && !checkPipPermission()) {
+                        Divider()
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { showPipPermissionDialog = true }
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.Outlined.Warning,
+                                contentDescription = null,
+                                tint = iOSOrange,
+                                modifier = Modifier.size(22.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    "画中画权限未开启",
+                                    fontSize = 14.sp,
+                                    color = iOSOrange
+                                )
+                                Text(
+                                    "点击前往系统设置开启",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                )
+                            }
+                            Icon(
+                                Icons.Outlined.ChevronRight,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
                 }
             }
             
@@ -268,6 +377,158 @@ fun PlaybackSettingsScreen(
                         },
                         iconTint = iOSSystemGray
                     )
+                }
+            }
+            
+            // 🍎 交互设置
+            item { SettingsSectionTitle("交互") }
+            item {
+                SettingsGroup {
+                    SettingSwitchItem(
+                        icon = Icons.Outlined.ThumbUp,
+                        title = "双击点赞",
+                        subtitle = "双击视频画面快捷点赞",
+                        checked = state.doubleTapLike,
+                        onCheckedChange = { viewModel.toggleDoubleTapLike(it) },
+                        iconTint = com.android.purebilibili.core.theme.iOSPink
+                    )
+                }
+            }
+            
+            // 🍎 网络与画质
+            item { SettingsSectionTitle("网络与画质") }
+            item {
+                val scope = rememberCoroutineScope()
+                val wifiQuality by com.android.purebilibili.core.store.SettingsManager
+                    .getWifiQuality(context).collectAsState(initial = 80)
+                val mobileQuality by com.android.purebilibili.core.store.SettingsManager
+                    .getMobileQuality(context).collectAsState(initial = 64)
+                
+                // 画质选项列表
+                val qualityOptions = listOf(
+                    116 to "1080P60",
+                    80 to "1080P",
+                    64 to "720P",
+                    32 to "480P",
+                    16 to "360P"
+                )
+                
+                fun getQualityLabel(id: Int) = qualityOptions.find { it.first == id }?.second ?: "720P"
+                
+                SettingsGroup {
+                    // WiFi 画质选择
+                    var wifiExpanded by remember { mutableStateOf(false) }
+                    Column {
+                        SettingClickableItem(
+                            icon = Icons.Outlined.Wifi,
+                            title = "WiFi 默认画质",
+                            value = getQualityLabel(wifiQuality),
+                            onClick = { wifiExpanded = !wifiExpanded },
+                            iconTint = com.android.purebilibili.core.theme.iOSBlue
+                        )
+                        
+                        // 🍎 展开动画
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = wifiExpanded,
+                            enter = androidx.compose.animation.expandVertically() + androidx.compose.animation.fadeIn(),
+                            exit = androidx.compose.animation.shrinkVertically() + androidx.compose.animation.fadeOut()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                qualityOptions.forEach { (id, label) ->
+                                    val isSelected = id == wifiQuality
+                                    androidx.compose.foundation.layout.Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
+                                            .background(
+                                                if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                                                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                            )
+                                            .clickable {
+                                                scope.launch { 
+                                                    com.android.purebilibili.core.store.SettingsManager
+                                                        .setWifiQuality(context, id)
+                                                }
+                                                wifiExpanded = false
+                                            }
+                                            .padding(vertical = 10.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            label,
+                                            fontSize = 12.sp,
+                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                            color = if (isSelected) MaterialTheme.colorScheme.primary 
+                                                    else MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    Divider()
+                    
+                    // 流量画质选择
+                    var mobileExpanded by remember { mutableStateOf(false) }
+                    Column {
+                        SettingClickableItem(
+                            icon = Icons.Outlined.SignalCellularAlt,
+                            title = "流量 默认画质",
+                            value = getQualityLabel(mobileQuality),
+                            onClick = { mobileExpanded = !mobileExpanded },
+                            iconTint = iOSOrange
+                        )
+                        
+                        // 🍎 展开动画
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = mobileExpanded,
+                            enter = androidx.compose.animation.expandVertically() + androidx.compose.animation.fadeIn(),
+                            exit = androidx.compose.animation.shrinkVertically() + androidx.compose.animation.fadeOut()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                qualityOptions.forEach { (id, label) ->
+                                    val isSelected = id == mobileQuality
+                                    androidx.compose.foundation.layout.Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
+                                            .background(
+                                                if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                                                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                                            )
+                                            .clickable {
+                                                scope.launch { 
+                                                    com.android.purebilibili.core.store.SettingsManager
+                                                        .setMobileQuality(context, id)
+                                                }
+                                                mobileExpanded = false
+                                            }
+                                            .padding(vertical = 10.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            label,
+                                            fontSize = 12.sp,
+                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                            color = if (isSelected) MaterialTheme.colorScheme.primary 
+                                                    else MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
             

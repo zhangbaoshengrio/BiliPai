@@ -114,6 +114,10 @@ class MiniPlayerManager private constructor(private val context: Context) {
     var cachedUiState: PlayerUiState.Success? = null
         private set
     
+    // 🔥🔥 [新增] 小窗入场方向：true=从左边进入，false=从右边进入
+    var entryFromLeft by mutableStateOf(false)
+        private set
+    
     // 🔥🔥 [新增] 缓存 UI 状态
     fun cacheUiState(state: PlayerUiState.Success) {
         cachedUiState = state
@@ -147,6 +151,49 @@ class MiniPlayerManager private constructor(private val context: Context) {
 
     // --- MediaSession ---
     private var mediaSession: MediaSession? = null
+    
+    // ========== 🔥 小窗模式判断方法 ==========
+    
+    /**
+     * 获取当前小窗模式设置
+     */
+    fun getCurrentMode(): com.android.purebilibili.core.store.SettingsManager.MiniPlayerMode {
+        return com.android.purebilibili.core.store.SettingsManager.getMiniPlayerModeSync(context)
+    }
+    
+    /**
+     * 判断是否应该显示应用内小窗（返回首页时）
+     */
+    fun shouldShowInAppMiniPlayer(): Boolean {
+        val mode = getCurrentMode()
+        return (mode == com.android.purebilibili.core.store.SettingsManager.MiniPlayerMode.IN_APP_ONLY ||
+                mode == com.android.purebilibili.core.store.SettingsManager.MiniPlayerMode.SYSTEM_PIP ||
+                mode == com.android.purebilibili.core.store.SettingsManager.MiniPlayerMode.BACKGROUND) && 
+               isActive
+    }
+    
+    /**
+     * 判断是否应该进入系统画中画模式（按 Home 键时）
+     */
+    fun shouldEnterPip(): Boolean {
+        val mode = getCurrentMode()
+        return mode == com.android.purebilibili.core.store.SettingsManager.MiniPlayerMode.SYSTEM_PIP && isActive
+    }
+    
+    /**
+     * 判断是否应该继续后台音频播放
+     */
+    fun shouldContinueBackgroundAudio(): Boolean {
+        val mode = getCurrentMode()
+        return mode == com.android.purebilibili.core.store.SettingsManager.MiniPlayerMode.BACKGROUND && isActive
+    }
+    
+    /**
+     * 判断小窗功能是否完全关闭
+     */
+    fun isMiniPlayerDisabled(): Boolean {
+        return getCurrentMode() == com.android.purebilibili.core.store.SettingsManager.MiniPlayerMode.OFF
+    }
 
 
     /**
@@ -257,7 +304,15 @@ class MiniPlayerManager private constructor(private val context: Context) {
      * 进入小窗模式
      */
     fun enterMiniMode() {
-        Logger.d(TAG, "🔥 enterMiniMode called: isActive=$isActive, currentBvid=$currentBvid, isMiniMode=$isMiniMode")
+        val mode = getCurrentMode()
+        Logger.d(TAG, "🔥 enterMiniMode called: isActive=$isActive, currentBvid=$currentBvid, isMiniMode=$isMiniMode, mode=$mode")
+        
+        // 🔥🔥 [检查] 如果小窗功能关闭，不进入小窗模式
+        if (isMiniPlayerDisabled()) {
+            Logger.d(TAG, "⚠️ Mini player is disabled by user settings (mode=OFF)")
+            return
+        }
+        
         if (!isActive) {
             com.android.purebilibili.core.util.Logger.w(TAG, "⚠️ Cannot enter mini mode: isActive is false!")
             return
@@ -294,6 +349,7 @@ class MiniPlayerManager private constructor(private val context: Context) {
     /**
      * 🔥 设置视频信息并关联外部播放器（用于小窗模式）
      * 这个方法不创建新播放器，而是使用 VideoDetailScreen 的播放器
+     * @param fromLeft 🔥 是否从左边进入（用于小窗动画方向）
      */
     fun setVideoInfo(
         bvid: String,
@@ -301,14 +357,16 @@ class MiniPlayerManager private constructor(private val context: Context) {
         cover: String,
         owner: String,
         cid: Long,  // 🔥🔥 [新增] cid 用于弹幕加载
-        externalPlayer: ExoPlayer
+        externalPlayer: ExoPlayer,
+        fromLeft: Boolean = false  // 🔥🔥 [新增] 入场方向
     ) {
-        Logger.d(TAG, "setVideoInfo: bvid=$bvid, title=$title, cid=$cid")
+        Logger.d(TAG, "setVideoInfo: bvid=$bvid, title=$title, cid=$cid, fromLeft=$fromLeft")
         currentBvid = bvid
         currentTitle = title
         currentCover = cover
         currentOwner = owner
         currentCid = cid  // 🔥🔥 保存 cid
+        entryFromLeft = fromLeft  // 🔥🔥 保存入场方向
         _externalPlayer = externalPlayer
         isActive = true
         isMiniMode = false
@@ -316,6 +374,14 @@ class MiniPlayerManager private constructor(private val context: Context) {
         // 同步播放状态
         isPlaying = externalPlayer.isPlaying
         duration = externalPlayer.duration.coerceAtLeast(0L)
+    }
+    
+    /**
+     * 🔥 设置小窗入场方向
+     */
+    fun setEntryDirection(fromLeft: Boolean) {
+        entryFromLeft = fromLeft
+        Logger.d(TAG, "setEntryDirection: fromLeft=$fromLeft")
     }
 
     /**

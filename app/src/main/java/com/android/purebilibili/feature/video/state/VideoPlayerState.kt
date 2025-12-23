@@ -272,9 +272,13 @@ fun rememberVideoPlayerState(
 
             // 🔥 检查是否有小窗在使用这个 player
             val miniPlayerManager = MiniPlayerManager.getInstance(context)
-            if (miniPlayerManager.isMiniMode && miniPlayerManager.isActive) {
+            // 🔥🔥 [修复] 使用 isActive 和 hasExternalPlayer 来判断是否保留 player
+            // isMiniMode 可能还没有被设置（AppNavigation.onDispose 可能在之后执行）
+            // 但如果 isActive 为 true 且当前 player 是被引用的外部 player，则不释放
+            val shouldKeepPlayer = miniPlayerManager.isActive && miniPlayerManager.hasExternalPlayer
+            if (shouldKeepPlayer) {
                 // 小窗模式下不释放 player，只释放其他资源
-                com.android.purebilibili.core.util.Logger.d("VideoPlayerState", "🔥 小窗模式激活，不释放 player")
+                com.android.purebilibili.core.util.Logger.d("VideoPlayerState", "🔥 小窗正在使用此 player，不释放")
             } else {
                 // 正常释放所有资源
                 com.android.purebilibili.core.util.Logger.d("VideoPlayerState", "🔥 释放所有资源")

@@ -48,8 +48,12 @@ class DanmakuConfig {
             
             // 滚动层配置
             // moveTime: 弹幕滚过屏幕的时间（毫秒），越大越慢
-            // 默认大约 8000ms，根据 speedFactor 调整
-            scroll.moveTime = (8000 * speedFactor).toLong()
+            // 🔥🔥 [修复] speedFactor > 1 表示更快（更短的 moveTime）
+            // 基准值 5000ms，speedFactor=1 时 5000ms，speedFactor=2 时 2500ms
+            val baseTime = 5000L
+            scroll.moveTime = (baseTime / speedFactor).toLong().coerceIn(2000L, 10000L)
+            
+            android.util.Log.w("DanmakuConfig", "📋 Applied: opacity=$opacity, fontSize=${text.size}, moveTime=${scroll.moveTime}ms, speedFactor=$speedFactor")
         }
     }
     

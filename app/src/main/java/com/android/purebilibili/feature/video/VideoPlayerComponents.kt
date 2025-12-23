@@ -211,19 +211,13 @@ fun UpInfoSection(
                 )
             }
             Spacer(Modifier.height(2.dp))
-            // 蓝色 UP主 标签
-            Surface(
-                color = Color(0xFF00AEEC).copy(alpha = 0.15f),
-                shape = RoundedCornerShape(4.dp)
-            ) {
-                Text(
-                    text = "UP主",
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF00AEEC),
-                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                )
-            }
+            // 蓝色 UP主 文字（无背景）
+            Text(
+                text = "UP主",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color(0xFF00AEEC)
+            )
         }
         
         // 关注按钮
@@ -688,19 +682,13 @@ fun RelatedVideoItem(video: RelatedVideo, onClick: () -> Unit) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // UP主头标
-                        Surface(
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(4.dp)
-                        ) {
-                            Text(
-                                text = "UP",
-                                fontSize = 9.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp)
-                            )
-                        }
+                        // UP主头标 (纯文字，无背景)
+                        Text(
+                            text = "UP",
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = video.owner.name,

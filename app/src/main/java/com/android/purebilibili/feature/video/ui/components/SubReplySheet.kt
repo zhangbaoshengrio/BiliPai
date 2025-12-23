@@ -33,7 +33,8 @@ fun SubReplySheet(
     state: SubReplyUiState,
     emoteMap: Map<String, String>,
     onDismiss: () -> Unit,
-    onLoadMore: () -> Unit
+    onLoadMore: () -> Unit,
+    onTimestampClick: ((Long) -> Unit)? = null  // 🔥🔥 [新增] 时间戳点击跳转
 ) {
     // 🔥 必须用 Box 包裹，否则 align 报错
     Box(modifier = Modifier.fillMaxSize()) {
@@ -86,7 +87,8 @@ fun SubReplySheet(
                         isLoading = state.isLoading,
                         isEnd = state.isEnd,
                         emoteMap = emoteMap,
-                        onLoadMore = onLoadMore
+                        onLoadMore = onLoadMore,
+                        onTimestampClick = onTimestampClick
                     )
                 }
             }
@@ -101,7 +103,8 @@ fun SubReplyList(
     isLoading: Boolean,
     isEnd: Boolean,
     emoteMap: Map<String, String>,
-    onLoadMore: () -> Unit
+    onLoadMore: () -> Unit,
+    onTimestampClick: ((Long) -> Unit)? = null  // 🔥🔥 [新增]
 ) {
     val listState = rememberLazyListState()
     val shouldLoadMore by remember {
@@ -130,11 +133,23 @@ fun SubReplyList(
             contentPadding = PaddingValues(bottom = 32.dp)
         ) {
             item {
-                ReplyItemView(item = rootReply, emoteMap = emoteMap, onClick = {}, onSubClick = {})
+                ReplyItemView(
+                    item = rootReply, 
+                    emoteMap = emoteMap, 
+                    onClick = {}, 
+                    onSubClick = {},
+                    onTimestampClick = onTimestampClick  // 🔥 传递
+                )
                 HorizontalDivider(thickness = 8.dp, color = MaterialTheme.colorScheme.surfaceContainerHigh)
             }
             items(subReplies) { item ->
-                ReplyItemView(item = item, emoteMap = emoteMap, onClick = {}, onSubClick = {})
+                ReplyItemView(
+                    item = item, 
+                    emoteMap = emoteMap, 
+                    onClick = {}, 
+                    onSubClick = {},
+                    onTimestampClick = onTimestampClick  // 🔥 传递
+                )
             }
             item {
                 Box(Modifier.fillMaxWidth().padding(16.dp), contentAlignment = Alignment.Center) {

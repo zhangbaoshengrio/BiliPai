@@ -506,9 +506,21 @@ object VideoRepository {
         }
     }
     
-    // 🔥 已登录用户：DASH 优先策略
+    // 🔥 已登录用户：APP API 优先 -> DASH -> HTML5 降级策略
     private suspend fun fetchDashWithFallback(bvid: String, cid: Long, targetQn: Int): PlayUrlData? {
         com.android.purebilibili.core.util.Logger.d("VideoRepo", "🔥 [LoggedIn] DASH-first strategy, qn=$targetQn")
+        
+        // 🔥🔥 [新增] 如果有 access_token，优先使用 APP API 获取高画质
+        val accessToken = TokenManager.accessTokenCache
+        if (!accessToken.isNullOrEmpty()) {
+            com.android.purebilibili.core.util.Logger.d("VideoRepo", "🔥 [LoggedIn] Trying APP API first with access_token...")
+            val appResult = fetchPlayUrlWithAccessToken(bvid, cid, targetQn)
+            if (appResult != null && (!appResult.durl.isNullOrEmpty() || !appResult.dash?.video.isNullOrEmpty())) {
+                com.android.purebilibili.core.util.Logger.d("VideoRepo", "✅ [LoggedIn] APP API success: quality=${appResult.quality}")
+                return appResult
+            }
+            com.android.purebilibili.core.util.Logger.d("VideoRepo", "⚠️ [LoggedIn] APP API failed, trying DASH...")
+        }
         
         // 尝试 DASH，最多 2 次重试
         val retryDelays = listOf(0L, 500L)

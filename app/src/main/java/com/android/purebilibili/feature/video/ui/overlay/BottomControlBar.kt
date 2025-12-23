@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.rounded.Subtitles
+import androidx.compose.material.icons.rounded.SubtitlesOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -51,6 +53,12 @@ fun BottomControlBar(
     onSpeedClick: () -> Unit = {},
     onRatioClick: () -> Unit = {},
     onToggleFullscreen: () -> Unit,
+    // 🔥🔥 [新增] 竖屏模式弹幕开关
+    danmakuEnabled: Boolean = true,
+    onDanmakuToggle: () -> Unit = {},
+    // 🔥🔥 [新增] 竖屏模式清晰度选择
+    currentQualityLabel: String = "",
+    onQualityClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -131,6 +139,40 @@ fun BottomControlBar(
             }
             
             Spacer(modifier = Modifier.width(4.dp))
+            
+            // 🔥🔥 [新增] 竖屏模式弹幕开关
+            if (!isFullscreen) {
+                IconButton(
+                    onClick = onDanmakuToggle,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        if (danmakuEnabled) Icons.Rounded.Subtitles else Icons.Rounded.SubtitlesOff,
+                        contentDescription = if (danmakuEnabled) "关闭弹幕" else "开启弹幕",
+                        tint = if (danmakuEnabled) BiliPink else Color.White.copy(alpha = 0.7f),
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                
+                // 🔥🔥 [新增] 竖屏模式清晰度选择
+                if (currentQualityLabel.isNotEmpty()) {
+                    Surface(
+                        onClick = onQualityClick,
+                        color = Color.White.copy(alpha = 0.2f),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text(
+                            text = currentQualityLabel,
+                            color = Color.White,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.width(4.dp))
+                }
+            }
 
             IconButton(
                 onClick = onToggleFullscreen,

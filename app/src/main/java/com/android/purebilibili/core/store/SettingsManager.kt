@@ -380,6 +380,44 @@ object SettingsManager {
         context.settingsDataStore.edit { preferences -> preferences[KEY_DOUBLE_TAP_LIKE] = value }
     }
     
+    // ========== 🌐 网络感知画质设置 ==========
+    
+    private val KEY_WIFI_QUALITY = intPreferencesKey("wifi_default_quality")
+    private val KEY_MOBILE_QUALITY = intPreferencesKey("mobile_default_quality")
+    
+    // --- WiFi 默认画质 (默认 80 = 1080P) ---
+    fun getWifiQuality(context: Context): Flow<Int> = context.settingsDataStore.data
+        .map { preferences -> preferences[KEY_WIFI_QUALITY] ?: 80 }
+
+    suspend fun setWifiQuality(context: Context, value: Int) {
+        context.settingsDataStore.edit { preferences -> preferences[KEY_WIFI_QUALITY] = value }
+        // 🔥 同步到 SharedPreferences，供 NetworkUtils 同步读取
+        context.getSharedPreferences("quality_settings", Context.MODE_PRIVATE)
+            .edit().putInt("wifi_quality", value).apply()
+    }
+    
+    // --- 流量默认画质 (默认 64 = 720P) ---
+    fun getMobileQuality(context: Context): Flow<Int> = context.settingsDataStore.data
+        .map { preferences -> preferences[KEY_MOBILE_QUALITY] ?: 64 }
+
+    suspend fun setMobileQuality(context: Context, value: Int) {
+        context.settingsDataStore.edit { preferences -> preferences[KEY_MOBILE_QUALITY] = value }
+        // 🔥 同步到 SharedPreferences，供 NetworkUtils 同步读取
+        context.getSharedPreferences("quality_settings", Context.MODE_PRIVATE)
+            .edit().putInt("mobile_quality", value).apply()
+    }
+    
+    // 🔥 同步读取画质设置（用于 PlayerViewModel）
+    fun getWifiQualitySync(context: Context): Int {
+        return context.getSharedPreferences("quality_settings", Context.MODE_PRIVATE)
+            .getInt("wifi_quality", 80)
+    }
+    
+    fun getMobileQualitySync(context: Context): Int {
+        return context.getSharedPreferences("quality_settings", Context.MODE_PRIVATE)
+            .getInt("mobile_quality", 64)
+    }
+    
     // ========== 🚀 空降助手 (SponsorBlock) ==========
     
     private val KEY_SPONSOR_BLOCK_ENABLED = booleanPreferencesKey("sponsor_block_enabled")
@@ -461,5 +499,49 @@ object SettingsManager {
     fun isPrivacyModeEnabledSync(context: Context): Boolean {
         return context.getSharedPreferences("privacy_mode", Context.MODE_PRIVATE)
             .getBoolean("enabled", false)
+    }
+    
+    // ========== 🎬 小窗播放模式 ==========
+    
+    private val KEY_MINI_PLAYER_MODE = intPreferencesKey("mini_player_mode")
+    
+    /**
+     * 🔥 小窗播放模式
+     * - OFF: 关闭小窗功能
+     * - IN_APP_ONLY: 仅应用内小窗（返回首页时显示）
+     * - SYSTEM_PIP: 系统画中画（退出应用时自动进入PiP）
+     * - BACKGROUND: 后台音频（仅播放音频，无画面）
+     */
+    enum class MiniPlayerMode(val value: Int, val label: String, val description: String) {
+        OFF(0, "关闭", "不使用小窗播放"),
+        IN_APP_ONLY(1, "应用内小窗", "返回首页时显示悬浮小窗"),
+        SYSTEM_PIP(2, "系统画中画", "退出应用时自动进入画中画模式"),
+        BACKGROUND(3, "后台音频", "退出应用后仅继续播放音频");
+        
+        companion object {
+            fun fromValue(value: Int): MiniPlayerMode = entries.find { it.value == value } ?: IN_APP_ONLY
+        }
+    }
+    
+    // --- 小窗模式设置 ---
+    fun getMiniPlayerMode(context: Context): Flow<MiniPlayerMode> = context.settingsDataStore.data
+        .map { preferences -> 
+            MiniPlayerMode.fromValue(preferences[KEY_MINI_PLAYER_MODE] ?: MiniPlayerMode.IN_APP_ONLY.value)
+        }
+
+    suspend fun setMiniPlayerMode(context: Context, mode: MiniPlayerMode) {
+        context.settingsDataStore.edit { preferences -> 
+            preferences[KEY_MINI_PLAYER_MODE] = mode.value 
+        }
+        // 🔥 同步到 SharedPreferences，供 MiniPlayerManager 同步读取
+        context.getSharedPreferences("mini_player", Context.MODE_PRIVATE)
+            .edit().putInt("mode", mode.value).apply()
+    }
+    
+    // 🔥 同步读取小窗模式（用于 MiniPlayerManager）
+    fun getMiniPlayerModeSync(context: Context): MiniPlayerMode {
+        val value = context.getSharedPreferences("mini_player", Context.MODE_PRIVATE)
+            .getInt("mode", MiniPlayerMode.IN_APP_ONLY.value)
+        return MiniPlayerMode.fromValue(value)
     }
 }

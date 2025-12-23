@@ -212,7 +212,7 @@ fun ElegantVideoCard(
                     )
                 }
                 
-                // 弹幕数 (如果有)
+                // 弹幕数
                 if (video.stat.view > 0 && video.stat.danmaku > 0) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
@@ -263,13 +263,13 @@ fun ElegantVideoCard(
                 )
             }
             
-            // 🔥 UP主头像（小圆形，官方风格）- 🚀 [性能优化] 缩小头像尺寸
+            // 🔥 UP主头像（小圆形，官方风格）
             if (video.owner.face.isNotEmpty()) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(FormatUtils.fixImageUrl(video.owner.face))
                         .crossfade(100)
-                        .size(32, 32)  // 🚀 优化：32x32 替代 48x48
+                        .size(32, 32)
                         .memoryCacheKey("avatar_${video.owner.mid}")
                         .build(),
                     contentDescription = null,
@@ -298,6 +298,16 @@ fun ElegantVideoCard(
                     text = " · ${FormatUtils.formatPublishTime(video.pubdate)}",
                     fontSize = 11.sp,
                     color = iOSSystemGray.copy(alpha = 0.7f)
+                )
+            }
+            
+            // 🔥🔥 点赞数标签（UP主名称右边，仅显示 >= 1000 的）
+            if (video.stat.like >= 1000) {
+                Text(
+                    text = " · 👍${FormatUtils.formatStat(video.stat.like.toLong())}",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFFFF6633)  // 橙色
                 )
             }
         }

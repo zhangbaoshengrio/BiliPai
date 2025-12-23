@@ -86,9 +86,12 @@ class VideoPlaybackUseCase(
     
     /**
      * Load video data
+     * 
+     * @param defaultQuality 网络感知的默认清晰度 (WiFi=80/1080P, Mobile=64/720P)
      */
     suspend fun loadVideo(
         bvid: String,
+        defaultQuality: Int = 64,
         onProgress: (String) -> Unit = {}
     ): VideoLoadResult {
         try {
@@ -100,7 +103,8 @@ class VideoPlaybackUseCase(
             
             return detailResult.fold(
                 onSuccess = { (info, playData) ->
-                    val targetQn = playData.quality.takeIf { it > 0 } ?: 64
+                    // 🔥🔥 [网络感知] 使用 API 返回的画质或传入的默认画质
+                    val targetQn = playData.quality.takeIf { it > 0 } ?: defaultQuality
                     
                     val dashVideo = playData.dash?.getBestVideo(targetQn)
                     val dashAudio = playData.dash?.getBestAudio()
@@ -116,7 +120,47 @@ class VideoPlaybackUseCase(
                     }
                     
                     val isLogin = !com.android.purebilibili.core.store.TokenManager.sessDataCache.isNullOrEmpty()
-                    val isVip = com.android.purebilibili.core.store.TokenManager.isVipCache
+                    
+                    // 🔥🔥 [修复] 主动获取最新VIP状态，避免缓存过期导致高画质不可用
+                    var isVip = com.android.purebilibili.core.store.TokenManager.isVipCache
+                    if (isLogin && !isVip) {
+                        // 用户已登录但VIP状态为false时，主动刷新一次
+                        try {
+                            val navResult = VideoRepository.getNavInfo()
+                            navResult.onSuccess { navData ->
+                                isVip = navData.vip.status == 1
+                                com.android.purebilibili.core.store.TokenManager.isVipCache = isVip
+                                Logger.d("VideoPlaybackUseCase", "🔥 Refreshed VIP status: $isVip")
+                            }
+                        } catch (e: Exception) {
+                            Logger.d("VideoPlaybackUseCase", "⚠️ Failed to refresh VIP status: ${e.message}")
+                        }
+                    }
+                    
+                    // 🔥🔥 [修复] 合成完整画质列表：API 返回的 accept_quality + DASH 视频流中的实际画质
+                    val apiQualities = playData.accept_quality ?: emptyList()
+                    val dashVideoIds = playData.dash?.video?.map { it.id }?.distinct() ?: emptyList()
+                    val mergedQualityIds = (apiQualities + dashVideoIds).distinct().sortedDescending()
+                    
+                    // 🔥🔥 [修复] 生成对应的画质标签
+                    val qualityLabelMap = mapOf(
+                        127 to "8K 超高清",
+                        126 to "杜比视界",
+                        125 to "HDR 真彩",
+                        120 to "4K 超清",
+                        116 to "1080P60",
+                        112 to "1080P+",
+                        80 to "1080P",
+                        74 to "720P60",
+                        64 to "720P",
+                        32 to "480P",
+                        16 to "360P"
+                    )
+                    val mergedQualityLabels = mergedQualityIds.map { qn ->
+                        qualityLabelMap[qn] ?: "${qn}P"
+                    }
+                    
+                    Logger.d("VideoPlaybackUseCase", "🔥 Quality merge: api=$apiQualities, dash=$dashVideoIds, merged=$mergedQualityIds")
                     
                     // Check user interaction status
                     val isFollowing = if (isLogin) ActionRepository.checkFollowStatus(info.owner.mid) else false
@@ -130,8 +174,8 @@ class VideoPlaybackUseCase(
                         audioUrl = audioUrl,
                         related = relatedVideos,
                         quality = dashVideo?.id ?: playData.quality,
-                        qualityIds = playData.accept_quality ?: emptyList(),
-                        qualityLabels = playData.accept_description ?: emptyList(),
+                        qualityIds = mergedQualityIds,
+                        qualityLabels = mergedQualityLabels,
                         cachedDashVideos = playData.dash?.video ?: emptyList(),
                         cachedDashAudios = playData.dash?.audio ?: emptyList(),
                         emoteMap = emoteMap,

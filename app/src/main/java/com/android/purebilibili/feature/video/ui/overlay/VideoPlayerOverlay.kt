@@ -38,6 +38,9 @@ import com.android.purebilibili.feature.video.ui.components.VideoAspectRatio
 import com.android.purebilibili.feature.video.ui.components.AspectRatioMenu
 import io.github.alexzhirkevich.cupertino.CupertinoActivityIndicator
 import kotlinx.coroutines.delay
+import androidx.compose.material.icons.rounded.Share
+import androidx.compose.ui.platform.LocalContext
+import com.android.purebilibili.core.util.ShareUtils
 
 
 @Composable
@@ -74,7 +77,10 @@ fun VideoPlayerOverlay(
     onDoubleTapLike: () -> Unit = {},
     // 🔥 视频比例调节
     currentAspectRatio: VideoAspectRatio = VideoAspectRatio.FIT,
-    onAspectRatioChange: (VideoAspectRatio) -> Unit = {}
+    onAspectRatioChange: (VideoAspectRatio) -> Unit = {},
+    // 🔗 [新增] 分享功能
+    bvid: String = "",
+    onShare: (() -> Unit)? = null
 ) {
     var showQualityMenu by remember { mutableStateOf(false) }
     var showSpeedMenu by remember { mutableStateOf(false) }
@@ -193,6 +199,18 @@ fun VideoPlayerOverlay(
                         // 🔥🔥 [修复] 传入 modifier 确保在顶部
                         modifier = Modifier.align(Alignment.TopCenter)
                     )
+                } else {
+                    // 🔥🔥 [新增] 竖屏模式顶部栏（返回 + 分享按钮）
+                    val context = LocalContext.current
+                    PortraitTopBar(
+                        onBack = onBack,
+                        onShare = onShare ?: {
+                            if (bvid.isNotEmpty()) {
+                                ShareUtils.shareVideo(context, title, bvid)
+                            }
+                        },
+                        modifier = Modifier.align(Alignment.TopStart)
+                    )
                 }
                 
                 // 🔥🔥 [修复] 底部控制栏 - 固定在底部
@@ -210,6 +228,11 @@ fun VideoPlayerOverlay(
                     onSpeedClick = { showSpeedMenu = true },
                     onRatioClick = { showRatioMenu = true },
                     onToggleFullscreen = onToggleFullscreen,
+                    // 🔥🔥 [新增] 竖屏模式弹幕和清晰度控制
+                    danmakuEnabled = danmakuEnabled,
+                    onDanmakuToggle = onDanmakuToggle,
+                    currentQualityLabel = currentQualityLabel,
+                    onQualityClick = { showQualityMenu = true },
                     // 🔥🔥 [修复] 传入 modifier 确保在底部
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
@@ -341,6 +364,56 @@ fun VideoPlayerOverlay(
                 onSpeedChange = onDanmakuSpeedChange,
                 onDisplayAreaChange = onDanmakuDisplayAreaChange,
                 onDismiss = { showDanmakuSettings = false }
+            )
+        }
+    }
+}
+
+/**
+ * 🔥 竖屏模式顶部控制栏
+ * 
+ * 包含返回首页按钮和分享按钮
+ */
+@Composable
+private fun PortraitTopBar(
+    onBack: () -> Unit,
+    onShare: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // 返回按钮
+        IconButton(
+            onClick = onBack,
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color.Black.copy(alpha = 0.4f), CircleShape)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "返回",
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+        
+        // 分享按钮
+        IconButton(
+            onClick = onShare,
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color.Black.copy(alpha = 0.4f), CircleShape)
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Share,
+                contentDescription = "分享",
+                tint = Color.White,
+                modifier = Modifier.size(22.dp)
             )
         }
     }
