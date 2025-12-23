@@ -57,8 +57,38 @@ object JsonPluginManager {
         return withContext(Dispatchers.IO) {
             try {
                 Logger.d(TAG, "📥 下载插件: $url")
-                val content = URL(url).readText()
-                val plugin = json.decodeFromString<JsonRulePlugin>(content)
+                
+                // 🔥 使用带超时的 OkHttp 请求
+                val client = okhttp3.OkHttpClient.Builder()
+                    .connectTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
+                    .readTimeout(15, java.util.concurrent.TimeUnit.SECONDS)
+                    .build()
+                
+                val request = okhttp3.Request.Builder()
+                    .url(url)
+                    .build()
+                
+                val response = client.newCall(request).execute()
+                
+                if (!response.isSuccessful) {
+                    return@withContext Result.failure(
+                        Exception("下载失败: HTTP ${response.code} ${response.message}")
+                    )
+                }
+                
+                val content = response.body?.string()
+                    ?: return@withContext Result.failure(Exception("服务器返回空内容"))
+                
+                Logger.d(TAG, "📄 下载内容长度: ${content.length}")
+                
+                val plugin = try {
+                    json.decodeFromString<JsonRulePlugin>(content)
+                } catch (e: Exception) {
+                    Logger.e(TAG, "❌ JSON 解析失败", e)
+                    return@withContext Result.failure(
+                        Exception("JSON 解析失败: ${e.message?.take(100)}")
+                    )
+                }
                 
                 // 验证插件类型
                 if (plugin.type !in listOf("feed", "danmaku")) {
@@ -74,9 +104,18 @@ object JsonPluginManager {
                 
                 Logger.d(TAG, "✅ 插件导入成功: ${plugin.name}")
                 Result.success(plugin)
+            } catch (e: java.net.SocketTimeoutException) {
+                Logger.e(TAG, "❌ 连接超时", e)
+                Result.failure(Exception("连接超时，请检查网络或 URL 是否正确"))
+            } catch (e: java.net.UnknownHostException) {
+                Logger.e(TAG, "❌ 无法解析主机", e)
+                Result.failure(Exception("无法连接服务器，请检查 URL"))
+            } catch (e: java.io.IOException) {
+                Logger.e(TAG, "❌ 网络错误", e)
+                Result.failure(Exception("网络错误: ${e.message}"))
             } catch (e: Exception) {
                 Logger.e(TAG, "❌ 导入失败", e)
-                Result.failure(e)
+                Result.failure(Exception("导入失败: ${e.message?.take(100)}"))
             }
         }
     }
