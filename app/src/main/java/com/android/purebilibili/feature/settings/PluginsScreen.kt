@@ -17,6 +17,8 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Extension
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -48,6 +50,7 @@ fun PluginsScreen(
     onBack: () -> Unit
 ) {
     val plugins by PluginManager.pluginsFlow.collectAsState()
+    val jsonPlugins by com.android.purebilibili.core.plugin.json.JsonPluginManager.plugins.collectAsState()
     val scope = rememberCoroutineScope()
     
     // 展开状态追踪
@@ -225,6 +228,47 @@ fun PluginsScreen(
                             tint = iOSBlue,
                             modifier = Modifier.size(24.dp)
                         )
+                    }
+                }
+            }
+            
+            // 🆕 已安装的 JSON 插件列表
+            if (jsonPlugins.isNotEmpty()) {
+                item {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Surface(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        color = MaterialTheme.colorScheme.surface,
+                        tonalElevation = 1.dp
+                    ) {
+                        Column {
+                            jsonPlugins.forEachIndexed { index, loadedPlugin ->
+                                JsonPluginItem(
+                                    loaded = loadedPlugin,
+                                    onToggle = { enabled ->
+                                        com.android.purebilibili.core.plugin.json.JsonPluginManager.setEnabled(
+                                            loadedPlugin.plugin.id, enabled
+                                        )
+                                    },
+                                    onDelete = {
+                                        com.android.purebilibili.core.plugin.json.JsonPluginManager.removePlugin(
+                                            loadedPlugin.plugin.id
+                                        )
+                                    }
+                                )
+                                if (index < jsonPlugins.lastIndex) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(start = 52.dp)
+                                            .height(0.5.dp)
+                                            .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -456,4 +500,113 @@ private fun PluginItem(
 private fun getPluginColor(index: Int): Color {
     val colors = listOf(iOSTeal, iOSOrange, iOSBlue, iOSGreen, iOSPurple, BiliPink)
     return colors[index % colors.size]
+}
+
+/**
+ * JSON 规则插件列表项
+ */
+@Composable
+private fun JsonPluginItem(
+    loaded: com.android.purebilibili.core.plugin.json.LoadedJsonPlugin,
+    onToggle: (Boolean) -> Unit,
+    onDelete: () -> Unit
+) {
+    val plugin = loaded.plugin
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // 图标
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(iOSPurple.copy(alpha = 0.12f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Code,
+                contentDescription = null,
+                tint = iOSPurple,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        
+        Spacer(modifier = Modifier.width(14.dp))
+        
+        // 信息
+        Column(modifier = Modifier.weight(1f)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = plugin.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "v${plugin.version}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+            }
+            Text(
+                text = plugin.description.ifEmpty { plugin.type },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1
+            )
+            Text(
+                text = "by ${plugin.author}",
+                style = MaterialTheme.typography.labelSmall,
+                color = iOSPurple
+            )
+        }
+        
+        // 开关
+        CupertinoSwitch(
+            checked = loaded.enabled,
+            onCheckedChange = onToggle
+        )
+        
+        // 删除按钮
+        IconButton(
+            onClick = { showDeleteDialog = true },
+            modifier = Modifier.size(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = "删除",
+                tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f),
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+    
+    // 删除确认对话框
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("删除插件") },
+            text = { Text("确定要删除插件 \"${plugin.name}\" 吗？") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onDelete()
+                    showDeleteDialog = false
+                }) {
+                    Text("删除", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("取消")
+                }
+            }
+        )
+    }
 }

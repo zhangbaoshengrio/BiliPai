@@ -14,6 +14,7 @@ data class JsonRulePlugin(
     val version: String = "1.0.0",
     val author: String = "Unknown",
     val type: String,  // "feed" | "danmaku"
+    val iconUrl: String? = null,  // 🆕 插件图标 URL
     val rules: List<Rule>
 )
 
