@@ -161,8 +161,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         videoResult.onSuccess { videos ->
             val validVideos = videos.filter { it.bvid.isNotEmpty() && it.title.isNotEmpty() }
             
-            // 🔌 应用FeedPlugin过滤器
-            val filteredVideos = validVideos.filter { video ->
+            // 🔌 应用原生 FeedPlugin 过滤器
+            val nativeFiltered = validVideos.filter { video ->
                 val plugins = PluginManager.getEnabledFeedPlugins()
                 if (plugins.isEmpty()) return@filter true
                 
@@ -175,6 +175,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                     }
                 }
             }
+            
+            // 🔌🔌 [新增] 应用 JSON 规则插件过滤器
+            val filteredVideos = com.android.purebilibili.core.plugin.json.JsonPluginManager.filterVideos(nativeFiltered)
             
             if (filteredVideos.isNotEmpty()) {
                 _uiState.value = _uiState.value.copy(

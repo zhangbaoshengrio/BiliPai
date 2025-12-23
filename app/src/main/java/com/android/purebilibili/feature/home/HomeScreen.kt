@@ -89,6 +89,20 @@ fun HomeScreen(
     val hazeState = remember { HazeState() }
     val coroutineScope = rememberCoroutineScope()  // 🍎 用于双击回顶动画
     
+    // 🔌 [新增] JSON 插件过滤提示
+    val snackbarHostState = remember { SnackbarHostState() }
+    val lastFilteredCount by com.android.purebilibili.core.plugin.json.JsonPluginManager.lastFilteredCount.collectAsState()
+    
+    // 🔌 当有视频被过滤时显示提示
+    LaunchedEffect(lastFilteredCount) {
+        if (lastFilteredCount > 0) {
+            snackbarHostState.showSnackbar(
+                message = "🔌 已过滤 $lastFilteredCount 个视频",
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
+    
     // 🔥🔥 [修复] 确保首页显示时 WindowInsets 配置正确，防止从视频页返回时布局跳动
     val view = androidx.compose.ui.platform.LocalView.current
     SideEffect {
@@ -444,6 +458,13 @@ fun HomeScreen(
                     )
                 }
             }
+        },
+        // 🔌 [新增] JSON 插件过滤提示
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.padding(bottom = if (isBottomBarFloating) 100.dp else 80.dp)
+            )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->

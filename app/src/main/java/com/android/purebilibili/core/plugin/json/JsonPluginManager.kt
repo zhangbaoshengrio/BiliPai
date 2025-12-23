@@ -146,24 +146,42 @@ object JsonPluginManager {
     
     // ============ 过滤方法 ============
     
+    /** 🆕 最近一次过滤掉的视频数量（用于 UI 提示） */
+    private val _lastFilteredCount = MutableStateFlow(0)
+    val lastFilteredCount: StateFlow<Int> = _lastFilteredCount.asStateFlow()
+    
     /**
-     * 过滤视频列表（带统计）
+     * 过滤视频列表（带统计和计数）
+     * @return 过滤后的视频列表
      */
     fun filterVideos(videos: List<VideoItem>): List<VideoItem> {
         val feedPlugins = _plugins.value.filter { it.enabled && it.plugin.type == "feed" }
-        if (feedPlugins.isEmpty()) return videos
+        if (feedPlugins.isEmpty()) {
+            _lastFilteredCount.value = 0
+            return videos
+        }
         
+        var filteredCount = 0
         val result = videos.filter { video ->
             feedPlugins.all { loaded ->
                 val show = RuleEngine.shouldShowVideo(video, loaded.plugin.rules)
                 // 🆕 记录过滤统计
                 if (!show) {
+                    filteredCount++
                     val current = _filterStats.value.getOrDefault(loaded.plugin.id, 0)
                     _filterStats.value = _filterStats.value + (loaded.plugin.id to (current + 1))
+                    Logger.d(TAG, "🚫 过滤视频: ${video.title.take(20)}... (插件: ${loaded.plugin.name})")
                 }
                 show
             }
         }
+        
+        // 🆕 更新最近过滤数量
+        _lastFilteredCount.value = filteredCount
+        if (filteredCount > 0) {
+            Logger.d(TAG, "📊 本次过滤了 $filteredCount 个视频")
+        }
+        
         return result
     }
     
