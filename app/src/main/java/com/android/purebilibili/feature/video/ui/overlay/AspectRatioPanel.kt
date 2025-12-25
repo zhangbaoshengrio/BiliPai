@@ -20,7 +20,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.purebilibili.core.theme.BiliPink
+import androidx.compose.material3.MaterialTheme
 import com.android.purebilibili.feature.video.ui.components.VideoAspectRatio
 
 /**
@@ -121,7 +121,7 @@ fun AspectRatioPanel(
                                 onRatioChange(option.ratio)
                                 onDismiss()
                             },
-                            color = if (isSelected) BiliPink.copy(alpha = 0.2f) else Color.Transparent,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else Color.Transparent,
                             shape = RoundedCornerShape(6.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -129,7 +129,7 @@ fun AspectRatioPanel(
                         ) {
                             Text(
                                 text = option.label,
-                                color = if (isSelected) BiliPink else Color.White,
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.White,
                                 fontSize = 14.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)

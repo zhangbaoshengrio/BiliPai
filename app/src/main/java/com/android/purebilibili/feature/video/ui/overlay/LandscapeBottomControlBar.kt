@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.util.FormatUtils
 import com.android.purebilibili.feature.video.ui.components.VideoAspectRatio
 
@@ -105,8 +105,8 @@ fun LandscapeBottomControlBar(
                         onSeek((tempProgress * progress.duration).toLong())
                     },
                     colors = SliderDefaults.colors(
-                        thumbColor = BiliPink,
-                        activeTrackColor = BiliPink,
+                        thumbColor = MaterialTheme.colorScheme.primary,
+                        activeTrackColor = MaterialTheme.colorScheme.primary,
                         inactiveTrackColor = Color.White.copy(alpha = 0.3f)
                     ),
                     modifier = Modifier
@@ -163,7 +163,7 @@ fun LandscapeBottomControlBar(
                     Icon(
                         if (danmakuEnabled) Icons.Rounded.Subtitles else Icons.Rounded.SubtitlesOff,
                         contentDescription = "弹幕开关",
-                        tint = if (danmakuEnabled) BiliPink else Color.White.copy(0.6f),
+                        tint = if (danmakuEnabled) MaterialTheme.colorScheme.primary else Color.White.copy(0.6f),
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -228,7 +228,7 @@ private fun LandscapeControlButton(
     ) {
         Text(
             text = text,
-            color = if (isHighlighted) BiliPink else Color.White,
+            color = if (isHighlighted) MaterialTheme.colorScheme.primary else Color.White,
             fontSize = 11.sp,
             fontWeight = if (isHighlighted) FontWeight.Bold else FontWeight.Normal,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)

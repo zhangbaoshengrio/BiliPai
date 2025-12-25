@@ -48,3 +48,30 @@ data class Page(
     val from: String = "",
     val part: String = ""
 )
+
+// 🔥 视频标签响应
+@Serializable
+data class VideoTagResponse(
+    val code: Int = 0,
+    val message: String = "",
+    val data: List<VideoTag>? = null
+)
+
+@Serializable
+data class VideoTag(
+    val tag_id: Long = 0,
+    val tag_name: String = "",
+    val cover: String = "",
+    val content: String = "",
+    val short_content: String = "",
+    val type: Int = 0,
+    val state: Int = 0,
+    val count: VideoTagCount? = null
+)
+
+@Serializable
+data class VideoTagCount(
+    val view: Int = 0,
+    val use: Int = 0,
+    val atten: Int = 0
+)

@@ -33,6 +33,21 @@ sealed class VideoLoadError {
     /** 未知错误 */
     data class UnknownError(val throwable: Throwable) : VideoLoadError()
     
+    // ========== 🔥 风控冷却相关错误 ==========
+    
+    /** 单视频冷却中（该视频最近加载失败，正在冷却） */
+    data class RateLimited(val remainingMs: Long, val bvid: String) : VideoLoadError() {
+        val remainingMinutes: Int get() = (remainingMs / 60_000).toInt()
+    }
+    
+    /** 全局冷却中（连续多个视频加载失败，网络环境可能异常） */
+    data class GlobalCooldown(val remainingMs: Long, val failureCount: Int) : VideoLoadError() {
+        val remainingMinutes: Int get() = (remainingMs / 60_000).toInt()
+    }
+    
+    /** 播放地址为空（API 返回了空数据，通常是风控导致） */
+    object PlayUrlEmpty : VideoLoadError()
+    
     /**
      * 获取用户友好的错误信息
      */
@@ -45,6 +60,14 @@ sealed class VideoLoadError {
         is CidNotFound -> "视频信息加载失败，请重试"
         is ApiError -> "加载失败: $message (错误码: $code)"
         is UnknownError -> "加载失败: ${throwable.message ?: "未知错误"}"
+        // 🔥 风控冷却相关
+        is RateLimited -> if (remainingMinutes > 0) {
+            "该视频暂时无法播放\n请 ${remainingMinutes} 分钟后重试"
+        } else {
+            "该视频暂时无法播放\n请稍后重试"
+        }
+        is GlobalCooldown -> "当前网络环境异常\n建议切换网络后重试"
+        is PlayUrlEmpty -> "视频加载失败\n请尝试切换网络或稍后重试"
     }
     
     /**
@@ -56,6 +79,10 @@ sealed class VideoLoadError {
         is CidNotFound -> true
         is ApiError -> code in listOf(-412, -504, -502, -500) // 服务端临时错误
         is UnknownError -> true
+        // 🔥 冷却中的错误需要等待冷却结束
+        is RateLimited -> false  // 等待冷却结束
+        is GlobalCooldown -> false  // 等待冷却结束
+        is PlayUrlEmpty -> true  // 可以尝试换网络后重试
         // 以下错误重试无意义
         is VideoNotFound -> false
         is RegionRestricted -> false

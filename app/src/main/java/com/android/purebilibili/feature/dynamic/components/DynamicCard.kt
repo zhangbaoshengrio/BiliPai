@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.ImageLoader
 import coil.compose.AsyncImage
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.theme.iOSBlue
 import com.android.purebilibili.data.model.response.DynamicDesc
 import com.android.purebilibili.data.model.response.DynamicItem
@@ -80,7 +80,7 @@ fun DynamicCardV2(
                         author.name,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 15.sp,
-                        color = if (author.vip?.status == 1) BiliPink else MaterialTheme.colorScheme.onSurface
+                        color = if (author.vip?.status == 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         author.pub_time,
@@ -182,7 +182,7 @@ fun DynamicCardV2(
                     icon = Icons.Default.FavoriteBorder,
                     count = stat.like.count,
                     label = "点赞",
-                    activeColor = BiliPink
+                    activeColor = MaterialTheme.colorScheme.primary
                 )
             }
         }

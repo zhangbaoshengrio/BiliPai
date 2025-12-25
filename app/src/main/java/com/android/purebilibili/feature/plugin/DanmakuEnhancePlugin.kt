@@ -20,6 +20,7 @@ import com.android.purebilibili.core.plugin.DanmakuStyle
 import com.android.purebilibili.core.plugin.PluginStore
 import com.android.purebilibili.core.util.Logger
 import io.github.alexzhirkevich.cupertino.CupertinoSwitch
+import io.github.alexzhirkevich.cupertino.CupertinoSwitchDefaults
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -135,6 +136,7 @@ class DanmakuEnhancePlugin : DanmakuPlugin {
                 Column(modifier = Modifier.weight(1f)) {
                     Text("启用关键词屏蔽", style = MaterialTheme.typography.bodyLarge)
                 }
+                val primaryColor = MaterialTheme.colorScheme.primary
                 CupertinoSwitch(
                     checked = enableFilter,
                     onCheckedChange = { newValue ->
@@ -143,7 +145,12 @@ class DanmakuEnhancePlugin : DanmakuPlugin {
                         runBlocking { 
                             PluginStore.setConfigJson(context, id, Json.encodeToString(config)) 
                         }
-                    }
+                    },
+                    colors = CupertinoSwitchDefaults.colors(
+                        thumbColor = Color.White,
+                        checkedTrackColor = primaryColor,
+                        uncheckedTrackColor = Color(0xFFE9E9EA)
+                    )
                 )
             }
             
@@ -181,6 +188,7 @@ class DanmakuEnhancePlugin : DanmakuPlugin {
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+                val primaryColor = MaterialTheme.colorScheme.primary
                 CupertinoSwitch(
                     checked = enableHighlight,
                     onCheckedChange = { newValue ->
@@ -189,7 +197,12 @@ class DanmakuEnhancePlugin : DanmakuPlugin {
                         runBlocking { 
                             PluginStore.setConfigJson(context, id, Json.encodeToString(config)) 
                         }
-                    }
+                    },
+                    colors = CupertinoSwitchDefaults.colors(
+                        thumbColor = Color.White,
+                        checkedTrackColor = primaryColor,
+                        uncheckedTrackColor = Color(0xFFE9E9EA)
+                    )
                 )
             }
             

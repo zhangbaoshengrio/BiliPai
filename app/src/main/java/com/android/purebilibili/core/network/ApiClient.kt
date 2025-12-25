@@ -99,6 +99,10 @@ interface BilibiliApi {
 
     @GET("x/web-interface/view")
     suspend fun getVideoInfo(@Query("bvid") bvid: String): VideoDetailResponse
+    
+    // 🔥 获取视频标签
+    @GET("x/tag/archive/tags")
+    suspend fun getVideoTags(@Query("bvid") bvid: String): VideoTagResponse
 
     @GET("x/player/wbi/playurl")
     suspend fun getPlayUrl(@QueryMap params: Map<String, String>): PlayUrlResponse
@@ -244,6 +248,26 @@ interface BilibiliApi {
         @Query("bvid") bvid: String,
         @Query("cid") cid: Long
     ): OnlineResponse
+    
+    // 🔥🔥 [新增] 稍后再看列表
+    @GET("x/v2/history/toview")
+    suspend fun getWatchLaterList(): WatchLaterResponse
+    
+    // 🔥🔥 [新增] 添加到稍后再看
+    @retrofit2.http.FormUrlEncoded
+    @retrofit2.http.POST("x/v2/history/toview/add")
+    suspend fun addToWatchLater(
+        @retrofit2.http.Field("aid") aid: Long,
+        @retrofit2.http.Field("csrf") csrf: String
+    ): SimpleApiResponse
+    
+    // 🔥🔥 [新增] 从稍后再看删除
+    @retrofit2.http.FormUrlEncoded
+    @retrofit2.http.POST("x/v2/history/toview/del")
+    suspend fun deleteFromWatchLater(
+        @retrofit2.http.Field("aid") aid: Long,
+        @retrofit2.http.Field("csrf") csrf: String
+    ): SimpleApiResponse
 }
 
 // 🔥 [新增] Buvid SPI 响应模型 (用于获取正确的设备指纹)

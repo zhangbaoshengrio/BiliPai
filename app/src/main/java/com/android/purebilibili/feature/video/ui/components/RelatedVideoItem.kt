@@ -72,7 +72,11 @@ fun RelatedVideosHeader() {
  * Related Video Item (iOS style optimized)
  */
 @Composable
-fun RelatedVideoItem(video: RelatedVideo, onClick: () -> Unit) {
+fun RelatedVideoItem(
+    video: RelatedVideo, 
+    isFollowed: Boolean = false,  // 🔥 是否已关注
+    onClick: () -> Unit
+) {
     // iOS style press animation
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -218,8 +222,26 @@ fun RelatedVideoItem(video: RelatedVideo, onClick: () -> Unit) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                         fontSize = 12.sp,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
                     )
+                    
+                    // 🔥 已关注标签
+                    if (isFollowed) {
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Surface(
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                            shape = RoundedCornerShape(4.dp)
+                        ) {
+                            Text(
+                                text = "已关注",
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
                 }
             }
         }

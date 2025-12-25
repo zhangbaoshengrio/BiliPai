@@ -1,0 +1,866 @@
+========================================
+BiliPai 应用日志导出
+========================================
+导出时间: 2025-12-25 12:07:14.967
+应用版本: 3.1.2 (12)
+设备信息: HUAWEI VOG-AL10
+Android版本: 10 (API 29)
+日志条数: 856
+========================================
+
+[09:51:05.023] D/PureApplication: 🎨 Applied theme mode: 0 -> nightMode=-1
+[09:51:05.024] D/TokenManager: 🔥 init: sessData=null..., accessToken=null..., mid=null
+[09:51:05.039] D/PluginManager: 🔌 PluginManager initialized
+[09:51:05.044] D/PureApplication: 🔌 Plugin system initialized with 4 built-in plugins
+[09:51:05.050] D/JsonPluginManager: 📦 加载了 0 个 JSON 插件
+[09:51:05.051] D/JsonPluginManager: 📊 加载了 0 个插件的过滤统计
+[09:51:05.052] D/JsonPluginManager: 🔌 JsonPluginManager initialized
+[09:51:05.052] D/PureApplication: 🔌 JSON plugin system initialized
+[09:51:05.053] W/PluginManager: ⚠️ Plugin not found: sponsor_block
+[09:51:05.053] D/PureApplication: 🔌 SponsorBlock plugin synced: enabled=false
+[09:51:05.054] D/CrashReporter: 📊 Crashlytics collection enabled
+[09:51:05.055] D/PureApplication: 🔥 Firebase Crashlytics initialized (enabled=true)
+[09:51:05.056] D/AnalyticsHelper: 📊 Firebase Analytics initialized
+[09:51:05.057] D/AnalyticsHelper: 📊 Analytics collection enabled
+[09:51:05.057] D/AnalyticsHelper: 📊 App open
+[09:51:05.057] D/PureApplication: 📊 Firebase Analytics initialized (enabled=true)
+[09:51:05.085] D/MiniPlayerManager: ✅ 媒体控制广播接收器已注册
+[09:51:05.106] D/WbiKeyManager: ❌ No WBI keys found in storage
+[09:51:05.112] D/PureApplication: 🎨 Synced app icon state: 3D
+[09:51:05.113] D/PluginManager: 📦 Plugin registered: 空降助手 (enabled=false)
+[09:51:05.114] D/PluginManager: 📦 Plugin registered: 去广告增强 (enabled=false)
+[09:51:05.116] D/WbiKeyManager: 🔄 Refreshing WBI keys from network...
+[09:51:05.124] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:05.170] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:05.206] D/MiniPlayerOverlay: 🎬 Overlay: mode=IN_APP_ONLY, isMiniMode=false, isActive=false
+[09:51:05.434] D/WbiKeyManager: 💾 WBI keys persisted to storage
+[09:51:05.434] D/WbiKeyManager: ✅ WBI keys refreshed successfully
+[09:51:05.434] D/PureApplication: ✅ WBI Keys preloaded successfully
+[09:51:05.569] D/PluginManager: 📦 Plugin registered: 弹幕增强 (enabled=false)
+[09:51:05.570] D/PluginManager: 📦 Plugin registered: 夜间护眼 (enabled=false)
+[09:51:05.610] D/WbiUtils: 🔐 w_rid: 6c5b000e410217152bb667962f48f3f4, params count: 10
+[09:51:05.613] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd?ps=10&fresh_type=3&fresh_idx=0&feed_version=1766627465609&y_num=0&wts=1766627465&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=6c5b000e410217152bb667962f48f3f4, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:05.861] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:06.182] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:06.275] D/WbiUtils: 🔐 w_rid: 1aef9bd76e714eca10b06d9d3b3cba0b, params count: 10
+[09:51:06.290] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd?ps=10&fresh_type=3&fresh_idx=1&feed_version=1766627466274&y_num=1&wts=1766627466&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=1aef9bd76e714eca10b06d9d3b3cba0b, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:08.616] D/MiniPlayerOverlay: 🎬 Overlay: mode=IN_APP_ONLY, isMiniMode=false, isActive=false
+[09:51:10.208] D/TvLogin: 1. 开始获取 TV 二维码...
+[09:51:10.211] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/auth_code, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:10.466] D/TvLogin: 2. TV 二维码获取成功: authCode=b0880e03da...
+[09:51:10.623] D/TvLogin: 3. 开始 TV 轮询...
+[09:51:12.627] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:12.763] D/TvLogin: TV 轮询状态: code=86039
+[09:51:12.764] D/TvLogin: 等待扫码确认...
+[09:51:14.769] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:14.898] D/TvLogin: TV 轮询状态: code=86039
+[09:51:14.899] D/TvLogin: 等待扫码确认...
+[09:51:16.900] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:16.983] D/TvLogin: TV 轮询状态: code=86039
+[09:51:16.984] D/TvLogin: 等待扫码确认...
+[09:51:18.987] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:19.161] D/TvLogin: TV 轮询状态: code=86039
+[09:51:19.162] D/TvLogin: 等待扫码确认...
+[09:51:21.184] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:21.295] D/TvLogin: TV 轮询状态: code=86039
+[09:51:21.296] D/TvLogin: 等待扫码确认...
+[09:51:23.311] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:23.481] D/TvLogin: TV 轮询状态: code=86039
+[09:51:23.482] D/TvLogin: 等待扫码确认...
+[09:51:23.654] D/PureApplication: 🧹 UI hidden, cleared image memory cache
+[09:51:25.489] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:25.580] D/TvLogin: TV 轮询状态: code=86039
+[09:51:25.581] D/TvLogin: 等待扫码确认...
+[09:51:27.587] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:27.789] D/TvLogin: TV 轮询状态: code=86039
+[09:51:27.790] D/TvLogin: 等待扫码确认...
+[09:51:29.798] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:29.949] D/TvLogin: TV 轮询状态: code=86039
+[09:51:29.950] D/TvLogin: 等待扫码确认...
+[09:51:31.957] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:51:32.116] D/TvLogin: TV 轮询状态: code=86039
+[09:51:32.117] D/TvLogin: 等待扫码确认...
+[09:56:43.890] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:56:45.161] D/TvLogin: TV 轮询状态: code=86039
+[09:56:45.162] D/TvLogin: 等待扫码确认...
+[09:56:47.174] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:56:47.262] D/TvLogin: TV 轮询状态: code=86039
+[09:56:47.263] D/TvLogin: 等待扫码确认...
+[09:56:49.269] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:56:49.386] D/TvLogin: TV 轮询状态: code=86039
+[09:56:49.387] D/TvLogin: 等待扫码确认...
+[09:56:51.396] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:56:51.471] D/TvLogin: TV 轮询状态: code=86039
+[09:56:51.472] D/TvLogin: 等待扫码确认...
+[09:56:53.480] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:56:53.636] D/TvLogin: TV 轮询状态: code=86039
+[09:56:53.637] D/TvLogin: 等待扫码确认...
+[09:56:55.647] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:56:55.731] D/TvLogin: TV 轮询状态: code=86039
+[09:56:55.732] D/TvLogin: 等待扫码确认...
+[09:56:57.738] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:56:57.838] D/TvLogin: TV 轮询状态: code=86039
+[09:56:57.839] D/TvLogin: 等待扫码确认...
+[09:56:59.846] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:56:59.938] D/TvLogin: TV 轮询状态: code=86039
+[09:56:59.939] D/TvLogin: 等待扫码确认...
+[09:57:01.946] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:57:02.090] D/TvLogin: TV 轮询状态: code=86039
+[09:57:02.091] D/TvLogin: 等待扫码确认...
+[09:57:04.098] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:57:04.189] D/TvLogin: TV 轮询状态: code=86039
+[09:57:04.191] D/TvLogin: 等待扫码确认...
+[09:57:06.198] D/ApiClient: 🔥 Sending request to https://passport.bilibili.com/x/passport-tv-login/qrcode/poll, Referer: https://www.bilibili.com, Cookie contains SESSDATA: false
+[09:57:06.374] D/TvLogin: TV 轮询状态: code=0
+[09:57:06.375] D/TvLogin: ✅ TV 登录成功!
+[09:57:06.376] D/TokenManager: 🔥 saveAccessToken: 93e29e4a5f..., refreshToken: c6fd35f307...
+[09:57:06.378] D/TokenManager: 🔥 saveMid: 37554048
+[09:57:06.379] D/TokenManager: 🔥 saveCookies: 7a74805c%2..., cache updated to: 7a74805c%2...
+[09:57:06.393] D/TvLogin: ✅ 保存 SESSDATA: 7a74805c%2...
+[09:57:06.394] D/TokenManager: 🔥 saveCsrf: bf1722f42f...
+[09:57:06.395] D/TvLogin: ✅ 保存 bili_jct: bf1722f42f...
+[09:57:06.396] D/TvLogin: ✅ access_token: 93e29e4a5f...
+[09:57:06.455] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[09:57:06.480] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[09:57:06.482] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav/stat, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[09:57:06.722] D/WbiUtils: 🔐 w_rid: b53394ed904785eb852e623aa55bdb9b, params count: 10
+[09:57:06.727] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd?ps=10&fresh_type=3&fresh_idx=0&feed_version=1766627826718&y_num=0&wts=1766627826&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=b53394ed904785eb852e623aa55bdb9b, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[09:57:07.024] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[09:57:07.127] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=1&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[09:57:07.298] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=2&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[09:57:07.465] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=3&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[09:57:07.613] D/HomeVM: 📋 Reached end at page 3, total: 146
+[09:57:07.618] D/HomeVM: 📋 Total following mids fetched and cached: 146
+[09:57:11.125] D/PureApplication: 🧹 UI hidden, cleared image memory cache
+[10:13:30.243] D/CrashReporter: 📊 Crashlytics collection disabled
+[10:13:41.074] D/PureApplication: 🧹 UI hidden, cleared image memory cache
+[10:13:42.022] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:13:42.026] D/MiniPlayerOverlay: 🎬 Overlay: mode=IN_APP_ONLY, isMiniMode=false, isActive=false
+[10:13:42.356] D/WbiUtils: 🔐 w_rid: 0d12950e352e024b915b5e784f0fa6aa, params count: 10
+[10:13:42.358] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd?ps=10&fresh_type=3&fresh_idx=0&feed_version=1766628822355&y_num=0&wts=1766628822&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=0d12950e352e024b915b5e784f0fa6aa, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:13:42.753] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:13:42.828] D/HomeVM: 📋 Loaded 146 following mids from cache
+[10:13:45.088] D/MiniPlayerOverlay: 🎬 Overlay: mode=IN_APP_ONLY, isMiniMode=false, isActive=false
+[10:13:52.028] D/CacheUtils: ✅ Coil memory cache cleared
+[10:13:52.030] D/PlayUrlCache: 🧹 Cache cleared
+[10:13:52.030] D/CacheUtils: ✅ PlayUrlCache cleared
+[10:13:52.041] D/CacheUtils: ✅ Coil disk cache cleared
+[10:13:52.043] D/CacheUtils: ✅ OkHttp cache cleared
+[10:13:52.045] D/CacheUtils: ✅ Internal cache cleared
+[10:13:52.046] D/CacheUtils: ✅ External cache cleared
+[10:13:52.047] D/CacheUtils: ✅ Following cache cleared
+[10:13:52.047] D/WbiKeyManager: 🗑️ Invalidating WBI keys cache
+[10:13:52.048] D/CacheUtils: ✅ WBI cache invalidated
+[10:13:52.048] D/CacheUtils: 🎉 All cache cleared successfully
+[10:14:11.978] D/AnalyticsHelper: 📊 Analytics collection disabled
+[10:14:15.363] D/AdFilterPlugin: ✅ 去广告增强v2.0已启用
+[10:14:15.363] D/AdFilterPlugin: 📋 拉黑UP主: 0个, 屏蔽关键词: 0个
+[10:14:15.364] D/PluginManager: ✅ Plugin enabled: 去广告增强
+[10:14:15.966] D/SponsorBlockPlugin: ✅ 空降助手已启用
+[10:14:15.967] D/PluginManager: ✅ Plugin enabled: 空降助手
+[10:14:20.274] D/DanmakuEnhancePlugin: ✅ 弹幕增强已启用
+[10:14:20.275] D/PluginManager: ✅ Plugin enabled: 弹幕增强
+[10:14:33.093] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:14:33.498] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=1&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:14:33.664] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=2&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:14:33.816] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=3&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:14:33.964] D/HomeVM: 📋 Reached end at page 3, total: 146
+[10:14:33.966] D/HomeVM: 📋 Total following mids fetched and cached: 146
+[10:14:33.973] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all?type=all&offset=&page=1, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:14:35.793] D/MiniPlayerManager: Exiting mini mode
+[10:14:35.818] D/VideoPlayerState: 🔥 创建新 player: bvid=BV1oNB5BfE61
+[10:14:35.905] D/MainActivity: 🎬 进入视频详情页
+[10:14:35.925] D/PlaybackProgressManager: Initialized with 0 cached positions
+[10:14:35.926] D/VideoPlayerState: 🔥 Calling loadVideo: BV1oNB5BfE61
+[10:14:35.930] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/view?bvid=BV1oNB5BfE61, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:36.048] D/VideoRepo: 🎬 getVideoDetails: bvid=BV1oNB5BfE61, aid=115772168868013, cid=34940588029, title=【Hi-Res无损音质】莫西子诗《在四季...
+[10:14:36.049] D/PlayUrlCache: ❌ Cache miss: bvid=BV1oNB5BfE61, cid=34940588029
+[10:14:36.050] D/VideoRepo: 🔥 Selected startQuality=80 (isLogin=true, isVip=false, auto1080p=true)
+[10:14:36.050] D/VideoRepo: 🔥 Fetching buvid3 from SPI API...
+[10:14:36.052] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/frontend/finger/spi, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:14:36.133] D/VideoRepo: ✅ buvid3 from SPI: 80350C9B-CBE8-E120-9...
+[10:14:36.135] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/internal/gaia-gateway/ExClimbWuzhi, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:14:36.207] D/VideoRepo: ✅ buvid activated!
+[10:14:36.207] D/VideoRepo: 🔥 fetchPlayUrlRecursive: bvid=BV1oNB5BfE61, isLoggedIn=true, targetQn=80
+[10:14:36.208] D/VideoRepo: 🔥 [LoggedIn] DASH-first strategy, qn=80
+[10:14:36.209] D/VideoRepo: 🔥 [LoggedIn] Trying APP API first with access_token...
+[10:14:36.209] D/VideoRepo: 🔥 fetchPlayUrlWithAccessToken: bvid=BV1oNB5BfE61, qn=80, accessToken=93e29e4a5f...
+[10:14:36.213] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?access_key=93e29e4a5feb96f478c34041ab1adac2&appkey=4409e2ce8ffd12b8&bvid=BV1oNB5BfE61&cid=34940588029&device=android&fnval=4048&fnver=0&fourk=1&mobi_app=android_tv_yst&platform=android&qn=80&ts=1766628876&sign=81d147420b240790227ea6f203173b49, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:36.214] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:36.314] D/VideoRepo: 🔥 APP PlayUrl response: code=-351, qn=80, dashIds=null
+[10:14:36.315] D/VideoRepo: ❌ APP API error: code=-351, msg=受到神秘力量干扰，请稍后再试！
+[10:14:36.317] D/VideoRepo: ⚠️ [LoggedIn] APP API failed, trying DASH...
+[10:14:36.319] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1oNB5BfE61, cid=34940588029, qn=80
+[10:14:36.322] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:14:36.415] D/VideoRepo: ✅ WBI Keys obtained successfully (attempt 1)
+[10:14:36.424] D/WbiUtils: 🔐 w_rid: 7e1210bd51874623f160e527609eb225, params count: 18
+[10:14:36.431] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=ae656970acb583ad6b6af9ba371dca42&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628876&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=7e1210bd51874623f160e527609eb225, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:36.433] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:36.528] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:14:36.529] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:14:36.530] D/VideoRepo: 🔥 DASH video IDs: null
+[10:14:36.531] D/VideoRepo: 🔥 DASH retry 2...
+[10:14:37.033] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1oNB5BfE61, cid=34940588029, qn=80
+[10:14:37.040] D/WbiUtils: 🔐 w_rid: b2765deb3116e2c64883ad3a5bfa4a64, params count: 18
+[10:14:37.047] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=454e5b21ee4810081e21514909f9abe3&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628877&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=b2765deb3116e2c64883ad3a5bfa4a64, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:37.050] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:37.269] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:14:37.271] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:14:37.272] D/VideoRepo: 🔥 DASH video IDs: null
+[10:14:37.273] D/VideoRepo: 🔥 [LoggedIn] DASH failed, trying HTML5 fallback...
+[10:14:37.275] D/VideoRepo: 🔥 fetchPlayUrlHtml5Fallback: bvid=BV1oNB5BfE61, cid=34940588029, qn=80
+[10:14:37.281] D/WbiUtils: 🔐 w_rid: d812121683f2cca234215703a454474a, params count: 16
+[10:14:37.289] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1&try_look=1&gaia_source=pre-load&web_location=1550101&wts=1766628877&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=d812121683f2cca234215703a454474a, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:37.291] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:37.504] D/VideoRepo: 🔥 HTML5 fallback response: code=0, quality=0
+[10:14:37.505] D/VideoRepo: ✅ HTML5 fallback success!
+[10:14:37.506] D/VideoRepo: 🔥 [LoggedIn] HTML5 failed, trying Legacy API...
+[10:14:37.511] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=16&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:37.513] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:37.639] D/VideoRepo: 🔥🔥 [LoggedIn] All auth methods failed! Trying GUEST fallback (no auth)...
+[10:14:37.641] D/VideoRepo: 🔥 fetchAsGuestFallback: bvid=BV1oNB5BfE61, cid=34940588029
+[10:14:37.645] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=64&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:37.647] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:37.774] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=32&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=0, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:37.777] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:37.912] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/archive/related?bvid=BV1oNB5BfE61, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:38.131] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/emote/user/panel/web?business=reply, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:14:38.286] E/CrashReporter: 📊 Video error reported: [load_failed] BV1oNB5BfE61 - 加载失败: 无法获取任何画质的播放地址
+[10:14:40.951] D/VideoPlayerState: 💾 ON_PAUSE: pos=0, wasPlaying=false
+[10:14:41.344] D/VideoPlayerState: 🔥 释放所有资源
+[10:14:41.345] D/MiniPlayerManager: 🔥 resetExternalPlayer: clearing external player reference
+[10:14:41.348] D/MainActivity: 🔙 退出视频详情页
+[10:14:41.348] D/MiniPlayerManager: 🔥 enterMiniMode called: isActive=false, currentBvid=null, isMiniMode=false, mode=BACKGROUND
+[10:14:41.349] W/MiniPlayerManager: ⚠️ Cannot enter mini mode: isActive is false!
+[10:14:45.986] D/CacheUtils: ✅ Coil memory cache cleared
+[10:14:45.987] D/PlayUrlCache: 🧹 Cache cleared
+[10:14:45.988] D/CacheUtils: ✅ PlayUrlCache cleared
+[10:14:46.002] D/CacheUtils: ✅ Coil disk cache cleared
+[10:14:46.009] D/CacheUtils: ✅ OkHttp cache cleared
+[10:14:46.011] D/CacheUtils: ✅ Internal cache cleared
+[10:14:46.013] D/CacheUtils: ✅ External cache cleared
+[10:14:46.013] D/CacheUtils: ✅ Following cache cleared
+[10:14:46.014] D/WbiKeyManager: 🗑️ Invalidating WBI keys cache
+[10:14:46.015] D/CacheUtils: ✅ WBI cache invalidated
+[10:14:46.016] D/CacheUtils: 🎉 All cache cleared successfully
+[10:14:58.051] D/MiniPlayerManager: Exiting mini mode
+[10:14:58.075] D/VideoPlayerState: 🔥 创建新 player: bvid=BV1oNB5BfE61
+[10:14:58.124] D/MainActivity: 🎬 进入视频详情页
+[10:14:58.151] D/VideoPlayerState: 🔥 Calling loadVideo: BV1oNB5BfE61
+[10:14:58.154] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/view?bvid=BV1oNB5BfE61, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:58.494] D/VideoRepo: 🎬 getVideoDetails: bvid=BV1oNB5BfE61, aid=115772168868013, cid=34940588029, title=【Hi-Res无损音质】莫西子诗《在四季...
+[10:14:58.494] D/PlayUrlCache: ❌ Cache miss: bvid=BV1oNB5BfE61, cid=34940588029
+[10:14:58.495] D/VideoRepo: 🔥 Selected startQuality=80 (isLogin=true, isVip=false, auto1080p=true)
+[10:14:58.495] D/VideoRepo: 🔥 fetchPlayUrlRecursive: bvid=BV1oNB5BfE61, isLoggedIn=true, targetQn=80
+[10:14:58.495] D/VideoRepo: 🔥 [LoggedIn] DASH-first strategy, qn=80
+[10:14:58.496] D/VideoRepo: 🔥 [LoggedIn] Trying APP API first with access_token...
+[10:14:58.496] D/VideoRepo: 🔥 fetchPlayUrlWithAccessToken: bvid=BV1oNB5BfE61, qn=80, accessToken=93e29e4a5f...
+[10:14:58.499] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?access_key=93e29e4a5feb96f478c34041ab1adac2&appkey=4409e2ce8ffd12b8&bvid=BV1oNB5BfE61&cid=34940588029&device=android&fnval=4048&fnver=0&fourk=1&mobi_app=android_tv_yst&platform=android&qn=80&ts=1766628898&sign=874046b83f8c7aaa92757aedfcd96b3d, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:58.499] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:58.640] D/VideoRepo: 🔥 APP PlayUrl response: code=-351, qn=80, dashIds=null
+[10:14:58.642] D/VideoRepo: ❌ APP API error: code=-351, msg=受到神秘力量干扰，请稍后再试！
+[10:14:58.643] D/VideoRepo: ⚠️ [LoggedIn] APP API failed, trying DASH...
+[10:14:58.645] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1oNB5BfE61, cid=34940588029, qn=80
+[10:14:58.652] D/WbiUtils: 🔐 w_rid: 13a7886758221abc0fbf6a658c1e9363, params count: 18
+[10:14:58.657] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=43effef67a0b53e30a552c8ffe25fcce&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628898&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=13a7886758221abc0fbf6a658c1e9363, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:58.658] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:58.781] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:14:58.783] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:14:58.784] D/VideoRepo: 🔥 DASH video IDs: null
+[10:14:58.785] D/VideoRepo: 🔥 DASH retry 2...
+[10:14:59.287] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1oNB5BfE61, cid=34940588029, qn=80
+[10:14:59.294] D/WbiUtils: 🔐 w_rid: dee73d5736badba2a1cc3a39ac7ce2f8, params count: 18
+[10:14:59.302] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=8b15d933cb2274746cf4bafcaf8a269f&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628899&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=dee73d5736badba2a1cc3a39ac7ce2f8, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:59.304] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:59.452] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:14:59.453] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:14:59.454] D/VideoRepo: 🔥 DASH video IDs: null
+[10:14:59.456] D/VideoRepo: 🔥 [LoggedIn] DASH failed, trying HTML5 fallback...
+[10:14:59.457] D/VideoRepo: 🔥 fetchPlayUrlHtml5Fallback: bvid=BV1oNB5BfE61, cid=34940588029, qn=80
+[10:14:59.462] D/WbiUtils: 🔐 w_rid: 8e4bcc1e8b817f179e58dc788d4f8950, params count: 16
+[10:14:59.469] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1&try_look=1&gaia_source=pre-load&web_location=1550101&wts=1766628899&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=8e4bcc1e8b817f179e58dc788d4f8950, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:59.471] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:59.592] D/VideoRepo: 🔥 HTML5 fallback response: code=0, quality=0
+[10:14:59.594] D/VideoRepo: ✅ HTML5 fallback success!
+[10:14:59.595] D/VideoRepo: 🔥 [LoggedIn] HTML5 failed, trying Legacy API...
+[10:14:59.599] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=16&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:59.601] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:59.733] D/VideoRepo: 🔥🔥 [LoggedIn] All auth methods failed! Trying GUEST fallback (no auth)...
+[10:14:59.735] D/VideoRepo: 🔥 fetchAsGuestFallback: bvid=BV1oNB5BfE61, cid=34940588029
+[10:14:59.739] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=64&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:59.741] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:59.866] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=32&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=0, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:14:59.869] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:14:59.998] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/archive/related?bvid=BV1oNB5BfE61, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:15:00.226] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/emote/user/panel/web?business=reply, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:15:00.376] E/CrashReporter: 📊 Video error reported: [load_failed] BV1oNB5BfE61 - 加载失败: 无法获取任何画质的播放地址
+[10:15:04.996] D/PlayUrlCache: 🗑️ Invalidated: bvid=BV1oNB5BfE61, cid=0
+[10:15:05.000] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/view?bvid=BV1oNB5BfE61, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:15:05.097] D/VideoRepo: 🎬 getVideoDetails: bvid=BV1oNB5BfE61, aid=115772168868013, cid=34940588029, title=【Hi-Res无损音质】莫西子诗《在四季...
+[10:15:05.097] D/PlayUrlCache: ❌ Cache miss: bvid=BV1oNB5BfE61, cid=34940588029
+[10:15:05.097] D/VideoRepo: 🔥 Selected startQuality=80 (isLogin=true, isVip=false, auto1080p=true)
+[10:15:05.098] D/VideoRepo: 🔥 fetchPlayUrlRecursive: bvid=BV1oNB5BfE61, isLoggedIn=true, targetQn=80
+[10:15:05.098] D/VideoRepo: 🔥 [LoggedIn] DASH-first strategy, qn=80
+[10:15:05.098] D/VideoRepo: 🔥 [LoggedIn] Trying APP API first with access_token...
+[10:15:05.099] D/VideoRepo: 🔥 fetchPlayUrlWithAccessToken: bvid=BV1oNB5BfE61, qn=80, accessToken=93e29e4a5f...
+[10:15:05.101] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?access_key=93e29e4a5feb96f478c34041ab1adac2&appkey=4409e2ce8ffd12b8&bvid=BV1oNB5BfE61&cid=34940588029&device=android&fnval=4048&fnver=0&fourk=1&mobi_app=android_tv_yst&platform=android&qn=80&ts=1766628905&sign=b72afa5abe75961dc1c8f8fcf13829e2, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:15:05.101] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:05.237] D/VideoRepo: 🔥 APP PlayUrl response: code=-351, qn=80, dashIds=null
+[10:15:05.239] D/VideoRepo: ❌ APP API error: code=-351, msg=受到神秘力量干扰，请稍后再试！
+[10:15:05.240] D/VideoRepo: ⚠️ [LoggedIn] APP API failed, trying DASH...
+[10:15:05.241] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1oNB5BfE61, cid=34940588029, qn=80
+[10:15:05.249] D/WbiUtils: 🔐 w_rid: f26d81f8b44ad2816881aa734d921673, params count: 18
+[10:15:05.254] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=b6ab0730f31c887a6d1eb05e1dd04dc4&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628905&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=f26d81f8b44ad2816881aa734d921673, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:15:05.255] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:05.398] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:15:05.400] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:15:05.401] D/VideoRepo: 🔥 DASH video IDs: null
+[10:15:05.402] D/VideoRepo: 🔥 DASH retry 2...
+[10:15:05.904] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1oNB5BfE61, cid=34940588029, qn=80
+[10:15:05.911] D/WbiUtils: 🔐 w_rid: ffec7a6529b1a9eccec879997934c379, params count: 18
+[10:15:05.918] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=a0207f7e296443b9e3dfc106dc1200e3&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628905&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=ffec7a6529b1a9eccec879997934c379, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:15:05.920] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:06.075] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:15:06.076] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:15:06.077] D/VideoRepo: 🔥 DASH video IDs: null
+[10:15:06.078] D/VideoRepo: 🔥 [LoggedIn] DASH failed, trying HTML5 fallback...
+[10:15:06.079] D/VideoRepo: 🔥 fetchPlayUrlHtml5Fallback: bvid=BV1oNB5BfE61, cid=34940588029, qn=80
+[10:15:06.083] D/WbiUtils: 🔐 w_rid: e6dd79fbeb2f102cf8fe9b5a63e60150, params count: 16
+[10:15:06.088] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1&try_look=1&gaia_source=pre-load&web_location=1550101&wts=1766628906&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=e6dd79fbeb2f102cf8fe9b5a63e60150, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:15:06.090] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:06.220] D/VideoPlayerState: 💾 ON_PAUSE: pos=0, wasPlaying=false
+[10:15:06.232] D/VideoRepo: 🔥 HTML5 fallback response: code=0, quality=0
+[10:15:06.233] D/VideoRepo: ✅ HTML5 fallback success!
+[10:15:06.234] D/VideoRepo: 🔥 [LoggedIn] HTML5 failed, trying Legacy API...
+[10:15:06.237] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=80&fnval=16&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:15:06.238] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:06.378] D/VideoRepo: 🔥🔥 [LoggedIn] All auth methods failed! Trying GUEST fallback (no auth)...
+[10:15:06.379] D/VideoRepo: 🔥 fetchAsGuestFallback: bvid=BV1oNB5BfE61, cid=34940588029
+[10:15:06.380] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=64&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:15:06.380] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:06.498] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1oNB5BfE61&cid=34940588029&qn=32&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=0, Referer: https://www.bilibili.com/video/BV1oNB5BfE61, Cookie contains SESSDATA: true
+[10:15:06.499] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:06.620] D/VideoPlayerState: 🔥 释放所有资源
+[10:15:06.620] D/MiniPlayerManager: 🔥 resetExternalPlayer: clearing external player reference
+[10:15:06.623] D/MainActivity: 🔙 退出视频详情页
+[10:15:06.623] D/MiniPlayerManager: 🔥 enterMiniMode called: isActive=false, currentBvid=null, isMiniMode=false, mode=BACKGROUND
+[10:15:06.624] W/MiniPlayerManager: ⚠️ Cannot enter mini mode: isActive is false!
+[10:15:06.638] E/CrashReporter: 📊 Video error reported: [load_failed] BV1oNB5BfE61 - 加载失败: Job was cancelled
+[10:15:07.675] D/MiniPlayerManager: Exiting mini mode
+[10:15:07.697] D/VideoPlayerState: 🔥 创建新 player: bvid=BV1d3BjBYEZJ
+[10:15:07.734] D/MainActivity: 🎬 进入视频详情页
+[10:15:07.755] D/VideoPlayerState: 🔥 Calling loadVideo: BV1d3BjBYEZJ
+[10:15:07.757] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/view?bvid=BV1d3BjBYEZJ, Referer: https://www.bilibili.com/video/BV1d3BjBYEZJ, Cookie contains SESSDATA: true
+[10:15:07.949] D/VideoRepo: 🎬 getVideoDetails: bvid=BV1d3BjBYEZJ, aid=115775020995088, cid=34956446519, title=基里安墨菲回归！2026Netflix电...
+[10:15:07.949] D/PlayUrlCache: ❌ Cache miss: bvid=BV1d3BjBYEZJ, cid=34956446519
+[10:15:07.950] D/VideoRepo: 🔥 Selected startQuality=80 (isLogin=true, isVip=false, auto1080p=true)
+[10:15:07.950] D/VideoRepo: 🔥 fetchPlayUrlRecursive: bvid=BV1d3BjBYEZJ, isLoggedIn=true, targetQn=80
+[10:15:07.950] D/VideoRepo: 🔥 [LoggedIn] DASH-first strategy, qn=80
+[10:15:07.950] D/VideoRepo: 🔥 [LoggedIn] Trying APP API first with access_token...
+[10:15:07.951] D/VideoRepo: 🔥 fetchPlayUrlWithAccessToken: bvid=BV1d3BjBYEZJ, qn=80, accessToken=93e29e4a5f...
+[10:15:07.953] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?access_key=93e29e4a5feb96f478c34041ab1adac2&appkey=4409e2ce8ffd12b8&bvid=BV1d3BjBYEZJ&cid=34956446519&device=android&fnval=4048&fnver=0&fourk=1&mobi_app=android_tv_yst&platform=android&qn=80&ts=1766628907&sign=daf441d8f860315021ca34008e927653, Referer: https://www.bilibili.com/video/BV1d3BjBYEZJ, Cookie contains SESSDATA: true
+[10:15:07.953] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:08.093] D/VideoRepo: 🔥 APP PlayUrl response: code=-351, qn=80, dashIds=null
+[10:15:08.093] D/VideoRepo: ❌ APP API error: code=-351, msg=受到神秘力量干扰，请稍后再试！
+[10:15:08.093] D/VideoRepo: ⚠️ [LoggedIn] APP API failed, trying DASH...
+[10:15:08.094] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1d3BjBYEZJ, cid=34956446519, qn=80
+[10:15:08.096] D/WbiUtils: 🔐 w_rid: 20c0e1a69ce2a89fd70fd03d76c63ff4, params count: 18
+[10:15:08.097] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1d3BjBYEZJ&cid=34956446519&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=a8ce91312ad5052b146acf9130edf850&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628908&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=20c0e1a69ce2a89fd70fd03d76c63ff4, Referer: https://www.bilibili.com/video/BV1d3BjBYEZJ, Cookie contains SESSDATA: true
+[10:15:08.098] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:08.226] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:15:08.226] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:15:08.227] D/VideoRepo: 🔥 DASH video IDs: null
+[10:15:08.228] D/VideoRepo: 🔥 DASH retry 2...
+[10:15:08.730] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1d3BjBYEZJ, cid=34956446519, qn=80
+[10:15:08.736] D/WbiUtils: 🔐 w_rid: 2b2a65e6b5480fd74f188fa06e653b02, params count: 18
+[10:15:08.741] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1d3BjBYEZJ&cid=34956446519&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=60e75fd80e6f8d6eb937220c08da1be1&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628908&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=2b2a65e6b5480fd74f188fa06e653b02, Referer: https://www.bilibili.com/video/BV1d3BjBYEZJ, Cookie contains SESSDATA: true
+[10:15:08.742] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:08.906] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:15:08.907] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:15:08.909] D/VideoRepo: 🔥 DASH video IDs: null
+[10:15:08.910] D/VideoRepo: 🔥 [LoggedIn] DASH failed, trying HTML5 fallback...
+[10:15:08.911] D/VideoRepo: 🔥 fetchPlayUrlHtml5Fallback: bvid=BV1d3BjBYEZJ, cid=34956446519, qn=80
+[10:15:08.916] D/WbiUtils: 🔐 w_rid: 86a933db89fc2065512cb364855db927, params count: 16
+[10:15:08.922] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1d3BjBYEZJ&cid=34956446519&qn=80&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1&try_look=1&gaia_source=pre-load&web_location=1550101&wts=1766628908&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=86a933db89fc2065512cb364855db927, Referer: https://www.bilibili.com/video/BV1d3BjBYEZJ, Cookie contains SESSDATA: true
+[10:15:08.924] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:09.050] D/VideoRepo: 🔥 HTML5 fallback response: code=0, quality=0
+[10:15:09.052] D/VideoRepo: ✅ HTML5 fallback success!
+[10:15:09.053] D/VideoRepo: 🔥 [LoggedIn] HTML5 failed, trying Legacy API...
+[10:15:09.057] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1d3BjBYEZJ&cid=34956446519&qn=80&fnval=16&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1d3BjBYEZJ, Cookie contains SESSDATA: true
+[10:15:09.059] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:09.151] D/VideoRepo: 🔥🔥 [LoggedIn] All auth methods failed! Trying GUEST fallback (no auth)...
+[10:15:09.152] D/VideoRepo: 🔥 fetchAsGuestFallback: bvid=BV1d3BjBYEZJ, cid=34956446519
+[10:15:09.155] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1d3BjBYEZJ&cid=34956446519&qn=64&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1d3BjBYEZJ, Cookie contains SESSDATA: true
+[10:15:09.157] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:09.253] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1d3BjBYEZJ&cid=34956446519&qn=32&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=0, Referer: https://www.bilibili.com/video/BV1d3BjBYEZJ, Cookie contains SESSDATA: true
+[10:15:09.255] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:09.356] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/archive/related?bvid=BV1d3BjBYEZJ, Referer: https://www.bilibili.com/video/BV1d3BjBYEZJ, Cookie contains SESSDATA: true
+[10:15:09.776] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/emote/user/panel/web?business=reply, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:15:09.917] E/CrashReporter: 📊 Video error reported: [load_failed] BV1d3BjBYEZJ - 加载失败: 无法获取任何画质的播放地址
+[10:15:10.653] D/VideoPlayerState: 💾 ON_PAUSE: pos=0, wasPlaying=false
+[10:15:11.045] D/VideoPlayerState: 🔥 释放所有资源
+[10:15:11.046] D/MiniPlayerManager: 🔥 resetExternalPlayer: clearing external player reference
+[10:15:11.049] D/MainActivity: 🔙 退出视频详情页
+[10:15:11.049] D/MiniPlayerManager: 🔥 enterMiniMode called: isActive=false, currentBvid=null, isMiniMode=false, mode=BACKGROUND
+[10:15:11.050] W/MiniPlayerManager: ⚠️ Cannot enter mini mode: isActive is false!
+[10:15:20.077] D/MiniPlayerManager: Exiting mini mode
+[10:15:20.104] D/VideoPlayerState: 🔥 创建新 player: bvid=BV1ZcB2BQE1V
+[10:15:20.139] D/MainActivity: 🎬 进入视频详情页
+[10:15:20.167] D/VideoPlayerState: 🔥 Calling loadVideo: BV1ZcB2BQE1V
+[10:15:20.169] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/view?bvid=BV1ZcB2BQE1V, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:20.761] D/VideoRepo: 🎬 getVideoDetails: bvid=BV1ZcB2BQE1V, aid=115775155212670, cid=34957102681, title=广东大降温：-45度极寒将袭击东北，元旦...
+[10:15:20.763] D/PlayUrlCache: ❌ Cache miss: bvid=BV1ZcB2BQE1V, cid=34957102681
+[10:15:20.764] D/VideoRepo: 🔥 Selected startQuality=80 (isLogin=true, isVip=false, auto1080p=true)
+[10:15:20.766] D/VideoRepo: 🔥 fetchPlayUrlRecursive: bvid=BV1ZcB2BQE1V, isLoggedIn=true, targetQn=80
+[10:15:20.767] D/VideoRepo: 🔥 [LoggedIn] DASH-first strategy, qn=80
+[10:15:20.768] D/VideoRepo: 🔥 [LoggedIn] Trying APP API first with access_token...
+[10:15:20.770] D/VideoRepo: 🔥 fetchPlayUrlWithAccessToken: bvid=BV1ZcB2BQE1V, qn=80, accessToken=93e29e4a5f...
+[10:15:20.775] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?access_key=93e29e4a5feb96f478c34041ab1adac2&appkey=4409e2ce8ffd12b8&bvid=BV1ZcB2BQE1V&cid=34957102681&device=android&fnval=4048&fnver=0&fourk=1&mobi_app=android_tv_yst&platform=android&qn=80&ts=1766628920&sign=47996b56a9dd3812b94b4ed874caa1e1, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:20.777] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:20.871] D/VideoRepo: 🔥 APP PlayUrl response: code=-351, qn=80, dashIds=null
+[10:15:20.872] D/VideoRepo: ❌ APP API error: code=-351, msg=受到神秘力量干扰，请稍后再试！
+[10:15:20.874] D/VideoRepo: ⚠️ [LoggedIn] APP API failed, trying DASH...
+[10:15:20.875] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1ZcB2BQE1V, cid=34957102681, qn=80
+[10:15:20.881] D/WbiUtils: 🔐 w_rid: f0e71772b60518fcb8e3cf2935b475f8, params count: 18
+[10:15:20.887] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=ef460b52df37f4cb912c42fcad8c7ced&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628920&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=f0e71772b60518fcb8e3cf2935b475f8, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:20.890] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:21.047] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:15:21.048] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:15:21.049] D/VideoRepo: 🔥 DASH video IDs: null
+[10:15:21.051] D/VideoRepo: 🔥 DASH retry 2...
+[10:15:21.553] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1ZcB2BQE1V, cid=34957102681, qn=80
+[10:15:21.559] D/WbiUtils: 🔐 w_rid: 862be2e55031a926e60b31dc80d61664, params count: 18
+[10:15:21.565] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=f0c44cd5abbf75da8bb89d81cadf2e88&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628921&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=862be2e55031a926e60b31dc80d61664, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:21.567] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:21.700] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:15:21.700] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:15:21.701] D/VideoRepo: 🔥 DASH video IDs: null
+[10:15:21.701] D/VideoRepo: 🔥 [LoggedIn] DASH failed, trying HTML5 fallback...
+[10:15:21.701] D/VideoRepo: 🔥 fetchPlayUrlHtml5Fallback: bvid=BV1ZcB2BQE1V, cid=34957102681, qn=80
+[10:15:21.702] D/WbiUtils: 🔐 w_rid: b60d21f9a41d98c9f93b82d25c687c24, params count: 16
+[10:15:21.705] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1&try_look=1&gaia_source=pre-load&web_location=1550101&wts=1766628921&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=b60d21f9a41d98c9f93b82d25c687c24, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:21.705] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:21.839] D/VideoRepo: 🔥 HTML5 fallback response: code=0, quality=0
+[10:15:21.840] D/VideoRepo: ✅ HTML5 fallback success!
+[10:15:21.840] D/VideoRepo: 🔥 [LoggedIn] HTML5 failed, trying Legacy API...
+[10:15:21.841] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=16&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:21.842] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:21.957] D/VideoRepo: 🔥🔥 [LoggedIn] All auth methods failed! Trying GUEST fallback (no auth)...
+[10:15:21.957] D/VideoRepo: 🔥 fetchAsGuestFallback: bvid=BV1ZcB2BQE1V, cid=34957102681
+[10:15:21.958] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=64&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:21.959] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:22.075] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=32&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=0, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:22.075] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:22.195] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/archive/related?bvid=BV1ZcB2BQE1V, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:22.398] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/emote/user/panel/web?business=reply, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:15:22.520] E/CrashReporter: 📊 Video error reported: [load_failed] BV1ZcB2BQE1V - 加载失败: 无法获取任何画质的播放地址
+[10:15:25.124] D/VideoPlayerState: 💾 ON_PAUSE: pos=0, wasPlaying=false
+[10:15:25.516] D/VideoPlayerState: 🔥 释放所有资源
+[10:15:25.516] D/MiniPlayerManager: 🔥 resetExternalPlayer: clearing external player reference
+[10:15:25.519] D/MainActivity: 🔙 退出视频详情页
+[10:15:25.519] D/MiniPlayerManager: 🔥 enterMiniMode called: isActive=false, currentBvid=null, isMiniMode=false, mode=BACKGROUND
+[10:15:25.519] W/MiniPlayerManager: ⚠️ Cannot enter mini mode: isActive is false!
+[10:15:26.892] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all?type=all&offset=&page=1, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:15:26.892] D/ApiClient: 🔥 Sending request to https://api.live.bilibili.com/xlive/web-ucenter/user/following?page=1&page_size=30, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:15:26.926] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all?type=all&offset=&page=1, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:15:27.246] D/ApiClient: 🔥 Sending request to https://api.live.bilibili.com/xlive/web-ucenter/user/following?page=1&page_size=30, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:15:27.271] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all?type=all&offset=1149916586598989843&page=1, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:15:27.383] D/ApiClient: 🔥 Sending request to https://api.live.bilibili.com/room/v1/Room/get_info?room_id=23061397, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:15:27.458] D/ApiClient: 🔥 Sending request to https://api.live.bilibili.com/room/v1/Room/get_info?room_id=23061397, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:15:27.486] D/CookieJar: 🍪 Saved cookie: LIVE_BUVID=AUTO5417666289272397... for api.live.bilibili.com
+[10:15:27.489] D/VideoRepo: 🔴 Room 23061397 online: 12794
+[10:15:27.567] D/CookieJar: 🍪 Saved cookie: LIVE_BUVID=AUTO6617666289273292... for api.live.bilibili.com
+[10:15:27.569] D/VideoRepo: 🔴 Room 23061397 online: 12794
+[10:15:30.224] D/MiniPlayerManager: Exiting mini mode
+[10:15:30.237] D/VideoPlayerState: 🔥 创建新 player: bvid=BV1xi4y1h7Fi
+[10:15:30.275] D/MainActivity: 🎬 进入视频详情页
+[10:15:30.290] D/VideoPlayerState: 🔥 Calling loadVideo: BV1xi4y1h7Fi
+[10:15:30.292] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/view?bvid=BV1xi4y1h7Fi, Referer: https://www.bilibili.com/video/BV1xi4y1h7Fi, Cookie contains SESSDATA: true
+[10:15:30.420] D/VideoRepo: 🎬 getVideoDetails: bvid=BV1xi4y1h7Fi, aid=537815356, cid=1380460001, title=「牛姐圣诞黑胶」Mariah Carey...
+[10:15:30.420] D/PlayUrlCache: ❌ Cache miss: bvid=BV1xi4y1h7Fi, cid=1380460001
+[10:15:30.421] D/VideoRepo: 🔥 Selected startQuality=80 (isLogin=true, isVip=false, auto1080p=true)
+[10:15:30.421] D/VideoRepo: 🔥 fetchPlayUrlRecursive: bvid=BV1xi4y1h7Fi, isLoggedIn=true, targetQn=80
+[10:15:30.421] D/VideoRepo: 🔥 [LoggedIn] DASH-first strategy, qn=80
+[10:15:30.422] D/VideoRepo: 🔥 [LoggedIn] Trying APP API first with access_token...
+[10:15:30.422] D/VideoRepo: 🔥 fetchPlayUrlWithAccessToken: bvid=BV1xi4y1h7Fi, qn=80, accessToken=93e29e4a5f...
+[10:15:30.423] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?access_key=93e29e4a5feb96f478c34041ab1adac2&appkey=4409e2ce8ffd12b8&bvid=BV1xi4y1h7Fi&cid=1380460001&device=android&fnval=4048&fnver=0&fourk=1&mobi_app=android_tv_yst&platform=android&qn=80&ts=1766628930&sign=595bbcab0562c171729553305bdf1cbf, Referer: https://www.bilibili.com/video/BV1xi4y1h7Fi, Cookie contains SESSDATA: true
+[10:15:30.424] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:30.508] D/VideoRepo: 🔥 APP PlayUrl response: code=-351, qn=80, dashIds=null
+[10:15:30.509] D/VideoRepo: ❌ APP API error: code=-351, msg=受到神秘力量干扰，请稍后再试！
+[10:15:30.509] D/VideoRepo: ⚠️ [LoggedIn] APP API failed, trying DASH...
+[10:15:30.509] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1xi4y1h7Fi, cid=1380460001, qn=80
+[10:15:30.511] D/WbiUtils: 🔐 w_rid: 5b78cc463402aa45faf8cce67b77fbe5, params count: 18
+[10:15:30.513] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1xi4y1h7Fi&cid=1380460001&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=7ea57c4b537ff1a3737b953cee956b5c&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628930&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=5b78cc463402aa45faf8cce67b77fbe5, Referer: https://www.bilibili.com/video/BV1xi4y1h7Fi, Cookie contains SESSDATA: true
+[10:15:30.513] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:30.608] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:15:30.610] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:15:30.610] D/VideoRepo: 🔥 DASH video IDs: null
+[10:15:30.610] D/VideoRepo: 🔥 DASH retry 2...
+[10:15:31.113] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1xi4y1h7Fi, cid=1380460001, qn=80
+[10:15:31.118] D/WbiUtils: 🔐 w_rid: 79ed05f30fe45677421e850230fd2519, params count: 18
+[10:15:31.124] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1xi4y1h7Fi&cid=1380460001&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=42bd922f4a84cba91fa0d66a26b4e8f1&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628931&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=79ed05f30fe45677421e850230fd2519, Referer: https://www.bilibili.com/video/BV1xi4y1h7Fi, Cookie contains SESSDATA: true
+[10:15:31.126] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:31.307] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:15:31.308] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:15:31.310] D/VideoRepo: 🔥 DASH video IDs: null
+[10:15:31.311] D/VideoRepo: 🔥 [LoggedIn] DASH failed, trying HTML5 fallback...
+[10:15:31.313] D/VideoRepo: 🔥 fetchPlayUrlHtml5Fallback: bvid=BV1xi4y1h7Fi, cid=1380460001, qn=80
+[10:15:31.317] D/WbiUtils: 🔐 w_rid: 812490337cdf4d9ab6918baca663ad0a, params count: 16
+[10:15:31.322] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1xi4y1h7Fi&cid=1380460001&qn=80&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1&try_look=1&gaia_source=pre-load&web_location=1550101&wts=1766628931&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=812490337cdf4d9ab6918baca663ad0a, Referer: https://www.bilibili.com/video/BV1xi4y1h7Fi, Cookie contains SESSDATA: true
+[10:15:31.325] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:31.545] D/VideoRepo: 🔥 HTML5 fallback response: code=0, quality=0
+[10:15:31.546] D/VideoRepo: ✅ HTML5 fallback success!
+[10:15:31.548] D/VideoRepo: 🔥 [LoggedIn] HTML5 failed, trying Legacy API...
+[10:15:31.551] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1xi4y1h7Fi&cid=1380460001&qn=80&fnval=16&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1xi4y1h7Fi, Cookie contains SESSDATA: true
+[10:15:31.553] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:31.668] D/VideoRepo: 🔥🔥 [LoggedIn] All auth methods failed! Trying GUEST fallback (no auth)...
+[10:15:31.669] D/VideoRepo: 🔥 fetchAsGuestFallback: bvid=BV1xi4y1h7Fi, cid=1380460001
+[10:15:31.672] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1xi4y1h7Fi&cid=1380460001&qn=64&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1xi4y1h7Fi, Cookie contains SESSDATA: true
+[10:15:31.675] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:31.767] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1xi4y1h7Fi&cid=1380460001&qn=32&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=0, Referer: https://www.bilibili.com/video/BV1xi4y1h7Fi, Cookie contains SESSDATA: true
+[10:15:31.769] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:31.853] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/archive/related?bvid=BV1xi4y1h7Fi, Referer: https://www.bilibili.com/video/BV1xi4y1h7Fi, Cookie contains SESSDATA: true
+[10:15:32.055] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/emote/user/panel/web?business=reply, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:15:32.163] E/CrashReporter: 📊 Video error reported: [load_failed] BV1xi4y1h7Fi - 加载失败: 无法获取任何画质的播放地址
+[10:15:33.509] D/VideoPlayerState: 💾 ON_PAUSE: pos=0, wasPlaying=false
+[10:15:33.890] D/VideoPlayerState: 🔥 释放所有资源
+[10:15:33.891] D/MiniPlayerManager: 🔥 resetExternalPlayer: clearing external player reference
+[10:15:33.893] D/MainActivity: 🔙 退出视频详情页
+[10:15:33.893] D/MiniPlayerManager: 🔥 enterMiniMode called: isActive=false, currentBvid=null, isMiniMode=false, mode=BACKGROUND
+[10:15:33.893] W/MiniPlayerManager: ⚠️ Cannot enter mini mode: isActive is false!
+[10:15:59.488] D/MiniPlayerManager: Exiting mini mode
+[10:15:59.511] D/VideoPlayerState: 🔥 创建新 player: bvid=BV1ZcB2BQE1V
+[10:15:59.551] D/MainActivity: 🎬 进入视频详情页
+[10:15:59.576] D/VideoPlayerState: 🔥 Calling loadVideo: BV1ZcB2BQE1V
+[10:15:59.580] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/view?bvid=BV1ZcB2BQE1V, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:59.830] D/VideoRepo: 🎬 getVideoDetails: bvid=BV1ZcB2BQE1V, aid=115775155212670, cid=34957102681, title=广东大降温：-45度极寒将袭击东北，元旦...
+[10:15:59.831] D/PlayUrlCache: ❌ Cache miss: bvid=BV1ZcB2BQE1V, cid=34957102681
+[10:15:59.832] D/VideoRepo: 🔥 Selected startQuality=80 (isLogin=true, isVip=false, auto1080p=true)
+[10:15:59.832] D/VideoRepo: 🔥 fetchPlayUrlRecursive: bvid=BV1ZcB2BQE1V, isLoggedIn=true, targetQn=80
+[10:15:59.832] D/VideoRepo: 🔥 [LoggedIn] DASH-first strategy, qn=80
+[10:15:59.833] D/VideoRepo: 🔥 [LoggedIn] Trying APP API first with access_token...
+[10:15:59.833] D/VideoRepo: 🔥 fetchPlayUrlWithAccessToken: bvid=BV1ZcB2BQE1V, qn=80, accessToken=93e29e4a5f...
+[10:15:59.835] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?access_key=93e29e4a5feb96f478c34041ab1adac2&appkey=4409e2ce8ffd12b8&bvid=BV1ZcB2BQE1V&cid=34957102681&device=android&fnval=4048&fnver=0&fourk=1&mobi_app=android_tv_yst&platform=android&qn=80&ts=1766628959&sign=0c55c75758d686ae0fde2f06c449fe22, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:59.836] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:15:59.925] D/VideoRepo: 🔥 APP PlayUrl response: code=-351, qn=80, dashIds=null
+[10:15:59.925] D/VideoRepo: ❌ APP API error: code=-351, msg=受到神秘力量干扰，请稍后再试！
+[10:15:59.925] D/VideoRepo: ⚠️ [LoggedIn] APP API failed, trying DASH...
+[10:15:59.926] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1ZcB2BQE1V, cid=34957102681, qn=80
+[10:15:59.927] D/WbiUtils: 🔐 w_rid: e44d50956c4256da87bc15a4f8d4936d, params count: 18
+[10:15:59.929] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=5e391a8f67fdaef3ceffae1b7a0b12b2&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628959&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=e44d50956c4256da87bc15a4f8d4936d, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:15:59.929] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:16:00.066] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:16:00.066] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:16:00.066] D/VideoRepo: 🔥 DASH video IDs: null
+[10:16:00.067] D/VideoRepo: 🔥 DASH retry 2...
+[10:16:00.569] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1ZcB2BQE1V, cid=34957102681, qn=80
+[10:16:00.572] D/WbiUtils: 🔐 w_rid: 7ed0635e35a2c9ff7e14f232b8418fa5, params count: 18
+[10:16:00.575] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=f3f607448b7a6ca9f7566649534b9046&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766628960&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=7ed0635e35a2c9ff7e14f232b8418fa5, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:16:00.577] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:16:00.735] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:16:00.737] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:16:00.738] D/VideoRepo: 🔥 DASH video IDs: null
+[10:16:00.740] D/VideoRepo: 🔥 [LoggedIn] DASH failed, trying HTML5 fallback...
+[10:16:00.741] D/VideoRepo: 🔥 fetchPlayUrlHtml5Fallback: bvid=BV1ZcB2BQE1V, cid=34957102681, qn=80
+[10:16:00.745] D/WbiUtils: 🔐 w_rid: 29b6fe364e5cb1f4fa2a427630f68221, params count: 16
+[10:16:00.751] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1&try_look=1&gaia_source=pre-load&web_location=1550101&wts=1766628960&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=29b6fe364e5cb1f4fa2a427630f68221, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:16:00.753] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:16:00.853] D/VideoRepo: 🔥 HTML5 fallback response: code=0, quality=0
+[10:16:00.854] D/VideoRepo: ✅ HTML5 fallback success!
+[10:16:00.855] D/VideoRepo: 🔥 [LoggedIn] HTML5 failed, trying Legacy API...
+[10:16:00.859] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=16&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:16:00.861] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:16:00.958] D/VideoRepo: 🔥🔥 [LoggedIn] All auth methods failed! Trying GUEST fallback (no auth)...
+[10:16:00.960] D/VideoRepo: 🔥 fetchAsGuestFallback: bvid=BV1ZcB2BQE1V, cid=34957102681
+[10:16:00.963] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=64&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:16:00.965] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:16:01.062] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=32&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=0, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:16:01.064] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:16:01.156] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/archive/related?bvid=BV1ZcB2BQE1V, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:16:01.374] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/emote/user/panel/web?business=reply, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:16:01.503] E/CrashReporter: 📊 Video error reported: [load_failed] BV1ZcB2BQE1V - 加载失败: 无法获取任何画质的播放地址
+[10:16:10.543] D/MainActivity: 👋 onUserLeaveHint 触发, isInVideoDetail=true, isMiniMode=false
+[10:16:10.544] D/MainActivity: 📺 miniPlayerMode=BACKGROUND, shouldEnterPip=false, shouldTriggerPip=false, API=29
+[10:16:10.544] D/MainActivity: ⏳ 未满足 PiP 条件: API>=26=true, shouldTriggerPip=false
+[10:16:10.546] D/VideoPlayerState: 💾 ON_PAUSE: pos=0, wasPlaying=false
+[10:16:10.605] D/PureApplication: 🧹 UI hidden, cleared image memory cache
+[10:17:50.502] D/VideoPlayerState: ▶️ ON_RESUME: restored pos=0, playing=false
+[10:17:50.531] D/PureApplication: 🚨 TRIM_MEMORY_COMPLETE, released all caches
+[10:17:51.508] D/PlayUrlCache: 🗑️ Invalidated: bvid=BV1ZcB2BQE1V, cid=0
+[10:17:51.510] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/view?bvid=BV1ZcB2BQE1V, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:17:51.700] D/VideoRepo: 🎬 getVideoDetails: bvid=BV1ZcB2BQE1V, aid=115775155212670, cid=34957102681, title=广东大降温：-45度极寒将袭击东北，元旦...
+[10:17:51.701] D/PlayUrlCache: ❌ Cache miss: bvid=BV1ZcB2BQE1V, cid=34957102681
+[10:17:51.702] D/VideoRepo: 🔥 Selected startQuality=80 (isLogin=true, isVip=false, auto1080p=true)
+[10:17:51.702] D/VideoRepo: 🔥 fetchPlayUrlRecursive: bvid=BV1ZcB2BQE1V, isLoggedIn=true, targetQn=80
+[10:17:51.703] D/VideoRepo: 🔥 [LoggedIn] DASH-first strategy, qn=80
+[10:17:51.703] D/VideoRepo: 🔥 [LoggedIn] Trying APP API first with access_token...
+[10:17:51.703] D/VideoRepo: 🔥 fetchPlayUrlWithAccessToken: bvid=BV1ZcB2BQE1V, qn=80, accessToken=93e29e4a5f...
+[10:17:51.706] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?access_key=93e29e4a5feb96f478c34041ab1adac2&appkey=4409e2ce8ffd12b8&bvid=BV1ZcB2BQE1V&cid=34957102681&device=android&fnval=4048&fnver=0&fourk=1&mobi_app=android_tv_yst&platform=android&qn=80&ts=1766629071&sign=db16bbc21c01bada2e873cecd5ff463a, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:17:51.707] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:51.843] D/VideoRepo: 🔥 APP PlayUrl response: code=-351, qn=80, dashIds=null
+[10:17:51.845] D/VideoRepo: ❌ APP API error: code=-351, msg=受到神秘力量干扰，请稍后再试！
+[10:17:51.846] D/VideoRepo: ⚠️ [LoggedIn] APP API failed, trying DASH...
+[10:17:51.848] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1ZcB2BQE1V, cid=34957102681, qn=80
+[10:17:51.854] D/WbiUtils: 🔐 w_rid: 36025e8d07f454ae61552c9574aa6cb8, params count: 18
+[10:17:51.858] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=87ad2c8de38df0ea5d53d37f1a94bfd2&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766629071&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=36025e8d07f454ae61552c9574aa6cb8, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:17:51.859] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:51.966] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:17:51.968] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:17:51.969] D/VideoRepo: 🔥 DASH video IDs: null
+[10:17:51.971] D/VideoRepo: 🔥 DASH retry 2...
+[10:17:52.473] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1ZcB2BQE1V, cid=34957102681, qn=80
+[10:17:52.475] D/WbiUtils: 🔐 w_rid: 8f5ffa946d810fa46828593bfab1d218, params count: 18
+[10:17:52.479] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=1ac68676459f99f859303491e99da168&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766629072&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=8f5ffa946d810fa46828593bfab1d218, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:17:52.480] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:52.632] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:17:52.634] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:17:52.635] D/VideoRepo: 🔥 DASH video IDs: null
+[10:17:52.637] D/VideoRepo: 🔥 [LoggedIn] DASH failed, trying HTML5 fallback...
+[10:17:52.639] D/VideoRepo: 🔥 fetchPlayUrlHtml5Fallback: bvid=BV1ZcB2BQE1V, cid=34957102681, qn=80
+[10:17:52.645] D/WbiUtils: 🔐 w_rid: f70440287a2fa3523c787ab5fb488812, params count: 16
+[10:17:52.651] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1&try_look=1&gaia_source=pre-load&web_location=1550101&wts=1766629072&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=f70440287a2fa3523c787ab5fb488812, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:17:52.653] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:52.779] D/VideoRepo: 🔥 HTML5 fallback response: code=0, quality=0
+[10:17:52.781] D/VideoRepo: ✅ HTML5 fallback success!
+[10:17:52.782] D/VideoRepo: 🔥 [LoggedIn] HTML5 failed, trying Legacy API...
+[10:17:52.788] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=80&fnval=16&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:17:52.791] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:52.940] D/VideoRepo: 🔥🔥 [LoggedIn] All auth methods failed! Trying GUEST fallback (no auth)...
+[10:17:52.942] D/VideoRepo: 🔥 fetchAsGuestFallback: bvid=BV1ZcB2BQE1V, cid=34957102681
+[10:17:52.946] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=64&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:17:52.948] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:53.091] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1ZcB2BQE1V&cid=34957102681&qn=32&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=0, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:17:53.093] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:53.250] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/archive/related?bvid=BV1ZcB2BQE1V, Referer: https://www.bilibili.com/video/BV1ZcB2BQE1V, Cookie contains SESSDATA: true
+[10:17:53.512] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/emote/user/panel/web?business=reply, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:17:53.675] E/CrashReporter: 📊 Video error reported: [load_failed] BV1ZcB2BQE1V - 加载失败: 无法获取任何画质的播放地址
+[10:17:55.206] D/VideoPlayerState: 💾 ON_PAUSE: pos=0, wasPlaying=false
+[10:17:56.267] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/popular?pn=1&ps=20, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:17:56.321] D/VideoPlayerState: 🔥 释放所有资源
+[10:17:56.322] D/MiniPlayerManager: 🔥 resetExternalPlayer: clearing external player reference
+[10:17:56.323] D/MainActivity: 🔙 退出视频详情页
+[10:17:56.324] D/MiniPlayerManager: 🔥 enterMiniMode called: isActive=false, currentBvid=null, isMiniMode=false, mode=BACKGROUND
+[10:17:56.324] W/MiniPlayerManager: ⚠️ Cannot enter mini mode: isActive is false!
+[10:17:56.439] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:17:56.572] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=1&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:17:56.708] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=2&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:17:56.845] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=3&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:17:56.980] D/HomeVM: 📋 Reached end at page 3, total: 146
+[10:17:56.982] D/HomeVM: 📋 Total following mids fetched and cached: 146
+[10:17:57.867] D/MiniPlayerManager: Exiting mini mode
+[10:17:57.888] D/VideoPlayerState: 🔥 创建新 player: bvid=BV1rpBKBLEWV
+[10:17:57.930] D/MainActivity: 🎬 进入视频详情页
+[10:17:57.952] D/VideoPlayerState: 🔥 Calling loadVideo: BV1rpBKBLEWV
+[10:17:57.955] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/view?bvid=BV1rpBKBLEWV, Referer: https://www.bilibili.com/video/BV1rpBKBLEWV, Cookie contains SESSDATA: true
+[10:17:58.061] D/VideoRepo: 🎬 getVideoDetails: bvid=BV1rpBKBLEWV, aid=115768578545344, cid=34930495344, title=感谢朋友们的硬币之力，为我买2000块药...
+[10:17:58.061] D/PlayUrlCache: ❌ Cache miss: bvid=BV1rpBKBLEWV, cid=34930495344
+[10:17:58.062] D/VideoRepo: 🔥 Selected startQuality=80 (isLogin=true, isVip=false, auto1080p=true)
+[10:17:58.062] D/VideoRepo: 🔥 fetchPlayUrlRecursive: bvid=BV1rpBKBLEWV, isLoggedIn=true, targetQn=80
+[10:17:58.062] D/VideoRepo: 🔥 [LoggedIn] DASH-first strategy, qn=80
+[10:17:58.063] D/VideoRepo: 🔥 [LoggedIn] Trying APP API first with access_token...
+[10:17:58.063] D/VideoRepo: 🔥 fetchPlayUrlWithAccessToken: bvid=BV1rpBKBLEWV, qn=80, accessToken=93e29e4a5f...
+[10:17:58.065] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?access_key=93e29e4a5feb96f478c34041ab1adac2&appkey=4409e2ce8ffd12b8&bvid=BV1rpBKBLEWV&cid=34930495344&device=android&fnval=4048&fnver=0&fourk=1&mobi_app=android_tv_yst&platform=android&qn=80&ts=1766629078&sign=52a0e8dbca35b36ecf218d35c25da58e, Referer: https://www.bilibili.com/video/BV1rpBKBLEWV, Cookie contains SESSDATA: true
+[10:17:58.065] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:58.160] D/VideoRepo: 🔥 APP PlayUrl response: code=-351, qn=80, dashIds=null
+[10:17:58.160] D/VideoRepo: ❌ APP API error: code=-351, msg=受到神秘力量干扰，请稍后再试！
+[10:17:58.161] D/VideoRepo: ⚠️ [LoggedIn] APP API failed, trying DASH...
+[10:17:58.161] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1rpBKBLEWV, cid=34930495344, qn=80
+[10:17:58.162] D/WbiUtils: 🔐 w_rid: 062d33b248ac4d17363a3b19267ee36f, params count: 18
+[10:17:58.164] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1rpBKBLEWV&cid=34930495344&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=6459bb7b453edb988801b312f1e52305&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766629078&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=062d33b248ac4d17363a3b19267ee36f, Referer: https://www.bilibili.com/video/BV1rpBKBLEWV, Cookie contains SESSDATA: true
+[10:17:58.165] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:58.256] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:17:58.256] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:17:58.257] D/VideoRepo: 🔥 DASH video IDs: null
+[10:17:58.257] D/VideoRepo: 🔥 DASH retry 2...
+[10:17:58.759] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1rpBKBLEWV, cid=34930495344, qn=80
+[10:17:58.761] D/WbiUtils: 🔐 w_rid: e9abaaa8a5b09387a2923ae4104aeeff, params count: 18
+[10:17:58.764] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1rpBKBLEWV&cid=34930495344&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=ab079a7df06461820f978a0e1879425a&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766629078&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=e9abaaa8a5b09387a2923ae4104aeeff, Referer: https://www.bilibili.com/video/BV1rpBKBLEWV, Cookie contains SESSDATA: true
+[10:17:58.766] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:58.903] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:17:58.904] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:17:58.905] D/VideoRepo: 🔥 DASH video IDs: null
+[10:17:58.905] D/VideoRepo: 🔥 [LoggedIn] DASH failed, trying HTML5 fallback...
+[10:17:58.906] D/VideoRepo: 🔥 fetchPlayUrlHtml5Fallback: bvid=BV1rpBKBLEWV, cid=34930495344, qn=80
+[10:17:58.908] D/WbiUtils: 🔐 w_rid: b8ee18e070b6d9f1567424a2e5e4b84d, params count: 16
+[10:17:58.911] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1rpBKBLEWV&cid=34930495344&qn=80&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1&try_look=1&gaia_source=pre-load&web_location=1550101&wts=1766629078&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=b8ee18e070b6d9f1567424a2e5e4b84d, Referer: https://www.bilibili.com/video/BV1rpBKBLEWV, Cookie contains SESSDATA: true
+[10:17:58.913] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:59.030] D/VideoRepo: 🔥 HTML5 fallback response: code=0, quality=0
+[10:17:59.030] D/VideoRepo: ✅ HTML5 fallback success!
+[10:17:59.031] D/VideoRepo: 🔥 [LoggedIn] HTML5 failed, trying Legacy API...
+[10:17:59.034] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1rpBKBLEWV&cid=34930495344&qn=80&fnval=16&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1rpBKBLEWV, Cookie contains SESSDATA: true
+[10:17:59.036] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:59.178] D/VideoRepo: 🔥🔥 [LoggedIn] All auth methods failed! Trying GUEST fallback (no auth)...
+[10:17:59.179] D/VideoRepo: 🔥 fetchAsGuestFallback: bvid=BV1rpBKBLEWV, cid=34930495344
+[10:17:59.182] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1rpBKBLEWV&cid=34930495344&qn=64&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1rpBKBLEWV, Cookie contains SESSDATA: true
+[10:17:59.184] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:59.286] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1rpBKBLEWV&cid=34930495344&qn=32&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=0, Referer: https://www.bilibili.com/video/BV1rpBKBLEWV, Cookie contains SESSDATA: true
+[10:17:59.288] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:17:59.389] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/archive/related?bvid=BV1rpBKBLEWV, Referer: https://www.bilibili.com/video/BV1rpBKBLEWV, Cookie contains SESSDATA: true
+[10:17:59.619] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/emote/user/panel/web?business=reply, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:17:59.797] E/CrashReporter: 📊 Video error reported: [load_failed] BV1rpBKBLEWV - 加载失败: 无法获取任何画质的播放地址
+[10:18:01.650] D/VideoPlayerState: 💾 ON_PAUSE: pos=0, wasPlaying=false
+[10:18:02.734] D/VideoPlayerState: 🔥 释放所有资源
+[10:18:02.735] D/MiniPlayerManager: 🔥 resetExternalPlayer: clearing external player reference
+[10:18:02.738] D/MainActivity: 🔙 退出视频详情页
+[10:18:02.739] D/MiniPlayerManager: 🔥 enterMiniMode called: isActive=false, currentBvid=null, isMiniMode=false, mode=BACKGROUND
+[10:18:02.739] W/MiniPlayerManager: ⚠️ Cannot enter mini mode: isActive is false!
+[10:18:02.772] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:18:02.963] D/WbiUtils: 🔐 w_rid: 1537940419396e29ed8404ddc7137c3b, params count: 10
+[10:18:02.965] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd?ps=10&fresh_type=3&fresh_idx=0&feed_version=1766629082962&y_num=0&wts=1766629082&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=1537940419396e29ed8404ddc7137c3b, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:18:03.522] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:18:03.615] D/HomeVM: 📋 Loaded 146 following mids from cache
+[10:18:05.107] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:18:05.109] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav/stat, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:18:05.120] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:18:05.120] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav/stat, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:18:11.895] D/MainActivity: 👋 onUserLeaveHint 触发, isInVideoDetail=false, isMiniMode=false
+[10:18:11.895] D/MainActivity: 📺 miniPlayerMode=BACKGROUND, shouldEnterPip=false, shouldTriggerPip=false, API=29
+[10:18:11.895] D/MainActivity: ⏳ 未满足 PiP 条件: API>=26=true, shouldTriggerPip=false
+[10:18:22.806] D/MainActivity: 👋 onUserLeaveHint 触发, isInVideoDetail=false, isMiniMode=false
+[10:18:22.807] D/MainActivity: 📺 miniPlayerMode=BACKGROUND, shouldEnterPip=false, shouldTriggerPip=false, API=29
+[10:18:22.808] D/MainActivity: ⏳ 未满足 PiP 条件: API>=26=true, shouldTriggerPip=false
+[10:18:22.881] D/PureApplication: 🧹 UI hidden, cleared image memory cache
+[10:30:11.150] D/CrashReporter: 📊 Crashlytics collection enabled
+[10:30:14.405] D/AnalyticsHelper: 📊 Analytics collection enabled
+[10:30:17.308] D/MiniPlayerManager: Exiting mini mode
+[10:30:17.340] D/VideoPlayerState: 🔥 创建新 player: bvid=BV1fMBTByEgc
+[10:30:17.397] D/MainActivity: 🎬 进入视频详情页
+[10:30:17.422] D/VideoPlayerState: 🔥 Calling loadVideo: BV1fMBTByEgc
+[10:30:17.427] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/view?bvid=BV1fMBTByEgc, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:17.605] D/VideoRepo: 🎬 getVideoDetails: bvid=BV1fMBTByEgc, aid=115768142470522, cid=34927872981, title=全世界最准的狙击枪！售价10万元！M20...
+[10:30:17.605] D/PlayUrlCache: ❌ Cache miss: bvid=BV1fMBTByEgc, cid=34927872981
+[10:30:17.606] D/VideoRepo: 🔥 Selected startQuality=80 (isLogin=true, isVip=false, auto1080p=true)
+[10:30:17.606] D/VideoRepo: 🔥 fetchPlayUrlRecursive: bvid=BV1fMBTByEgc, isLoggedIn=true, targetQn=80
+[10:30:17.607] D/VideoRepo: 🔥 [LoggedIn] DASH-first strategy, qn=80
+[10:30:17.607] D/VideoRepo: 🔥 [LoggedIn] Trying APP API first with access_token...
+[10:30:17.608] D/VideoRepo: 🔥 fetchPlayUrlWithAccessToken: bvid=BV1fMBTByEgc, qn=80, accessToken=93e29e4a5f...
+[10:30:17.610] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?access_key=93e29e4a5feb96f478c34041ab1adac2&appkey=4409e2ce8ffd12b8&bvid=BV1fMBTByEgc&cid=34927872981&device=android&fnval=4048&fnver=0&fourk=1&mobi_app=android_tv_yst&platform=android&qn=80&ts=1766629817&sign=f142c7b18a6716bb7c896e8b9f863b2d, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:17.611] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:17.684] D/VideoRepo: 🔥 APP PlayUrl response: code=-351, qn=80, dashIds=null
+[10:30:17.684] D/VideoRepo: ❌ APP API error: code=-351, msg=受到神秘力量干扰，请稍后再试！
+[10:30:17.685] D/VideoRepo: ⚠️ [LoggedIn] APP API failed, trying DASH...
+[10:30:17.685] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1fMBTByEgc, cid=34927872981, qn=80
+[10:30:17.687] D/WbiUtils: 🔐 w_rid: 0f72712b3176e32f4d7195e29ec9f684, params count: 18
+[10:30:17.690] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=49778a2a4e1530bf3cf32467a2ed5df6&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766629817&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=0f72712b3176e32f4d7195e29ec9f684, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:17.691] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:17.779] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:30:17.779] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:30:17.780] D/VideoRepo: 🔥 DASH video IDs: null
+[10:30:17.780] D/VideoRepo: 🔥 DASH retry 2...
+[10:30:18.283] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1fMBTByEgc, cid=34927872981, qn=80
+[10:30:18.289] D/WbiUtils: 🔐 w_rid: c56fb2fdd14ee275ed7365eac9bacd44, params count: 18
+[10:30:18.296] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=ce9ab22986f7265af45bb06f4a5a98b8&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766629818&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=c56fb2fdd14ee275ed7365eac9bacd44, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:18.299] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:18.392] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:30:18.393] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:30:18.394] D/VideoRepo: 🔥 DASH video IDs: null
+[10:30:18.395] D/VideoRepo: 🔥 [LoggedIn] DASH failed, trying HTML5 fallback...
+[10:30:18.395] D/VideoRepo: 🔥 fetchPlayUrlHtml5Fallback: bvid=BV1fMBTByEgc, cid=34927872981, qn=80
+[10:30:18.398] D/WbiUtils: 🔐 w_rid: 2ca8736654405a95024db3ceb38a08d6, params count: 16
+[10:30:18.401] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=80&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1&try_look=1&gaia_source=pre-load&web_location=1550101&wts=1766629818&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=2ca8736654405a95024db3ceb38a08d6, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:18.402] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:18.488] D/VideoRepo: 🔥 HTML5 fallback response: code=0, quality=0
+[10:30:18.489] D/VideoRepo: ✅ HTML5 fallback success!
+[10:30:18.490] D/VideoRepo: 🔥 [LoggedIn] HTML5 failed, trying Legacy API...
+[10:30:18.493] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=80&fnval=16&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:18.495] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:18.579] D/VideoRepo: 🔥🔥 [LoggedIn] All auth methods failed! Trying GUEST fallback (no auth)...
+[10:30:18.580] D/VideoRepo: 🔥 fetchAsGuestFallback: bvid=BV1fMBTByEgc, cid=34927872981
+[10:30:18.583] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=64&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:18.585] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:18.671] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=32&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=0, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:18.673] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:18.765] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/archive/related?bvid=BV1fMBTByEgc, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:18.977] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/emote/user/panel/web?business=reply, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:30:19.123] E/CrashReporter: 📊 Video error reported: [load_failed] BV1fMBTByEgc - 加载失败: 无法获取任何画质的播放地址
+[10:30:20.112] D/PlayUrlCache: 🗑️ Invalidated: bvid=BV1fMBTByEgc, cid=0
+[10:30:20.116] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/view?bvid=BV1fMBTByEgc, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:20.190] D/VideoRepo: 🎬 getVideoDetails: bvid=BV1fMBTByEgc, aid=115768142470522, cid=34927872981, title=全世界最准的狙击枪！售价10万元！M20...
+[10:30:20.191] D/PlayUrlCache: ❌ Cache miss: bvid=BV1fMBTByEgc, cid=34927872981
+[10:30:20.191] D/VideoRepo: 🔥 Selected startQuality=80 (isLogin=true, isVip=false, auto1080p=true)
+[10:30:20.192] D/VideoRepo: 🔥 fetchPlayUrlRecursive: bvid=BV1fMBTByEgc, isLoggedIn=true, targetQn=80
+[10:30:20.192] D/VideoRepo: 🔥 [LoggedIn] DASH-first strategy, qn=80
+[10:30:20.193] D/VideoRepo: 🔥 [LoggedIn] Trying APP API first with access_token...
+[10:30:20.194] D/VideoRepo: 🔥 fetchPlayUrlWithAccessToken: bvid=BV1fMBTByEgc, qn=80, accessToken=93e29e4a5f...
+[10:30:20.196] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?access_key=93e29e4a5feb96f478c34041ab1adac2&appkey=4409e2ce8ffd12b8&bvid=BV1fMBTByEgc&cid=34927872981&device=android&fnval=4048&fnver=0&fourk=1&mobi_app=android_tv_yst&platform=android&qn=80&ts=1766629820&sign=9225024b60a7b10f7498c99f4dfaf1e1, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:20.197] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:20.270] D/VideoRepo: 🔥 APP PlayUrl response: code=-351, qn=80, dashIds=null
+[10:30:20.270] D/VideoRepo: ❌ APP API error: code=-351, msg=受到神秘力量干扰，请稍后再试！
+[10:30:20.271] D/VideoRepo: ⚠️ [LoggedIn] APP API failed, trying DASH...
+[10:30:20.271] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1fMBTByEgc, cid=34927872981, qn=80
+[10:30:20.273] D/WbiUtils: 🔐 w_rid: 411d441659d75f1b788ab33c1daaaaab, params count: 18
+[10:30:20.275] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=5e1bdd659dd5d1b400596a3c81f3f7c8&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766629820&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=411d441659d75f1b788ab33c1daaaaab, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:20.276] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:20.366] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:30:20.367] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:30:20.369] D/VideoRepo: 🔥 DASH video IDs: null
+[10:30:20.370] D/VideoRepo: 🔥 DASH retry 2...
+[10:30:20.873] D/VideoRepo: fetchPlayUrlWithWbiInternal: bvid=BV1fMBTByEgc, cid=34927872981, qn=80
+[10:30:20.878] D/WbiUtils: 🔐 w_rid: 6ab66e4675de49906bf8eb585713ae6e, params count: 18
+[10:30:20.885] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=80&fnval=4048&fnver=0&fourk=1&platform=pc&high_quality=1&try_look=1&session=c93d3145ea2a6e67526a489b2d64b50b&voice_balance=1&gaia_source=pre-load&web_location=1550101&wts=1766629820&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=6ab66e4675de49906bf8eb585713ae6e, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:20.887] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:20.974] D/VideoRepo: 🔥 PlayUrl response: code=0, requestedQn=80, returnedQuality=0
+[10:30:20.976] D/VideoRepo: 🔥 accept_quality=[], accept_description=[]
+[10:30:20.977] D/VideoRepo: 🔥 DASH video IDs: null
+[10:30:20.979] D/VideoRepo: 🔥 [LoggedIn] DASH failed, trying HTML5 fallback...
+[10:30:20.980] D/VideoRepo: 🔥 fetchPlayUrlHtml5Fallback: bvid=BV1fMBTByEgc, cid=34927872981, qn=80
+[10:30:20.984] D/WbiUtils: 🔐 w_rid: 4c228fdb4b1c8a66b3e8be9ec4bf05e9, params count: 16
+[10:30:20.990] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/wbi/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=80&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1&try_look=1&gaia_source=pre-load&web_location=1550101&wts=1766629820&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=4c228fdb4b1c8a66b3e8be9ec4bf05e9, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:20.992] D/CookieJar: 🔥 /x/player/wbi/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:21.080] D/VideoRepo: 🔥 HTML5 fallback response: code=0, quality=0
+[10:30:21.081] D/VideoRepo: ✅ HTML5 fallback success!
+[10:30:21.082] D/VideoRepo: 🔥 [LoggedIn] HTML5 failed, trying Legacy API...
+[10:30:21.085] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=80&fnval=16&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:21.087] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:21.171] D/VideoRepo: 🔥🔥 [LoggedIn] All auth methods failed! Trying GUEST fallback (no auth)...
+[10:30:21.172] D/VideoRepo: 🔥 fetchAsGuestFallback: bvid=BV1fMBTByEgc, cid=34927872981
+[10:30:21.175] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=64&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=1, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:21.177] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:21.265] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/player/playurl?bvid=BV1fMBTByEgc&cid=34927872981&qn=32&fnval=1&fnver=0&fourk=1&platform=html5&high_quality=0, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:21.267] D/CookieJar: 🔥 /x/player/playurl request: domain=bilibili.com, SESSDATA=*** bili_jct=***
+[10:30:21.354] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/archive/related?bvid=BV1fMBTByEgc, Referer: https://www.bilibili.com/video/BV1fMBTByEgc, Cookie contains SESSDATA: true
+[10:30:21.568] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/emote/user/panel/web?business=reply, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[10:30:21.711] E/CrashReporter: 📊 Video error reported: [load_failed] BV1fMBTByEgc - 加载失败: 无法获取任何画质的播放地址
+[10:30:22.483] D/VideoPlayerState: 💾 ON_PAUSE: pos=0, wasPlaying=false
+[10:30:23.542] D/VideoPlayerState: 🔥 释放所有资源
+[10:30:23.543] D/MiniPlayerManager: 🔥 resetExternalPlayer: clearing external player reference
+[10:30:23.546] D/MainActivity: 🔙 退出视频详情页
+[10:30:23.546] D/MiniPlayerManager: 🔥 enterMiniMode called: isActive=false, currentBvid=null, isMiniMode=false, mode=BACKGROUND
+[10:30:23.547] W/MiniPlayerManager: ⚠️ Cannot enter mini mode: isActive is false!
+[10:30:31.110] D/CacheUtils: ✅ Coil memory cache cleared
+[10:30:31.110] D/PlayUrlCache: 🧹 Cache cleared
+[10:30:31.111] D/CacheUtils: ✅ PlayUrlCache cleared
+[10:30:31.128] D/CacheUtils: ✅ Coil disk cache cleared
+[10:30:31.139] D/CacheUtils: ✅ OkHttp cache cleared
+[10:30:31.141] D/CacheUtils: ✅ Internal cache cleared
+[10:30:31.142] D/CacheUtils: ✅ External cache cleared
+[10:30:31.143] D/CacheUtils: ✅ Following cache cleared
+[10:30:31.143] D/WbiKeyManager: 🗑️ Invalidating WBI keys cache
+[10:30:31.144] D/CacheUtils: ✅ WBI cache invalidated
+[10:30:31.144] D/CacheUtils: 🎉 All cache cleared successfully
+[10:30:41.533] D/MainActivity: 👋 onUserLeaveHint 触发, isInVideoDetail=false, isMiniMode=false
+[10:30:41.534] D/MainActivity: 📺 miniPlayerMode=BACKGROUND, shouldEnterPip=false, shouldTriggerPip=false, API=29
+[10:30:41.534] D/MainActivity: ⏳ 未满足 PiP 条件: API>=26=true, shouldTriggerPip=false
+[10:30:43.935] D/PureApplication: 🧹 UI hidden, cleared image memory cache
+[10:37:49.702] D/PureApplication: 🧹 UI hidden, cleared image memory cache
+[12:03:48.349] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[12:03:48.355] D/MiniPlayerOverlay: 🎬 Overlay: mode=BACKGROUND, isMiniMode=false, isActive=false
+[12:03:48.509] D/WbiUtils: 🔐 w_rid: dc16b9aa506d7dc25bbe1c0d162ee434, params count: 10
+[12:03:48.510] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd?ps=10&fresh_type=3&fresh_idx=0&feed_version=1766635428508&y_num=0&wts=1766635428&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=dc16b9aa506d7dc25bbe1c0d162ee434, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[12:03:48.791] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[12:03:48.870] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=1&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[12:03:48.964] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=2&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[12:03:49.079] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/relation/followings?vmid=37554048&pn=3&ps=50&order=desc, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[12:03:49.187] D/HomeVM: 📋 Reached end at page 3, total: 146
+[12:03:49.187] D/HomeVM: 📋 Total following mids fetched and cached: 146
+[12:03:49.190] D/AdFilterPlugin: 🚫 过滤标题党: 抛开信仰不谈，索尼的手机到底有多离谱...
+[12:03:49.256] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/nav, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[12:03:49.344] D/WbiUtils: 🔐 w_rid: dd666bd5c23e8907fec4a9ba8dffcfa4, params count: 10
+[12:03:49.345] D/ApiClient: 🔥 Sending request to https://api.bilibili.com/x/web-interface/wbi/index/top/feed/rcmd?ps=10&fresh_type=3&fresh_idx=1&feed_version=1766635429343&y_num=1&wts=1766635429&dm_img_list=%5B%5D&dm_img_str=V2ViR0wgMS4wIChPcGVuR0wgRVMgMi4wIENocm9taXVtKQ&dm_cover_img_str=QU5HTEUgKE5WSURJQSwgTlZJRElBIEdlRm9yY2UgR1RYIDEwNjAgNkdCIERpcmVjdDNEMTEgdnNfNV8wIHBzXzVfMCwgRDNEMTEp&dm_img_inter=%7B%22ds%22%3A%5B%5D%2C%22wh%22%3A%5B0%2C0%2C0%5D%2C%22of%22%3A%5B0%2C0%2C0%5D%7D&w_rid=dd666bd5c23e8907fec4a9ba8dffcfa4, Referer: https://www.bilibili.com, Cookie contains SESSDATA: true
+[12:03:51.410] D/MiniPlayerOverlay: 🎬 Overlay: mode=BACKGROUND, isMiniMode=false, isActive=false
+[12:03:53.901] D/MainActivity: 👋 onUserLeaveHint 触发, isInVideoDetail=false, isMiniMode=false
+[12:03:53.901] D/MainActivity: 📺 miniPlayerMode=BACKGROUND, shouldEnterPip=false, shouldTriggerPip=false, API=29
+[12:03:53.901] D/MainActivity: ⏳ 未满足 PiP 条件: API>=26=true, shouldTriggerPip=false
+[12:04:01.009] D/PureApplication: 🧹 UI hidden, cleared image memory cache
+[12:06:59.559] D/PureApplication: 🧹 UI hidden, cleared image memory cache
+[12:07:04.182] D/PureApplication: 🧹 UI hidden, cleared image memory cache

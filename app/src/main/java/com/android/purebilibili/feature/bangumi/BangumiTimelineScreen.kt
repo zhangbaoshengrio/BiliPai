@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.util.FormatUtils
 import com.android.purebilibili.data.model.response.TimelineDay
 import com.android.purebilibili.data.model.response.TimelineEpisode
@@ -166,8 +166,8 @@ private fun DayChip(
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         color = when {
-            isSelected -> BiliPink
-            isToday -> BiliPink.copy(alpha = 0.2f)
+            isSelected -> MaterialTheme.colorScheme.primary
+            isToday -> MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
             else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
         }
     ) {
@@ -181,7 +181,7 @@ private fun DayChip(
                 fontWeight = if (isSelected || isToday) FontWeight.Bold else FontWeight.Normal,
                 color = when {
                     isSelected -> Color.White
-                    isToday -> BiliPink
+                    isToday -> MaterialTheme.colorScheme.primary
                     else -> MaterialTheme.colorScheme.onSurface
                 }
             )
@@ -191,7 +191,7 @@ private fun DayChip(
                 fontSize = 11.sp,
                 color = when {
                     isSelected -> Color.White.copy(alpha = 0.8f)
-                    isToday -> BiliPink.copy(alpha = 0.7f)
+                    isToday -> MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                     else -> MaterialTheme.colorScheme.onSurfaceVariant
                 }
             )
@@ -236,7 +236,7 @@ private fun TimelineEpisodeCard(
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .padding(4.dp)
-                            .background(BiliPink, RoundedCornerShape(4.dp))
+                            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(4.dp))
                             .padding(horizontal = 4.dp, vertical = 2.dp)
                     ) {
                         Text(
@@ -271,7 +271,7 @@ private fun TimelineEpisodeCard(
                     Text(
                         text = episode.pubIndex,
                         fontSize = 13.sp,
-                        color = BiliPink
+                        color = MaterialTheme.colorScheme.primary
                     )
                     
                     Spacer(modifier = Modifier.width(8.dp))

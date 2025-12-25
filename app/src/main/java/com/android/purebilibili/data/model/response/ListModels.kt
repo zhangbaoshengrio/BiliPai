@@ -626,3 +626,47 @@ data class RegionPage(
     val num: Int = 1,
     val size: Int = 30
 )
+
+// --- 🔥🔥 [新增] 稍后再看 Response ---
+@Serializable
+data class WatchLaterResponse(
+    val code: Int = 0,
+    val message: String = "",
+    val data: WatchLaterData? = null
+)
+
+@Serializable
+data class WatchLaterData(
+    val count: Int = 0,
+    val list: List<WatchLaterItem>? = null
+)
+
+@Serializable
+data class WatchLaterItem(
+    val aid: Long = 0,
+    val bvid: String? = null,
+    val title: String? = null,
+    val pic: String? = null,
+    val duration: Int? = null,
+    val pubdate: Long? = null,
+    val owner: WatchLaterOwner? = null,
+    val stat: WatchLaterStat? = null
+)
+
+@Serializable
+data class WatchLaterOwner(
+    val mid: Long? = null,
+    val name: String? = null,
+    val face: String? = null
+)
+
+@Serializable
+data class WatchLaterStat(
+    val view: Int? = null,
+    val danmaku: Int? = null,
+    val reply: Int? = null,
+    val like: Int? = null,
+    val coin: Int? = null,
+    val favorite: Int? = null,
+    val share: Int? = null
+)

@@ -21,6 +21,8 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Fullscreen  // 🔥 横屏全屏
+import androidx.compose.material.icons.filled.FullscreenExit  // 🔥 退出全屏
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -65,6 +67,27 @@ fun LivePlayerScreen(
     // 🔥 画质菜单状态
     var showQualityMenu by remember { mutableStateOf(false) }
     
+    // 🔥 横屏状态
+    var isFullscreen by remember { mutableStateOf(false) }
+    
+    // 🔥 切换横竖屏
+    fun toggleFullscreen() {
+        isFullscreen = !isFullscreen
+        activity?.requestedOrientation = if (isFullscreen) {
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+    
+    // 🔥 返回处理 - 横屏时先退出横屏
+    BackHandler {
+        if (isFullscreen) {
+            toggleFullscreen()
+        } else {
+            onBack()
+        }
+    }    
     // 🔥 创建带 Referer 的数据源
     val dataSourceFactory = remember {
         DefaultHttpDataSource.Factory()
@@ -157,9 +180,6 @@ fun LivePlayerScreen(
             window?.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
-    
-    // 🔥 返回处理
-    BackHandler { onBack() }
     
     Box(
         modifier = Modifier
@@ -279,6 +299,22 @@ fun LivePlayerScreen(
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
                     )
                 }
+            }
+            
+            // 🔥 横屏/全屏按钮
+            Surface(
+                shape = CircleShape,
+                color = Color.Black.copy(alpha = 0.5f),
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .clickable { toggleFullscreen() }
+            ) {
+                Icon(
+                    imageVector = if (isFullscreen) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
+                    contentDescription = if (isFullscreen) "退出全屏" else "全屏",
+                    tint = Color.White,
+                    modifier = Modifier.padding(8.dp)
+                )
             }
             
             // 刷新按钮

@@ -38,17 +38,25 @@ object CardPositionManager {
         private set
     
     /**
+     * 🔥🔥 [新增] 屏幕密度，用于计算 dp 到 px
+     */
+    var lastScreenDensity: Float = 3f
+        private set
+    
+    /**
      * 记录卡片位置
      * @param bounds 卡片在 Root 坐标系中的边界
      * @param screenWidth 屏幕宽度
      * @param screenHeight 屏幕高度
      * @param isSingleColumn 是否是单列卡片（故事卡片）
+     * @param density 屏幕密度（可选）
      */
     fun recordCardPosition(
         bounds: Rect, 
         screenWidth: Float, 
         screenHeight: Float,
-        isSingleColumn: Boolean = false
+        isSingleColumn: Boolean = false,
+        density: Float = 3f
     ) {
         lastClickedCardBounds = bounds
         // 计算归一化的中心点坐标 (0-1 范围)
@@ -57,6 +65,7 @@ object CardPositionManager {
             y = bounds.center.y / screenHeight
         )
         isSingleColumnCard = isSingleColumn
+        lastScreenDensity = density
     }
     
     /**
@@ -88,4 +97,16 @@ object CardPositionManager {
      */
     val isCardOnLeft: Boolean
         get() = (lastClickedCardCenter?.x ?: 0.5f) < 0.5f
+    
+    /**
+     * 🔥🔥 [新增] 判断卡片是否完全可见（没有被顶部 header 遮挡）
+     * Header 高度约为 156dp，如果卡片顶部在这个区域内，则认为被遮挡
+     * 被遮挡的卡片应该禁用共享元素过渡
+     */
+    val isCardFullyVisible: Boolean
+        get() {
+            val bounds = lastClickedCardBounds ?: return true
+            val headerHeightPx = 156 * lastScreenDensity  // 156dp header height
+            return bounds.top >= headerHeightPx
+        }
 }

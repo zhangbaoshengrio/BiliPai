@@ -278,4 +278,36 @@ object ActionRepository {
             ))
         }
     }
+    
+    /**
+     * 🔥 添加/移除稍后再看
+     */
+    suspend fun toggleWatchLater(aid: Long, add: Boolean): Result<Boolean> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val csrf = TokenManager.csrfCache ?: ""
+                if (csrf.isEmpty()) {
+                    return@withContext Result.failure(Exception("请先登录"))
+                }
+                
+                val response = if (add) {
+                    api.addToWatchLater(aid = aid, csrf = csrf)
+                } else {
+                    api.deleteFromWatchLater(aid = aid, csrf = csrf)
+                }
+                
+                com.android.purebilibili.core.util.Logger.d("ActionRepository", "🔥 toggleWatchLater: aid=$aid, add=$add, code=${response.code}")
+                
+                when (response.code) {
+                    0 -> Result.success(add)
+                    90001 -> Result.failure(Exception("稍后再看列表已满"))
+                    90003 -> Result.failure(Exception("视频已被删除"))
+                    else -> Result.failure(Exception(response.message.ifEmpty { "操作失败: ${response.code}" }))
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("ActionRepository", "toggleWatchLater failed", e)
+                Result.failure(e)
+            }
+        }
+    }
 }

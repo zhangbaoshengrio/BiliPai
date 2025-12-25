@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.feature.dynamic.SidebarUser
 
 /**
@@ -123,7 +123,7 @@ fun SidebarItem(
                 .size(40.dp)
                 .clip(CircleShape)
                 .background(
-                    if (isSelected) BiliPink.copy(alpha = 0.15f)
+                    if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
                     else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                 ),
             contentAlignment = Alignment.Center
@@ -132,7 +132,7 @@ fun SidebarItem(
                 text = icon,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = if (isSelected) BiliPink else MaterialTheme.colorScheme.onSurfaceVariant
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         
@@ -141,7 +141,7 @@ fun SidebarItem(
             Text(
                 text = label,
                 fontSize = 10.sp,
-                color = if (isSelected) BiliPink else MaterialTheme.colorScheme.onSurfaceVariant,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -189,7 +189,7 @@ fun SidebarUserItem(
                     .size(40.dp)
                     .clip(CircleShape)
                     .background(
-                        if (isSelected) BiliPink.copy(alpha = 0.3f)
+                        if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                         else MaterialTheme.colorScheme.surfaceVariant,
                         CircleShape
                     ),
@@ -226,7 +226,7 @@ fun SidebarUserItem(
             Text(
                 text = user.name,
                 fontSize = 10.sp,
-                color = if (isSelected) BiliPink else MaterialTheme.colorScheme.onSurfaceVariant,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(horizontal = 4.dp)

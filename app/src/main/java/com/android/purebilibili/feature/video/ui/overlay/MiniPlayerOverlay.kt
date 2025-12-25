@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.media3.ui.PlayerView
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -405,7 +405,7 @@ fun MiniPlayerOverlay(
                         .height(3.dp)
                         .align(Alignment.BottomCenter)
                         .clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)),
-                    color = if (isDraggingProgress) Color.Yellow else BiliPink,
+                    color = if (isDraggingProgress) Color.Yellow else MaterialTheme.colorScheme.primary,
                     trackColor = Color.White.copy(alpha = 0.3f)
                 )
             }

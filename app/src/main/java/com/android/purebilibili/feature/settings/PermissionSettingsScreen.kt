@@ -30,7 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import com.android.purebilibili.core.theme.BiliPink
+import com.android.purebilibili.core.theme.iOSPink  // 存储权限图标色
 import com.android.purebilibili.core.theme.iOSBlue
 import com.android.purebilibili.core.theme.iOSGreen
 import com.android.purebilibili.core.theme.iOSOrange
@@ -123,7 +123,7 @@ fun PermissionSettingsScreen(
                 permission = Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 description = "保存图片到相册（仅 Android 9 及以下需要）",
                 icon = Icons.Outlined.Folder,
-                iconTint = BiliPink,
+                iconTint = iOSPink,  // 存储权限图标
                 isNormal = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q,  // Android 10+ 自动授予
                 alwaysGranted = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
             )
@@ -224,7 +224,7 @@ fun PermissionSettingsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = BiliPink),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Icon(

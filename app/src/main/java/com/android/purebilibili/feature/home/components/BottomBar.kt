@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer  // 🔥 晃动动画
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,9 @@ import dev.chrisbanes.haze.materials.HazeMaterials
 import com.android.purebilibili.core.util.HapticType
 import com.android.purebilibili.core.util.rememberHapticFeedback
 import com.android.purebilibili.core.theme.iOSSystemGray
+import com.android.purebilibili.core.theme.BottomBarColors  // 🔥 统一底栏颜色配置
+import com.android.purebilibili.core.theme.BottomBarColorPalette  // 🔥 调色板
+import kotlinx.coroutines.launch  // 🔥 延迟导航
 
 /**
  * 底部导航项枚举
@@ -65,6 +69,21 @@ enum class BottomNavItem(
         "我的",
         { Icon(Icons.Outlined.AccountCircle, null) },
         { Icon(Icons.Outlined.AccountCircle, null) }
+    ),
+    FAVORITE(
+        "收藏",
+        { Icon(Icons.Outlined.Home, null) },
+        { Icon(Icons.Outlined.Home, null) }
+    ),
+    LIVE(
+        "直播",
+        { Icon(Icons.Outlined.Subscriptions, null) },
+        { Icon(Icons.Outlined.Subscriptions, null) }
+    ),
+    WATCHLATER(
+        "稍后看",
+        { Icon(Icons.Outlined.History, null) },
+        { Icon(Icons.Outlined.History, null) }
     )
 }
 
@@ -86,7 +105,9 @@ fun FrostedBottomBar(
     hazeState: HazeState? = null,
     isFloating: Boolean = true,
     labelMode: Int = 1,  // 🔥 0=图标+文字, 1=仅图标, 2=仅文字
-    onHomeDoubleTap: () -> Unit = {}  // 🍎 双击首页回到顶部
+    onHomeDoubleTap: () -> Unit = {},  // 🍎 双击首页回到顶部
+    visibleItems: List<BottomNavItem> = listOf(BottomNavItem.HOME, BottomNavItem.DYNAMIC, BottomNavItem.HISTORY, BottomNavItem.PROFILE),  // 🔥🔥 [新增] 可配置的可见项目
+    itemColorIndices: Map<String, Int> = emptyMap()  // 🔥🔥 [新增] 项目颜色索引映射
 ) {
     val isDarkTheme = MaterialTheme.colorScheme.background.red < 0.5f
     val haptic = rememberHapticFeedback()  // 🍎 触觉反馈
@@ -183,8 +204,8 @@ fun FrostedBottomBar(
             }
         ) {
             // 📱 Telegram 风格滑动指示器
-            val itemCount = BottomNavItem.entries.size
-            val selectedIndex = BottomNavItem.entries.indexOf(currentItem)
+            val itemCount = visibleItems.size  // 🔥🔥 [修改] 使用可见项目数
+            val selectedIndex = visibleItems.indexOf(currentItem)  // 🔥🔥 [修改] 使用可见项目索引
             
             // 🍎 iOS 风格：内容区固定高度，导航栏区域作为 padding 包含在 Surface 内
             Column(
@@ -213,18 +234,7 @@ fun FrostedBottomBar(
                     label = "indicator_offset"
                 )
                 
-                // 指示器胶囊
-                Box(
-                    modifier = Modifier
-                        .offset(x = indicatorOffset)
-                        .padding(vertical = if (isFloating) 10.dp else 8.dp)
-                        .width(48.dp)  // 🍎 更小的胶囊
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(18.dp))
-                        .background(
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                        )
-                )
+                // 🔥 [已移除] 指示器胶囊背景 - 用户要求去掉圆圈
                 
                 // 导航项 Row
                 Row(
@@ -234,14 +244,40 @@ fun FrostedBottomBar(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
             ) {
-                BottomNavItem.entries.forEach { item ->
+                visibleItems.forEach { item ->  // 🔥🔥 [修改] 使用可配置的项目列表
                     val isSelected = item == currentItem
                     
+                    // 🔥🔥 [新增] 追踪是否正在点击此项（动画播放中）
+                    var isPending by remember { mutableStateOf(false) }
+                    
+                    // 🍎 跟随主题色：选中时使用主题色，未选中时使用灰色
+                    val primaryColor = MaterialTheme.colorScheme.primary
+                    
                     val iconColor by animateColorAsState(
-                        targetValue = if (isSelected) MaterialTheme.colorScheme.primary else iOSSystemGray,  // 🍎 iOS 系统灰
+                        targetValue = if (isSelected || isPending) primaryColor else BottomBarColors.UNSELECTED,
                         animationSpec = spring(),
                         label = "iconColor"
                     )
+                    
+                    // 🔥🔥 [新增] Telegram 风格晃动动画状态
+                    var triggerWobble by remember { mutableStateOf(0) }
+                    
+                    // 🍎 晃动角度动画
+                    val rotation by animateFloatAsState(
+                        targetValue = 0f,
+                        animationSpec = spring(
+                            dampingRatio = 0.35f,  // 更低阻尼 = 更多晃动
+                            stiffness = 600f
+                        ),
+                        label = "rotation"
+                    )
+                    
+                    // 🔥 点击时触发晃动效果
+                    LaunchedEffect(triggerWobble) {
+                        if (triggerWobble > 0) {
+                            // 无需额外操作，rotation 动画会自动处理
+                        }
+                    }
                     
                     // 🍎 弹性缩放动画 (选中时放大并弹跳)
                     val scale by animateFloatAsState(
@@ -253,6 +289,27 @@ fun FrostedBottomBar(
                         label = "scale"
                     )
                     
+                    // 🔥🔥 [新增] 点击时的晃动角度
+                    var wobbleAngle by remember { mutableFloatStateOf(0f) }
+                    val scope = rememberCoroutineScope()  // 🔥 用于延迟导航
+                    
+                    val animatedWobble by animateFloatAsState(
+                        targetValue = wobbleAngle,
+                        animationSpec = spring(
+                            dampingRatio = 0.25f,  // 非常低的阻尼 = 多次晃动
+                            stiffness = 800f       // 高刚度 = 快速响应
+                        ),
+                        label = "wobble"
+                    )
+                    
+                    // 🔥 晃动完成后重置角度
+                    LaunchedEffect(wobbleAngle) {
+                        if (wobbleAngle != 0f) {
+                            kotlinx.coroutines.delay(50)  // 短暂保持
+                            wobbleAngle = 0f  // 重置触发弹回晃动
+                        }
+                    }
+                    
                     Column(
                         modifier = Modifier
                             .weight(1f)
@@ -263,8 +320,15 @@ fun FrostedBottomBar(
                                     Modifier.pointerInput(Unit) {
                                         detectTapGestures(
                                             onTap = {
+                                                isPending = true  // 🔥 立即变色
                                                 haptic(HapticType.LIGHT)
-                                                onItemClick(item)
+                                                // 🔥 颜色切换完成后再播放晃动动画，然后切换页面
+                                                kotlinx.coroutines.MainScope().launch {
+                                                    kotlinx.coroutines.delay(100)  // 等待颜色动画
+                                                    wobbleAngle = 15f  // 🔥 触发晃动
+                                                    kotlinx.coroutines.delay(150)  // 等待晃动动画
+                                                    onItemClick(item)
+                                                }
                                             },
                                             onDoubleTap = {
                                                 haptic(HapticType.MEDIUM)  // 双击用更强反馈
@@ -278,8 +342,15 @@ fun FrostedBottomBar(
                                         interactionSource = remember { MutableInteractionSource() },
                                         indication = null
                                     ) { 
+                                        isPending = true  // 🔥 立即变色
                                         haptic(HapticType.LIGHT)
-                                        onItemClick(item) 
+                                        // 🔥 颜色切换完成后再播放晃动动画，然后切换页面
+                                        kotlinx.coroutines.MainScope().launch {
+                                            kotlinx.coroutines.delay(100)  // 等待颜色动画
+                                            wobbleAngle = 15f  // 🔥 触发晃动
+                                            kotlinx.coroutines.delay(150)  // 等待晃动动画
+                                            onItemClick(item)
+                                        }
                                     }
                                 }
                             ),
@@ -293,7 +364,8 @@ fun FrostedBottomBar(
                                 Box(
                                     modifier = Modifier
                                         .size(24.dp)
-                                        .scale(scale),
+                                        .scale(scale)
+                                        .graphicsLayer { rotationZ = animatedWobble },  // 🔥 晃动效果
                                     contentAlignment = Alignment.Center
                                 ) {
                                     CompositionLocalProvider(LocalContentColor provides iconColor) {
@@ -315,7 +387,9 @@ fun FrostedBottomBar(
                                     fontSize = 14.sp,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
                                     color = iconColor,
-                                    modifier = Modifier.scale(scale)
+                                    modifier = Modifier
+                                        .scale(scale)
+                                        .graphicsLayer { rotationZ = animatedWobble }  // 🔥 晃动效果
                                 )
                             }
                             else -> {
@@ -323,7 +397,8 @@ fun FrostedBottomBar(
                                 Box(
                                     modifier = Modifier
                                         .size(26.dp)
-                                        .scale(scale),
+                                        .scale(scale)
+                                        .graphicsLayer { rotationZ = animatedWobble },  // 🔥 晃动效果
                                     contentAlignment = Alignment.Center
                                 ) {
                                     CompositionLocalProvider(LocalContentColor provides iconColor) {

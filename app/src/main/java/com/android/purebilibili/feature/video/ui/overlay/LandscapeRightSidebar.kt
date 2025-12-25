@@ -33,7 +33,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.purebilibili.core.theme.BiliPink
+import androidx.compose.material3.MaterialTheme
 import com.android.purebilibili.core.util.FormatUtils
 
 /**
@@ -135,7 +135,7 @@ fun LandscapeRightSidebar(
                 icon = Icons.Rounded.ThumbUp,
                 label = FormatUtils.formatStat(likeCount),
                 isActive = isLiked,
-                activeColor = BiliPink,
+                activeColor = MaterialTheme.colorScheme.primary,
                 onClick = onLikeClick
             )
             
@@ -165,7 +165,7 @@ private fun SidebarTextButton(
     ) {
         Text(
             text = text,
-            color = if (isHighlighted) BiliPink else Color.White,
+            color = if (isHighlighted) MaterialTheme.colorScheme.primary else Color.White,
             fontSize = 12.sp,
             fontWeight = if (isHighlighted) FontWeight.Bold else FontWeight.Medium,
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
@@ -181,7 +181,7 @@ private fun SidebarActionButton(
     icon: ImageVector,
     label: String,
     isActive: Boolean = false,
-    activeColor: Color = BiliPink,
+    activeColor: Color = Color.Unspecified,  // 🔥 默认用主题色
     onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -215,7 +215,7 @@ private fun SidebarActionButton(
                 Icon(
                     imageVector = icon,
                     contentDescription = label,
-                    tint = if (isActive) activeColor else Color.White,
+                    tint = if (isActive) (if (activeColor == Color.Unspecified) MaterialTheme.colorScheme.primary else activeColor) else Color.White,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -226,7 +226,7 @@ private fun SidebarActionButton(
         // 标签文字
         Text(
             text = label,
-            color = if (isActive) activeColor else Color.White.copy(alpha = 0.9f),
+            color = if (isActive) (if (activeColor == Color.Unspecified) MaterialTheme.colorScheme.primary else activeColor) else Color.White.copy(alpha = 0.9f),
             fontSize = 10.sp,
             fontWeight = if (isActive) FontWeight.Bold else FontWeight.Normal,
             maxLines = 1

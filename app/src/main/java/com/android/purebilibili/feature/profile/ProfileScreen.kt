@@ -39,7 +39,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.theme.iOSBlue
 import com.android.purebilibili.core.theme.iOSGreen
 import com.android.purebilibili.core.theme.iOSOrange
@@ -326,7 +326,7 @@ fun UserInfoSection(user: UserState) {
                 text = user.name,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = if (user.isVip) BiliPink else MaterialTheme.colorScheme.onSurface
+                color = if (user.isVip) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(6.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -427,7 +427,7 @@ fun ServicesSection(
             modifier = Modifier.padding(16.dp)
         )
 
-        ServiceItem(Icons.Default.Download, "离线缓存", BiliPink, onClick = onDownloadClick)
+        ServiceItem(Icons.Default.Download, "离线缓存", MaterialTheme.colorScheme.primary, onClick = onDownloadClick)
         Divider(thickness = 0.5.dp, color = MaterialTheme.colorScheme.surfaceVariant, modifier = Modifier.padding(start = 56.dp))
 
         ServiceItem(Icons.Default.History, "历史记录", iOSBlue, onClick = onHistoryClick)

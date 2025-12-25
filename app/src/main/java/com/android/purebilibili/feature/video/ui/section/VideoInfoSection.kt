@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.util.FormatUtils
 import com.android.purebilibili.data.model.response.ViewInfo
 
@@ -235,7 +235,7 @@ fun UpInfoSection(
         // Follow button
         Surface(
             onClick = onFollowClick,
-            color = if (isFollowing) MaterialTheme.colorScheme.surfaceVariant else BiliPink,
+            color = if (isFollowing) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.primary,
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier.height(32.dp)
         ) {

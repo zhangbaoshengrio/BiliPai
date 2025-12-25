@@ -74,6 +74,7 @@ fun ElegantVideoCard(
     val density = LocalDensity.current
     val screenWidthPx = with(density) { configuration.screenWidthDp.dp.toPx() }
     val screenHeightPx = with(density) { configuration.screenHeightDp.dp.toPx() }
+    val densityValue = density.density  // 🔥🔥 [新增] 屏幕密度值
     
     // 🔥 记录卡片位置
     var cardBounds by remember { mutableStateOf<androidx.compose.ui.geometry.Rect?>(null) }
@@ -92,9 +93,9 @@ fun ElegantVideoCard(
                 pressTranslationY = 6f,
                 hapticEnabled = true
             ) {
-                // 🔥🔥 点击时保存卡片位置
+                // 🔥🔥 点击时保存卡片位置（包含密度信息）
                 cardBounds?.let { bounds ->
-                    CardPositionManager.recordCardPosition(bounds, screenWidthPx, screenHeightPx)
+                    CardPositionManager.recordCardPosition(bounds, screenWidthPx, screenHeightPx, density = densityValue)
                 }
                 onClick(video.bvid, 0)
             }
@@ -140,14 +141,22 @@ fun ElegantVideoCard(
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
+            // 🔥📉 [省流量] 根据省流量模式动态调整图片尺寸
+            val context = LocalContext.current
+            val isDataSaverActive = remember {
+                com.android.purebilibili.core.store.SettingsManager.isDataSaverActive(context)
+            }
+            val imageWidth = if (isDataSaverActive) 240 else 360
+            val imageHeight = if (isDataSaverActive) 150 else 225
+            
             // 封面图 - 🚀 [性能优化] 降低图片尺寸
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(coverUrl)
-                    .size(360, 225)  // 🚀 优化：360x225 替代 480x300
+                    .size(imageWidth, imageHeight)  // � 省流量时使用更小尺寸
                     .crossfade(100)  // 🚀 缩短淡入时间
-                    .memoryCacheKey("cover_${video.bvid}")
-                    .diskCacheKey("cover_${video.bvid}")
+                    .memoryCacheKey("cover_${video.bvid}_${if (isDataSaverActive) "s" else "n"}")
+                    .diskCacheKey("cover_${video.bvid}_${if (isDataSaverActive) "s" else "n"}")
                     .build(),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),

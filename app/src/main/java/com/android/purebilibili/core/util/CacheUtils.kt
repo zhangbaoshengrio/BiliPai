@@ -2,6 +2,7 @@ package com.android.purebilibili.core.util
 
 import android.content.Context
 import coil.imageLoader
+import com.android.purebilibili.core.cooldown.PlaybackCooldownManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.Flow
@@ -152,6 +153,10 @@ object CacheUtils {
             // 4.2 清除 WBI 签名缓存（让其自动重新获取）
             com.android.purebilibili.core.network.WbiKeyManager.invalidateCache()
             Logger.d(TAG, "✅ WBI cache invalidated")
+            
+            // 4.3 🔥 清除播放冷却状态（让用户可以重新尝试）
+            PlaybackCooldownManager.clearAll()
+            Logger.d(TAG, "✅ Playback cooldown cleared")
                 
             Logger.d(TAG, "🎉 All cache cleared successfully")
         } catch (e: Exception) {
@@ -190,6 +195,7 @@ object CacheUtils {
         // 应用缓存
         context.getSharedPreferences("following_cache", Context.MODE_PRIVATE).edit().clear().apply()
         com.android.purebilibili.core.network.WbiKeyManager.invalidateCache()
+        PlaybackCooldownManager.clearAll()  // 🔥 清除播放冷却
         
         emit(ClearProgress(100, "清理完成"))
     }.flowOn(Dispatchers.IO)

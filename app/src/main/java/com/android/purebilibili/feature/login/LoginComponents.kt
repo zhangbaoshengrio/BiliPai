@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.android.purebilibili.core.store.TokenManager
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.ui.LoadingAnimation
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -72,7 +72,7 @@ fun FloatingDecorations() {
                 .offset(x = (-60).dp, y = (100 + offset1).dp)
                 .size(200.dp)
                 .alpha(0.1f)
-                .background(BiliPink, CircleShape)
+                .background(MaterialTheme.colorScheme.primary, CircleShape)
         )
         // 小圆
         Box(
@@ -176,7 +176,7 @@ fun LoginMethodTabs(
                 Surface(
                     onClick = { onMethodChange(method) },
                     shape = RoundedCornerShape(12.dp),
-                    color = if (isSelected) BiliPink else Color.Transparent,
+                    color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
                     modifier = Modifier.weight(1f)
                 ) {
                     Row(
@@ -503,7 +503,7 @@ private fun QrCodeHint() {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "✨ 扫码登录可解锁 4K/HDR 高画质",
-                            color = BiliPink.copy(alpha = 0.9f),
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.9f),
                             fontSize = 11.sp,
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
@@ -520,7 +520,7 @@ private fun SinglePhoneTipItem(number: String, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Surface(
             shape = CircleShape,
-            color = BiliPink.copy(alpha = 0.3f),
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
             modifier = Modifier.size(18.dp)
         ) {
             Box(contentAlignment = Alignment.Center) {
@@ -835,7 +835,7 @@ fun PhoneLoginContent(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier.height(200.dp)
                         ) {
-                            CircularProgressIndicator(color = BiliPink)
+                            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                         }
                     }
                     
@@ -962,7 +962,7 @@ private fun PhoneInputSection(
         Icon(
             Icons.Outlined.Smartphone,
             contentDescription = null,
-            tint = BiliPink,
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(48.dp)
         )
         
@@ -981,7 +981,7 @@ private fun PhoneInputSection(
         OutlinedTextField(
             value = phoneNumber,
             onValueChange = onPhoneChange,
-            label = { Text("手机号", color = BiliPink) },
+            label = { Text("手机号", color = MaterialTheme.colorScheme.primary) },
             placeholder = { Text("请输入11位手机号", color = Color.Gray) },
             leadingIcon = {
                 Text("+86", color = Color(0xFF333333), fontSize = 14.sp, fontWeight = FontWeight.Medium)
@@ -993,12 +993,12 @@ private fun PhoneInputSection(
                 fontSize = 16.sp
             ),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = BiliPink,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = Color(0xFFDDDDDD),  // 🔥 未聚焦边框灰色
                 focusedTextColor = Color(0xFF333333),
                 unfocusedTextColor = Color(0xFF333333),
-                cursorColor = BiliPink,
-                focusedLabelColor = BiliPink,
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
                 unfocusedLabelColor = Color.Gray
             )
         )
@@ -1010,7 +1010,7 @@ private fun PhoneInputSection(
             onClick = onGetCaptcha,
             enabled = isValid,
             colors = ButtonDefaults.buttonColors(
-                containerColor = BiliPink,
+                containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.White,
                 disabledContainerColor = Color(0xFFFFD0DC),  // 🔥 禁用时浅粉色背景
                 disabledContentColor = Color(0xFFCC8899)     // 🔥 禁用时深粉色文字
@@ -1124,7 +1124,7 @@ private fun ErrorSection(
         
         Button(
             onClick = onRetry,
-            colors = ButtonDefaults.buttonColors(containerColor = BiliPink),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text("重试", color = Color.White)

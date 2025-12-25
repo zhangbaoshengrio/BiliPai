@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.theme.iOSYellow
 import com.android.purebilibili.core.util.FormatUtils
 import com.android.purebilibili.data.model.response.BangumiFilter
@@ -144,7 +144,7 @@ fun BangumiScreen(
                             Icon(
                                 Icons.Default.FilterList,
                                 contentDescription = "筛选",
-                                tint = if (filter != BangumiFilter()) BiliPink else LocalContentColor.current
+                                tint = if (filter != BangumiFilter()) MaterialTheme.colorScheme.primary else LocalContentColor.current
                             )
                         }
                     },
@@ -377,7 +377,7 @@ private fun BangumiSearchBar(
                 ) {
                     Text(
                         "搜索",
-                        color = if (query.isNotEmpty()) BiliPink else MaterialTheme.colorScheme.onSurfaceVariant.copy(0.5f)
+                        color = if (query.isNotEmpty()) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(0.5f)
                     )
                 }
             }
@@ -471,7 +471,7 @@ private fun BangumiFilterPanel(
                 TextButton(
                     onClick = { onFilterChange(BangumiFilter()) }
                 ) {
-                    Text("重置筛选", color = BiliPink, fontSize = 13.sp)
+                    Text("重置筛选", color = MaterialTheme.colorScheme.primary, fontSize = 13.sp)
                 }
             }
         }
@@ -491,7 +491,7 @@ private fun FilterChip(
     Box {
         Surface(
             onClick = onClick,
-            color = if (isActive) BiliPink.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+            color = if (isActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
             shape = RoundedCornerShape(8.dp)
         ) {
             Row(
@@ -501,14 +501,14 @@ private fun FilterChip(
                 Text(
                     text = label,
                     fontSize = 12.sp,
-                    color = if (isActive) BiliPink else MaterialTheme.colorScheme.onSurface
+                    color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.width(2.dp))
                 Icon(
                     Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
                     modifier = Modifier.size(14.dp),
-                    tint = if (isActive) BiliPink else MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

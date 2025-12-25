@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.util.FormatUtils
 
 /**
@@ -107,7 +107,7 @@ fun LandscapeTopControlBar(
                 icon = Icons.Rounded.ThumbUp,
                 label = FormatUtils.formatStat(likeCount),
                 isActive = isLiked,
-                activeColor = BiliPink,
+                activeColor = MaterialTheme.colorScheme.primary,
                 onClick = onLikeClick
             )
             
@@ -151,7 +151,7 @@ private fun TopBarActionButton(
     icon: ImageVector,
     label: String,
     isActive: Boolean = false,
-    activeColor: Color = BiliPink,
+    activeColor: Color = Color.Unspecified,  // 🔥 默认用主题色
     onClick: () -> Unit
 ) {
     Surface(
@@ -166,14 +166,14 @@ private fun TopBarActionButton(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = if (isActive) activeColor else Color.White,
+                tint = if (isActive) (if (activeColor == Color.Unspecified) MaterialTheme.colorScheme.primary else activeColor) else Color.White,
                 modifier = Modifier.size(22.dp)
             )
             if (label.isNotEmpty()) {
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = label,
-                    color = if (isActive) activeColor else Color.White,
+                    color = if (isActive) (if (activeColor == Color.Unspecified) MaterialTheme.colorScheme.primary else activeColor) else Color.White,
                     fontSize = 12.sp,
                     fontWeight = if (isActive) FontWeight.Bold else FontWeight.Normal
                 )

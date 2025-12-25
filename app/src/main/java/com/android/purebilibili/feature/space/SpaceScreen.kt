@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.util.FormatUtils
 import com.android.purebilibili.data.model.response.*
 import io.github.alexzhirkevich.cupertino.CupertinoActivityIndicator
@@ -93,7 +93,8 @@ fun SpaceScreen(
                     SpaceContent(
                         state = state,
                         onVideoClick = onVideoClick,
-                        onLoadMore = { viewModel.loadMoreVideos() }
+                        onLoadMore = { viewModel.loadMoreVideos() },
+                        onCategoryClick = { viewModel.selectCategory(it) }  // 🔥 分类点击
                     )
                 }
             }
@@ -105,7 +106,8 @@ fun SpaceScreen(
 private fun SpaceContent(
     state: SpaceUiState.Success,
     onVideoClick: (String) -> Unit,
-    onLoadMore: () -> Unit
+    onLoadMore: () -> Unit,
+    onCategoryClick: (Int) -> Unit  // 🔥 分类点击回调
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -134,10 +136,23 @@ private fun SpaceContent(
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.width(8.dp))
+                // 🔥 优先使用 API 返回的总数，如果为0则使用实际视频数量
+                val displayCount = if (state.totalVideos > 0) state.totalVideos else state.videos.size
                 Text(
-                    text = "(${state.totalVideos})",
+                    text = "($displayCount)",
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+            }
+        }
+        
+        // 🔥 分类标签行
+        if (state.categories.isNotEmpty()) {
+            item {
+                CategoryTabRow(
+                    categories = state.categories,
+                    selectedTid = state.selectedTid,
+                    onCategoryClick = onCategoryClick
                 )
             }
         }
@@ -160,7 +175,7 @@ private fun SpaceContent(
                     if (state.isLoadingMore) {
                         CupertinoActivityIndicator()
                     } else {
-                        Text("加载更多", color = BiliPink, fontSize = 14.sp)
+                        Text("加载更多", color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)
                     }
                 }
             }
@@ -225,7 +240,7 @@ private fun SpaceHeader(
                     if (userInfo.vip.status == 1 && userInfo.vip.label.text.isNotEmpty()) {
                         Spacer(Modifier.width(6.dp))
                         Surface(
-                            color = BiliPink,
+                            color = MaterialTheme.colorScheme.primary,
                             shape = RoundedCornerShape(4.dp)
                         ) {
                             Text(
@@ -399,5 +414,71 @@ private fun SpaceVideoItem(video: SpaceVideoItem, onClick: () -> Unit) {
                 )
             }
         }
+    }
+}
+
+/**
+ * 🔥 分类标签行组件
+ */
+@Composable
+private fun CategoryTabRow(
+    categories: List<SpaceVideoCategory>,
+    selectedTid: Int,
+    onCategoryClick: (Int) -> Unit
+) {
+    androidx.compose.foundation.lazy.LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        // 全部按钮
+        item {
+            CategoryChip(
+                text = "全部",
+                isSelected = selectedTid == 0,
+                onClick = { onCategoryClick(0) }
+            )
+        }
+        
+        // 分类按钮
+        items(categories, key = { it.tid }) { category ->
+            CategoryChip(
+                text = "${category.name} (${category.count})",
+                isSelected = selectedTid == category.tid,
+                onClick = { onCategoryClick(category.tid) }
+            )
+        }
+    }
+}
+
+/**
+ * 🔥 分类标签芯片
+ */
+@Composable
+private fun CategoryChip(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier.iOSTapEffect(scale = 0.95f) { onClick() },
+        color = if (isSelected) 
+            MaterialTheme.colorScheme.primary 
+        else 
+            MaterialTheme.colorScheme.surfaceVariant,
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Text(
+            text = text,
+            fontSize = 13.sp,
+            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+            color = if (isSelected) 
+                Color.White 
+            else 
+                MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+        )
     }
 }

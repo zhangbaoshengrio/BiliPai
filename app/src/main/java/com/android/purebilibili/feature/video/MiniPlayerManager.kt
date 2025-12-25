@@ -376,11 +376,25 @@ class MiniPlayerManager private constructor(private val context: Context) {
      */
     fun dismiss() {
         Logger.d(TAG, "Dismissing mini player")
+        
+        // 🔥🔥 [修复] 先停止所有播放器的声音
+        _externalPlayer?.let { 
+            it.pause()
+            it.stop()
+            Logger.d(TAG, "🔇 Stopped external player")
+        }
+        _player?.let {
+            it.pause()
+            it.stop()
+            Logger.d(TAG, "🔇 Stopped internal player")
+        }
+        
         isMiniMode = false
         isActive = false
-        // 🔥 不释放 player，因为它属于 VideoPlayerState
+        isPlaying = false  // 🔥🔥 [修复] 同步播放状态
         _externalPlayer = null
         currentBvid = null
+        cachedUiState = null  // 🔥🔥 [修复] 清除缓存的 UI 状态
         
         // 清除通知
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

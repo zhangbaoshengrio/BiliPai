@@ -54,7 +54,7 @@ fun LiveRoomCard(
             ) {
                 onClick(room.roomid)
             }
-            .padding(bottom = 14.dp)
+            .padding(bottom = 6.dp)  // 🔥 减少间距
     ) {
         // 🍎 封面容器 - iOS 风格
         Box(
@@ -154,7 +154,7 @@ fun LiveRoomCard(
             }
         }
         
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(6.dp))  // 🔥 减少间距
         
         // 标题
         Text(

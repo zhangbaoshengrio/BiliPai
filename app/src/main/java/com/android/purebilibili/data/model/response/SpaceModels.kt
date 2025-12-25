@@ -101,7 +101,9 @@ data class SpaceVideoItem(
     val comment: Int = 0,
     val length: String = "",  // "10:24" 格式
     val created: Long = 0,    // 发布时间戳
-    val author: String = ""
+    val author: String = "",
+    val typeid: Int = 0,      // 🔥 分区 ID
+    val typename: String = "" // 🔥 分区名称
 )
 
 // /x/relation/stat 粉丝关注数
@@ -136,4 +138,11 @@ data class UpStatData(
 @Serializable
 data class ArchiveStatInfo(
     val view: Long = 0  // 总播放量
+)
+
+// 🔥 视频分类
+data class SpaceVideoCategory(
+    val tid: Int,       // 分类 ID
+    val name: String,   // 分类名称
+    val count: Int      // 该分类下的视频数量
 )

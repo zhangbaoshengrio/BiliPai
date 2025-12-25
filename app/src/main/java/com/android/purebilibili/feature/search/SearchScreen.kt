@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.android.purebilibili.core.database.entity.SearchHistory
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.ui.LoadingAnimation
 import com.android.purebilibili.feature.home.components.cards.ElegantVideoCard  // 🔥 使用首页卡片
 import com.android.purebilibili.core.store.SettingsManager  // 🔥 读取动画设置
@@ -300,7 +300,7 @@ fun SearchScreen(
                                                     text = "${globalIndex + 1}",
                                                     fontSize = 14.sp,
                                                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                                                    color = if (isTop3) BiliPink else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                                                    color = if (isTop3) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                                                     modifier = Modifier.width(24.dp)
                                                 )
                                                 
@@ -700,7 +700,7 @@ fun SearchFilterBar(
                 val isSelected = currentType == type
                 Surface(
                     onClick = { onTypeChange(type) },
-                    color = if (isSelected) BiliPink else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
                     shape = RoundedCornerShape(20.dp)
                 ) {
                     Text(
@@ -725,7 +725,7 @@ fun SearchFilterBar(
             Surface(
                 onClick = { showOrderMenu = true },
                 color = if (currentOrder != SearchOrder.TOTALRANK) 
-                    BiliPink.copy(alpha = 0.1f) 
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) 
                 else 
                     MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
                 shape = RoundedCornerShape(8.dp)
@@ -738,7 +738,7 @@ fun SearchFilterBar(
                         text = currentOrder.displayName,
                         fontSize = 13.sp,
                         color = if (currentOrder != SearchOrder.TOTALRANK) 
-                            BiliPink 
+                            MaterialTheme.colorScheme.primary 
                         else 
                             MaterialTheme.colorScheme.onSurface
                     )
@@ -748,7 +748,7 @@ fun SearchFilterBar(
                         contentDescription = null,
                         modifier = Modifier.size(16.dp),
                         tint = if (currentOrder != SearchOrder.TOTALRANK) 
-                            BiliPink 
+                            MaterialTheme.colorScheme.primary 
                         else 
                             MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -764,7 +764,7 @@ fun SearchFilterBar(
                         text = { 
                             Text(
                                 order.displayName,
-                                color = if (order == currentOrder) BiliPink else MaterialTheme.colorScheme.onSurface
+                                color = if (order == currentOrder) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                             ) 
                         },
                         onClick = {
@@ -781,7 +781,7 @@ fun SearchFilterBar(
             Surface(
                 onClick = { showDurationMenu = true },
                 color = if (currentDuration != SearchDuration.ALL) 
-                    BiliPink.copy(alpha = 0.1f) 
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) 
                 else 
                     MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
                 shape = RoundedCornerShape(8.dp)
@@ -794,7 +794,7 @@ fun SearchFilterBar(
                         text = currentDuration.displayName,
                         fontSize = 13.sp,
                         color = if (currentDuration != SearchDuration.ALL) 
-                            BiliPink 
+                            MaterialTheme.colorScheme.primary 
                         else 
                             MaterialTheme.colorScheme.onSurface
                     )
@@ -804,7 +804,7 @@ fun SearchFilterBar(
                         contentDescription = null,
                         modifier = Modifier.size(16.dp),
                         tint = if (currentDuration != SearchDuration.ALL) 
-                            BiliPink 
+                            MaterialTheme.colorScheme.primary 
                         else 
                             MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -820,7 +820,7 @@ fun SearchFilterBar(
                         text = { 
                             Text(
                                 duration.displayName,
-                                color = if (duration == currentDuration) BiliPink else MaterialTheme.colorScheme.onSurface
+                                color = if (duration == currentDuration) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                             ) 
                         },
                         onClick = {

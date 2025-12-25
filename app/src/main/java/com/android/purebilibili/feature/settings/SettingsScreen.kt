@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.theme.iOSBlue
 import com.android.purebilibili.core.theme.iOSGreen
 import com.android.purebilibili.core.theme.iOSOrange
@@ -467,7 +467,7 @@ fun SettingSwitchItem(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     // 🔥 新增：图标颜色
-    iconTint: Color = BiliPink
+    iconTint: Color = MaterialTheme.colorScheme.primary
 ) {
     Row(
         modifier = Modifier
@@ -496,10 +496,16 @@ fun SettingSwitchItem(
                 Text(text = subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        // 🍎 iOS 风格开关
+        // 🍎 iOS 风格开关 - 🔥🔥 [修复] 使用主题色
+        val primaryColor = MaterialTheme.colorScheme.primary
         CupertinoSwitch(
             checked = checked,
-            onCheckedChange = onCheckedChange
+            onCheckedChange = onCheckedChange,
+            colors = io.github.alexzhirkevich.cupertino.CupertinoSwitchDefaults.colors(
+                thumbColor = Color.White,
+                checkedTrackColor = primaryColor,
+                uncheckedTrackColor = Color(0xFFE9E9EA)  // iOS 标准灰色
+            )
         )
     }
 }
@@ -512,7 +518,7 @@ fun SettingClickableItem(
     value: String? = null,
     onClick: (() -> Unit)? = null,
     // 🔥 新增：图标颜色
-    iconTint: Color = BiliPink
+    iconTint: Color = MaterialTheme.colorScheme.primary
 ) {
     Row(
         modifier = Modifier

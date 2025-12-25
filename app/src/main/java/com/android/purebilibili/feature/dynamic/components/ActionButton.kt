@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.theme.iOSBlue
 
 /**
@@ -58,7 +58,7 @@ fun ActionButton(
     
     // 🍎 iOS 风格颜色
     val buttonColor = when {
-        isLike -> BiliPink
+        isLike -> MaterialTheme.colorScheme.primary
         isForward -> iOSBlue
         isComment -> MaterialTheme.colorScheme.primary
         else -> activeColor

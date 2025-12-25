@@ -48,6 +48,9 @@ val iOSBlue = Color(0xFF007AFF)      // iOS 系统蓝色
 val iOSGreen = Color(0xFF34C759)     // iOS 系统绿色
 val iOSTeal = Color(0xFF5AC8FA)      // iOS 系统青色 (评论)
 val iOSPurple = Color(0xFFAF52DE)    // iOS 系统紫色 (三连)
+val iOSRed = Color(0xFFFF3B30)       // iOS 系统红色
+val iOSCoral = Color(0xFFFF6B6B)     // 珊瑚红 (直播)
+val iOSLightBlue = Color(0xFF64D2FF) // 浅蓝色 (稍后看)
 
 // 🍎 --- iOS 18 系统灰度色阶 ---
 val iOSSystemGray = Color(0xFF8E8E93)   // 中灰 (次要文字、图标)
@@ -77,3 +80,62 @@ val ThemeColors = listOf(
 )
 
 val ThemeColorNames = listOf("iOS蓝", "B站粉", "B站蓝", "绿色", "紫色", "橙色", "蓝灰")
+
+// 🔥🔥 --- 底栏项目可选颜色调色板 ---
+/**
+ * 底栏项目可选的颜色调色板
+ * 用户可以为每个底栏项目选择其中一种颜色
+ */
+val BottomBarColorPalette = listOf(
+    iOSBlue,      // 0: 蓝色
+    iOSOrange,    // 1: 橙色
+    iOSTeal,      // 2: 青色
+    iOSPink,      // 3: 粉色
+    iOSRed,       // 4: 红色
+    iOSGreen,     // 5: 绿色
+    iOSPurple     // 6: 紫色
+)
+
+/**
+ * 调色板颜色名称（与 BottomBarColorPalette 索引对应）
+ */
+val BottomBarColorNames = listOf("蓝色", "橙色", "青色", "粉色", "红色", "绿色", "紫色")
+
+/**
+ * 底栏项目默认颜色索引（语义化映射）
+ * Key: 项目ID, Value: BottomBarColorPalette 中的索引
+ */
+val DefaultBottomBarColorIndices = mapOf(
+    "HOME" to 0,       // 首页 - 蓝色
+    "DYNAMIC" to 1,    // 动态 - 橙色
+    "HISTORY" to 2,    // 历史 - 青色
+    "PROFILE" to 3,    // 我的 - 粉色
+    "FAVORITE" to 4,   // 收藏 - 红色
+    "LIVE" to 5,       // 直播 - 绿色
+    "WATCHLATER" to 6  // 稀后看 - 紫色
+)
+
+/**
+ * 底栏颜色工具对象
+ */
+object BottomBarColors {
+    val UNSELECTED = iOSSystemGray  // 未选中状态 - 灰色
+    
+    /**
+     * 根据颜色索引获取颜色
+     */
+    fun getColorByIndex(index: Int): Color = 
+        BottomBarColorPalette.getOrElse(index) { iOSBlue }
+    
+    /**
+     * 获取项目的默认颜色
+     */
+    fun getDefaultColor(itemId: String): Color =
+        getColorByIndex(DefaultBottomBarColorIndices[itemId] ?: 0)
+    
+    /**
+     * 获取项目的默认颜色索引
+     */
+    fun getDefaultColorIndex(itemId: String): Int =
+        DefaultBottomBarColorIndices[itemId] ?: 0
+}

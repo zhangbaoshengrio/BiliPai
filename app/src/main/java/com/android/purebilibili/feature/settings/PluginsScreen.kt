@@ -32,13 +32,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.android.purebilibili.core.plugin.PluginInfo
 import com.android.purebilibili.core.plugin.PluginManager
-import com.android.purebilibili.core.theme.BiliPink
+import com.android.purebilibili.core.theme.iOSPink  // 插件图标色
 import com.android.purebilibili.core.theme.iOSBlue
 import com.android.purebilibili.core.theme.iOSGreen
 import com.android.purebilibili.core.theme.iOSOrange
 import com.android.purebilibili.core.theme.iOSPurple
 import com.android.purebilibili.core.theme.iOSTeal
 import io.github.alexzhirkevich.cupertino.CupertinoSwitch
+import io.github.alexzhirkevich.cupertino.CupertinoSwitchDefaults
 import kotlinx.coroutines.launch
 
 /**
@@ -546,9 +547,15 @@ private fun PluginItem(
             Spacer(modifier = Modifier.width(8.dp))
             
             // 开关
+            val primaryColor = MaterialTheme.colorScheme.primary
             CupertinoSwitch(
                 checked = pluginInfo.enabled,
-                onCheckedChange = onToggle
+                onCheckedChange = onToggle,
+                colors = CupertinoSwitchDefaults.colors(
+                    thumbColor = androidx.compose.ui.graphics.Color.White,
+                    checkedTrackColor = primaryColor,
+                    uncheckedTrackColor = androidx.compose.ui.graphics.Color(0xFFE9E9EA)
+                )
             )
             
             // 展开箭头
@@ -585,7 +592,7 @@ private fun PluginItem(
  * 获取插件对应的颜色
  */
 private fun getPluginColor(index: Int): Color {
-    val colors = listOf(iOSTeal, iOSOrange, iOSBlue, iOSGreen, iOSPurple, BiliPink)
+    val colors = listOf(iOSTeal, iOSOrange, iOSBlue, iOSGreen, iOSPurple, iOSPink)
     return colors[index % colors.size]
 }
 
@@ -683,9 +690,15 @@ private fun JsonPluginItem(
             }
             
             // 开关
+            val primaryColor = MaterialTheme.colorScheme.primary
             CupertinoSwitch(
                 checked = loaded.enabled,
-                onCheckedChange = onToggle
+                onCheckedChange = onToggle,
+                colors = CupertinoSwitchDefaults.colors(
+                    thumbColor = androidx.compose.ui.graphics.Color.White,
+                    checkedTrackColor = primaryColor,
+                    uncheckedTrackColor = androidx.compose.ui.graphics.Color(0xFFE9E9EA)
+                )
             )
             
             // 展开箭头

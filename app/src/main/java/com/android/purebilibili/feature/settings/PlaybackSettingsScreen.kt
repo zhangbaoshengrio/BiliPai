@@ -476,14 +476,41 @@ fun PlaybackSettingsScreen(
                     
                     // 流量画质选择
                     var mobileExpanded by remember { mutableStateOf(false) }
+                    
+                    // 📉 读取省流量模式，用于显示提示
+                    val dataSaverModeForHint by com.android.purebilibili.core.store.SettingsManager
+                        .getDataSaverMode(context).collectAsState(
+                            initial = com.android.purebilibili.core.store.SettingsManager.DataSaverMode.MOBILE_ONLY
+                        )
+                    val isDataSaverActive = dataSaverModeForHint != com.android.purebilibili.core.store.SettingsManager.DataSaverMode.OFF
+                    // 📉 计算实际生效画质（省流量时限制最高480P）
+                    val effectiveQuality = if (isDataSaverActive && mobileQuality > 32) 32 else mobileQuality
+                    val effectiveQualityLabel = getQualityLabel(effectiveQuality)
+                    
                     Column {
                         SettingClickableItem(
                             icon = Icons.Outlined.SignalCellularAlt,
                             title = "流量 默认画质",
-                            value = getQualityLabel(mobileQuality),
+                            value = getQualityLabel(mobileQuality) + if (isDataSaverActive && mobileQuality > 32) " → $effectiveQualityLabel" else "",
                             onClick = { mobileExpanded = !mobileExpanded },
                             iconTint = iOSOrange
                         )
+                        
+                        // 📉 省流量限制提示
+                        if (isDataSaverActive && mobileQuality > 32) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 56.dp, vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    "省流量模式已限制为最高480P",
+                                    fontSize = 11.sp,
+                                    color = iOSGreen.copy(alpha = 0.8f)
+                                )
+                            }
+                        }
                         
                         // 🍎 展开动画
                         androidx.compose.animation.AnimatedVisibility(
@@ -528,6 +555,113 @@ fun PlaybackSettingsScreen(
                                 }
                             }
                         }
+                    }
+                }
+            }
+            
+            // 📉 省流量模式
+            item { SettingsSectionTitle("省流量") }
+            item {
+                val scope = rememberCoroutineScope()
+                val dataSaverMode by com.android.purebilibili.core.store.SettingsManager
+                    .getDataSaverMode(context).collectAsState(
+                        initial = com.android.purebilibili.core.store.SettingsManager.DataSaverMode.MOBILE_ONLY
+                    )
+                
+                // 模式选项
+                val modeOptions = com.android.purebilibili.core.store.SettingsManager.DataSaverMode.entries
+                var isExpanded by remember { mutableStateOf(false) }
+                
+                SettingsGroup {
+                    // 🍎 点击展开模式选择
+                    SettingClickableItem(
+                        icon = Icons.Outlined.DataSaverOn,
+                        title = "省流量模式",
+                        value = dataSaverMode.label,
+                        onClick = { isExpanded = !isExpanded },
+                        iconTint = iOSGreen
+                    )
+                    
+                    // 🍎 展开的模式选择列表
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = isExpanded,
+                        enter = androidx.compose.animation.expandVertically() + androidx.compose.animation.fadeIn(),
+                        exit = androidx.compose.animation.shrinkVertically() + androidx.compose.animation.fadeOut()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            modeOptions.forEach { mode ->
+                                val isSelected = mode == dataSaverMode
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(
+                                            if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                                            else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                                        )
+                                        .clickable {
+                                            scope.launch {
+                                                com.android.purebilibili.core.store.SettingsManager
+                                                    .setDataSaverMode(context, mode)
+                                            }
+                                            isExpanded = false
+                                        }
+                                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text(
+                                            mode.label,
+                                            fontSize = 15.sp,
+                                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                                            color = if (isSelected) MaterialTheme.colorScheme.primary 
+                                                    else MaterialTheme.colorScheme.onSurface
+                                        )
+                                        Text(
+                                            mode.description,
+                                            fontSize = 12.sp,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                                        )
+                                    }
+                                    if (isSelected) {
+                                        Icon(
+                                            Icons.Outlined.Check,
+                                            contentDescription = "已选择",
+                                            tint = MaterialTheme.colorScheme.primary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    // 🔥 功能说明
+                    Divider()
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Icon(
+                            Icons.Outlined.Info,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            "开启后将自动降低封面图质量、禁用预加载、限制视频最高480P",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                            lineHeight = 16.sp
+                        )
                     }
                 }
             }

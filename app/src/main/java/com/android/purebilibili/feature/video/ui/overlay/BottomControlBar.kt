@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.purebilibili.core.util.FormatUtils
 import com.android.purebilibili.feature.video.ui.components.VideoAspectRatio
-import com.android.purebilibili.core.theme.BiliPink
 
 /**
  * Bottom Control Bar Component
@@ -64,7 +63,7 @@ fun BottomControlBar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 12.dp)  // 🔥 减小水平 padding
             .padding(bottom = 4.dp)
             // 🔥🔥 只在全屏横屏时才需要避开导航栏
             // 竖屏时导航栏在页面底部，不在播放器区域内
@@ -92,20 +91,20 @@ fun BottomControlBar(
             ) {
                 IconButton(
                     onClick = onPlayPauseClick,
-                    modifier = Modifier.size(44.dp)
+                    modifier = Modifier.size(36.dp)  // 🔥 缩小按钮
                 ) {
                     Icon(
                         if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                         null,
                         tint = Color.White,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(24.dp)  // 🔥 缩小图标
                     )
                 }
 
                 Text(
                     text = "${FormatUtils.formatDuration((progress.current / 1000).toInt())} / ${FormatUtils.formatDuration((progress.duration / 1000).toInt())}",
                     color = Color.White.copy(alpha = 0.9f),
-                    fontSize = 13.sp,
+                    fontSize = 11.sp,  // 🔥 缩小字体
                     fontWeight = FontWeight.Medium,
                     maxLines = 1
                 )
@@ -125,14 +124,14 @@ fun BottomControlBar(
                 ) {
                     Text(
                         text = if (currentSpeed == 1.0f) "倍速" else "${currentSpeed}x",
-                        color = if (currentSpeed != 1.0f) BiliPink else Color.White,
-                        fontSize = 11.sp,
+                        color = if (currentSpeed != 1.0f) MaterialTheme.colorScheme.primary else Color.White,
+                        fontSize = 10.sp,  // 🔥 缩小字体
                         fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 5.dp, vertical = 3.dp)  // 🔥 缩小 padding
                     )
                 }
                 
-                Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier = Modifier.width(3.dp))  // 🔥 缩小间距
                 
                 // 🔥 Aspect Ratio button
                 Surface(
@@ -142,31 +141,32 @@ fun BottomControlBar(
                 ) {
                     Text(
                         text = currentRatio.displayName,
-                        color = if (currentRatio != VideoAspectRatio.FIT) BiliPink else Color.White,
-                        fontSize = 11.sp,
+                        color = if (currentRatio != VideoAspectRatio.FIT) MaterialTheme.colorScheme.primary else Color.White,
+                        fontSize = 10.sp,  // 🔥 缩小字体
                         fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(horizontal = 5.dp, vertical = 3.dp)  // 🔥 缩小 padding
                     )
                 }
                 
                 // 🔥🔥 [新增] 竖屏模式弹幕开关和清晰度
                 if (!isFullscreen) {
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(2.dp))  // 🔥 缩小间距
                     
                     IconButton(
                         onClick = onDanmakuToggle,
-                        modifier = Modifier.size(36.dp)
+                        modifier = Modifier.size(26.dp)  // 🔥 缩小按钮
                     ) {
                         Icon(
                             if (danmakuEnabled) Icons.Rounded.Subtitles else Icons.Rounded.SubtitlesOff,
                             contentDescription = if (danmakuEnabled) "关闭弹幕" else "开启弹幕",
-                            tint = if (danmakuEnabled) BiliPink else Color.White.copy(alpha = 0.7f),
-                            modifier = Modifier.size(20.dp)
+                            tint = if (danmakuEnabled) MaterialTheme.colorScheme.primary else Color.White.copy(alpha = 0.7f),
+                            modifier = Modifier.size(16.dp)  // 🔥 缩小图标
                         )
                     }
                     
-                    // 🔥🔥 清晰度选择 - 限制最大宽度防止截断
+                    // 🔥🔥 清晰度选择 - 优化布局确保完整显示
                     if (currentQualityLabel.isNotEmpty()) {
+                        Spacer(modifier = Modifier.width(2.dp))
                         Surface(
                             onClick = onQualityClick,
                             color = Color.White.copy(alpha = 0.2f),
@@ -175,10 +175,11 @@ fun BottomControlBar(
                             Text(
                                 text = currentQualityLabel,
                                 color = Color.White,
-                                fontSize = 11.sp,
+                                fontSize = 10.sp,  // 🔥 统一字体大小
                                 fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
-                                maxLines = 1
+                                modifier = Modifier.padding(horizontal = 5.dp, vertical = 3.dp),
+                                maxLines = 1,  // 🔥 确保单行显示
+                                softWrap = false  // 🔥 禁止换行
                             )
                         }
                     }
@@ -188,13 +189,13 @@ fun BottomControlBar(
             // 🔥 右侧：全屏按钮 - 始终显示，不会被挤出
             IconButton(
                 onClick = onToggleFullscreen,
-                modifier = Modifier.size(44.dp)
+                modifier = Modifier.size(36.dp)  // 🔥 缩小按钮
             ) {
                 Icon(
                     if (isFullscreen) Icons.Default.FullscreenExit else Icons.Default.Fullscreen,
                     null,
                     tint = Color.White,
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier.size(24.dp)  // 🔥 缩小图标
                 )
             }
         }

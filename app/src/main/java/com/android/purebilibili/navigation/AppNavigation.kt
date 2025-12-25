@@ -112,7 +112,11 @@ fun AppNavigation(
                     // 🔥 分类点击：跳转到分类详情页面
                     onCategoryClick = { tid, name ->
                         navController.navigate(ScreenRoutes.Category.createRoute(tid, name))
-                    }
+                    },
+                    // 🔥🔥 [新增] 底栏扩展项目导航
+                    onFavoriteClick = { navController.navigate(ScreenRoutes.Favorite.route) },
+                    onLiveListClick = { navController.navigate(ScreenRoutes.LiveList.route) },
+                    onWatchLaterClick = { navController.navigate(ScreenRoutes.WatchLater.route) }
                 )
             }
         }
@@ -287,6 +291,32 @@ fun AppNavigation(
             )
         }
         
+        // --- 5.3 🔥🔥 [新增] 稍后再看 ---
+        composable(
+            route = ScreenRoutes.WatchLater.route,
+            enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(animDuration)) },
+            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(animDuration)) }
+        ) {
+            com.android.purebilibili.feature.watchlater.WatchLaterScreen(
+                onBack = { navController.popBackStack() },
+                onVideoClick = { bvid, cid -> navigateToVideo(bvid, cid, "") }
+            )
+        }
+        
+        // --- 5.4 🔥🔥 [新增] 直播列表 ---
+        composable(
+            route = ScreenRoutes.LiveList.route,
+            enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(animDuration)) },
+            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(animDuration)) }
+        ) {
+            com.android.purebilibili.feature.live.LiveListScreen(
+                onBack = { navController.popBackStack() },
+                onLiveClick = { roomId, title, uname ->
+                    navController.navigate(ScreenRoutes.Live.createRoute(roomId, title, uname))
+                }
+            )
+        }
+        
         // --- 5.5 🔥 关注列表 ---
         composable(
             route = ScreenRoutes.Following.route,
@@ -414,7 +444,8 @@ fun AppNavigation(
             popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(animDuration)) }
         ) {
             AppearanceSettingsScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onNavigateToBottomBarSettings = { navController.navigate(ScreenRoutes.BottomBarSettings.route) }
             )
         }
         
@@ -447,6 +478,17 @@ fun AppNavigation(
             popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(animDuration)) }
         ) {
             com.android.purebilibili.feature.settings.PluginsScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+        
+        // --- 🔥 底栏管理页面 ---
+        composable(
+            route = ScreenRoutes.BottomBarSettings.route,
+            enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(animDuration)) },
+            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(animDuration)) }
+        ) {
+            com.android.purebilibili.feature.settings.BottomBarSettingsScreen(
                 onBack = { navController.popBackStack() }
             )
         }

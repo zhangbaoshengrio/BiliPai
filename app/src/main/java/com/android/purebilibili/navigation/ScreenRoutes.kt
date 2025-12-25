@@ -10,6 +10,8 @@ sealed class ScreenRoutes(val route: String) {
     // 🔥 新增路由：历史记录和收藏
     object History : ScreenRoutes("history")
     object Favorite : ScreenRoutes("favorite")
+    object WatchLater : ScreenRoutes("watch_later")  // 🔥🔥 [新增] 稍后再看
+    object LiveList : ScreenRoutes("live_list")  // 🔥🔥 [新增] 直播列表
     
     // 🔥 关注列表页面
     object Following : ScreenRoutes("following/{mid}") {
@@ -32,6 +34,7 @@ sealed class ScreenRoutes(val route: String) {
     object PlaybackSettings : ScreenRoutes("playback_settings")
     object PermissionSettings : ScreenRoutes("permission_settings")  // 🔐 权限管理
     object PluginsSettings : ScreenRoutes("plugins_settings")  // 🔌 插件中心
+    object BottomBarSettings : ScreenRoutes("bottom_bar_settings")  // 🔥 底栏管理
 
     object VideoPlayer : ScreenRoutes("video_player/{bvid}?cid={cid}") {
         fun createRoute(bvid: String, cid: Long = 0): String {

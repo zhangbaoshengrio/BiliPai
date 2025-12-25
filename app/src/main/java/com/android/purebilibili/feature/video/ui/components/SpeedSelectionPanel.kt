@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 
 /**
  * 播放速度选项
@@ -64,7 +64,7 @@ fun SpeedSelectionMenu(
                         .fillMaxWidth()
                         .padding(vertical = 2.dp),
                     shape = RoundedCornerShape(8.dp),
-                    color = if (isSelected) BiliPink.copy(alpha = 0.2f) else Color.Transparent,
+                    color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else Color.Transparent,
                     onClick = {
                         onSpeedSelected(speed)
                         onDismiss()
@@ -72,7 +72,7 @@ fun SpeedSelectionMenu(
                 ) {
                     Text(
                         text = PlaybackSpeed.formatSpeedFull(speed),
-                        color = if (isSelected) BiliPink else Color.White,
+                        color = if (isSelected) MaterialTheme.colorScheme.primary else Color.White,
                         fontSize = 14.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
@@ -100,7 +100,7 @@ fun SpeedButton(
     ) {
         Text(
             text = PlaybackSpeed.formatSpeed(currentSpeed),
-            color = if (currentSpeed != 1.0f) BiliPink else Color.White,
+            color = if (currentSpeed != 1.0f) MaterialTheme.colorScheme.primary else Color.White,
             fontSize = 12.sp,
             fontWeight = if (currentSpeed != 1.0f) FontWeight.Bold else FontWeight.Normal,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)

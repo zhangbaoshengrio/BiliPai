@@ -4,6 +4,8 @@ package com.android.purebilibili.feature.video.usecase
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import com.android.purebilibili.core.cooldown.CooldownStatus
+import com.android.purebilibili.core.cooldown.PlaybackCooldownManager
 import com.android.purebilibili.core.network.NetworkModule
 import com.android.purebilibili.core.util.Logger
 import com.android.purebilibili.data.model.VideoLoadError
@@ -95,6 +97,30 @@ class VideoPlaybackUseCase(
         onProgress: (String) -> Unit = {}
     ): VideoLoadResult {
         try {
+            // 🔥🔥 [风控冷却] 检查是否处于冷却期
+            when (val cooldownStatus = PlaybackCooldownManager.getCooldownStatus(bvid)) {
+                is CooldownStatus.GlobalCooldown -> {
+                    Logger.w("VideoPlaybackUseCase", "⏳ 全局冷却中，跳过请求: ${cooldownStatus.remainingMinutes}分${cooldownStatus.remainingSeconds}秒")
+                    return VideoLoadResult.Error(
+                        error = VideoLoadError.GlobalCooldown(
+                            cooldownStatus.remainingMs, 
+                            PlaybackCooldownManager.getConsecutiveFailures()
+                        ),
+                        canRetry = false
+                    )
+                }
+                is CooldownStatus.VideoCooldown -> {
+                    Logger.w("VideoPlaybackUseCase", "⏳ 视频冷却中: $bvid，剩余 ${cooldownStatus.remainingMinutes}分${cooldownStatus.remainingSeconds}秒")
+                    return VideoLoadResult.Error(
+                        error = VideoLoadError.RateLimited(cooldownStatus.remainingMs, bvid),
+                        canRetry = false
+                    )
+                }
+                is CooldownStatus.Ready -> {
+                    // 可以继续请求
+                }
+            }
+            
             onProgress("Loading video info...")
             
             val detailResult = VideoRepository.getVideoDetails(bvid)
@@ -113,11 +139,16 @@ class VideoPlaybackUseCase(
                     val audioUrl = dashAudio?.getValidUrl()?.takeIf { it.isNotEmpty() }
                     
                     if (videoUrl.isEmpty()) {
+                        // 🔥🔥 [风控冷却] 播放地址为空，记录失败
+                        PlaybackCooldownManager.recordFailure(bvid, "播放地址为空")
                         return@fold VideoLoadResult.Error(
-                            error = VideoLoadError.UnknownError(Exception("Cannot get play URL")),
+                            error = VideoLoadError.PlayUrlEmpty,
                             canRetry = true
                         )
                     }
+                    
+                    // 🔥🔥 [风控冷却] 加载成功，重置失败计数
+                    PlaybackCooldownManager.recordSuccess()
                     
                     val isLogin = !com.android.purebilibili.core.store.TokenManager.sessDataCache.isNullOrEmpty()
                     
@@ -142,14 +173,14 @@ class VideoPlaybackUseCase(
                     val dashVideoIds = playData.dash?.video?.map { it.id }?.distinct() ?: emptyList()
                     val mergedQualityIds = (apiQualities + dashVideoIds).distinct().sortedDescending()
                     
-                    // 🔥🔥 [修复] 生成对应的画质标签
+                    // 🔥🔥 [修复] 生成对应的画质标签 - 使用更短的名称确保竖屏显示完整
                     val qualityLabelMap = mapOf(
-                        127 to "8K 超高清",
-                        126 to "杜比视界",
-                        125 to "HDR 真彩",
-                        120 to "4K 超清",
-                        116 to "1080P60",
-                        112 to "1080P+",
+                        127 to "8K",
+                        126 to "杜比",
+                        125 to "HDR",
+                        120 to "4K",
+                        116 to "60帧",   // 🔥 "1080P60" 改为 "60帧"
+                        112 to "高码",   // 🔥 "1080P+" 改为 "高码"
                         80 to "1080P",
                         74 to "720P60",
                         64 to "720P",
@@ -188,6 +219,8 @@ class VideoPlaybackUseCase(
                     )
                 },
                 onFailure = { e ->
+                    // 🔥🔥 [风控冷却] 加载失败，记录失败
+                    PlaybackCooldownManager.recordFailure(bvid, e.message ?: "unknown")
                     VideoLoadResult.Error(
                         error = VideoLoadError.fromException(e),
                         canRetry = VideoLoadError.fromException(e).isRetryable()
@@ -195,6 +228,8 @@ class VideoPlaybackUseCase(
                 }
             )
         } catch (e: Exception) {
+            // 🔥🔥 [风控冷却] 异常失败，记录
+            PlaybackCooldownManager.recordFailure(bvid, e.message ?: "exception")
             return VideoLoadResult.Error(
                 error = VideoLoadError.fromException(e),
                 canRetry = true

@@ -78,7 +78,11 @@ fun HomeScreen(
     // 🔥🔥 [修复] 番剧/影视回调，接受类型参数 (1=番剧 2=电影 等)
     onBangumiClick: (Int) -> Unit = {},
     // 🔥 新增：分类点击回调（用于游戏、知识、科技等分类，传入 tid 和 name）
-    onCategoryClick: (Int, String) -> Unit = { _, _ -> }
+    onCategoryClick: (Int, String) -> Unit = { _, _ -> },
+    // 🔥🔥 [新增] 底栏扩展项目导航回调
+    onFavoriteClick: () -> Unit = {},  // 收藏页面
+    onLiveListClick: () -> Unit = {},  // 直播列表页面
+    onWatchLaterClick: () -> Unit = {}  // 稍后再看页面
 ) {
     val state by viewModel.uiState.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -126,6 +130,20 @@ fun HomeScreen(
     val cardAnimationEnabled = homeSettings.cardAnimationEnabled      // 🔥 卡片进场动画开关
     val cardTransitionEnabled = homeSettings.cardTransitionEnabled    // 🔥 卡片过渡动画开关
     
+    // 🔥🔥 [新增] 底栏可见项目配置
+    val orderedVisibleTabIds by SettingsManager.getOrderedVisibleTabs(context).collectAsState(
+        initial = listOf("HOME", "DYNAMIC", "HISTORY", "PROFILE")
+    )
+    // 将字符串 ID 转换为 BottomNavItem 枚举
+    val visibleBottomBarItems = remember(orderedVisibleTabIds) {
+        orderedVisibleTabIds.mapNotNull { id ->
+            try { BottomNavItem.valueOf(id) } catch (e: Exception) { null }
+        }
+    }
+    
+    // 🔥🔥 [新增] 底栏项目颜色配置
+    val bottomBarItemColors by SettingsManager.getBottomBarItemColors(context).collectAsState(initial = emptyMap())
+    
     // 🔥🔥 [修复] 根据展示模式动态设置网格列数
     // 故事卡片需要单列全宽，网格和玻璃使用双列
     val gridColumns = if (displayMode == 1) 1 else 2
@@ -141,9 +159,13 @@ fun HomeScreen(
             val insetsController = androidx.core.view.WindowCompat.getInsetsController(window, view)
             // 🔥 根据背景亮度设置状态栏图标颜色
             insetsController.isAppearanceLightStatusBars = isLightBackground
+            // 🔥🔥 [修复] 导航栏也需要根据背景亮度设置图标颜色
+            insetsController.isAppearanceLightNavigationBars = isLightBackground
             // 🔥 确保状态栏可见且透明
             insetsController.show(androidx.core.view.WindowInsetsCompat.Type.statusBars())
             window.statusBarColor = android.graphics.Color.TRANSPARENT
+            // 🔥🔥 [修复] 导航栏也设为透明，确保底栏隐藏时手势区域沉浸
+            window.navigationBarColor = android.graphics.Color.TRANSPARENT
         }
     }
 
@@ -329,7 +351,15 @@ fun HomeScreen(
     LaunchedEffect(shouldLoadMore) { if (shouldLoadMore) viewModel.loadMore() }
     
     // 🚀🚀 [性能优化] 图片预加载 - 提前加载即将显示的视频封面
-    LaunchedEffect(gridState) {
+    // 📉 [省流量] 省流量模式下禁用预加载
+    val isDataSaverActive = remember {
+        com.android.purebilibili.core.store.SettingsManager.isDataSaverActive(context)
+    }
+    
+    LaunchedEffect(gridState, isDataSaverActive) {
+        // 📉 省流量模式下跳过预加载
+        if (isDataSaverActive) return@LaunchedEffect
+        
         snapshotFlow { gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0 }
             .distinctUntilChanged()  // 🚀 只在索引变化时触发
             .collect { lastVisibleIndex ->
@@ -342,7 +372,7 @@ fun HomeScreen(
                         val imageUrl = videos.getOrNull(i)?.pic ?: continue
                         val request = coil.request.ImageRequest.Builder(context)
                             .data(com.android.purebilibili.core.util.FormatUtils.fixImageUrl(imageUrl))
-                            .size(480, 300)  // 🚀 预加载也使用限制尺寸
+                            .size(360, 225)  // 🚀 预加载也使用限制尺寸
                             .memoryCachePolicy(coil.request.CachePolicy.ENABLED)
                             .diskCachePolicy(coil.request.CachePolicy.ENABLED)
                             .build()
@@ -474,6 +504,10 @@ fun HomeScreen(
                                     BottomNavItem.DYNAMIC -> onDynamicClick()
                                     BottomNavItem.HISTORY -> onHistoryClick()
                                     BottomNavItem.PROFILE -> onProfileClick()
+                                    // 🔥🔥 [新增] 扩展项目点击处理
+                                    BottomNavItem.FAVORITE -> onFavoriteClick()
+                                    BottomNavItem.LIVE -> onLiveListClick()
+                                    BottomNavItem.WATCHLATER -> onWatchLaterClick()
                                 }
                             },
                             onHomeDoubleTap = {
@@ -481,7 +515,9 @@ fun HomeScreen(
                             },
                             hazeState = if (isBottomBarBlurEnabled) hazeState else null,
                             isFloating = true,
-                            labelMode = bottomBarLabelMode
+                            labelMode = bottomBarLabelMode,
+                            visibleItems = visibleBottomBarItems,
+                            itemColorIndices = bottomBarItemColors  // 🔥🔥 [新增] 传入颜色配置
                         )
                     }
                 } else {
@@ -497,6 +533,10 @@ fun HomeScreen(
                                 BottomNavItem.DYNAMIC -> onDynamicClick()
                                 BottomNavItem.HISTORY -> onHistoryClick()
                                 BottomNavItem.PROFILE -> onProfileClick()
+                                // 🔥🔥 [新增] 扩展项目点击处理
+                                BottomNavItem.FAVORITE -> onFavoriteClick()
+                                BottomNavItem.LIVE -> onLiveListClick()
+                                BottomNavItem.WATCHLATER -> onWatchLaterClick()
                             }
                         },
                         onHomeDoubleTap = {
@@ -504,7 +544,9 @@ fun HomeScreen(
                         },
                         hazeState = if (isBottomBarBlurEnabled) hazeState else null,
                         isFloating = false,
-                        labelMode = bottomBarLabelMode
+                        labelMode = bottomBarLabelMode,
+                        visibleItems = visibleBottomBarItems,
+                        itemColorIndices = bottomBarItemColors  // 🔥🔥 [新增] 传入颜色配置
                     )
                 }
             }
@@ -516,6 +558,8 @@ fun HomeScreen(
                 modifier = Modifier.padding(bottom = if (isBottomBarFloating) 100.dp else 80.dp)
             )
         },
+        // 🔥🔥 [修复] 禁用 Scaffold 默认的 contentWindowInsets，防止底部出现白色填充
+        contentWindowInsets = WindowInsets(0),
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Box(
@@ -528,8 +572,13 @@ fun HomeScreen(
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(gridColumns),
                     contentPadding = PaddingValues(
-                        top = 156.dp,
-                        bottom = if (isBottomBarFloating) 100.dp else padding.calculateBottomPadding() + 20.dp,
+                        top = 140.dp,
+                        // 🔥🔥 [修复] 动态底部 padding
+                        bottom = when {
+                            isBottomBarFloating -> 100.dp
+                            bottomBarVisible -> 64.dp + navBarHeight + 20.dp
+                            else -> navBarHeight + 8.dp
+                        },
                         start = 8.dp,
                         end = 8.dp
                     ),
@@ -550,7 +599,12 @@ fun HomeScreen(
                     onRetry = { viewModel.refresh() },
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(bottom = if (isBottomBarFloating) 100.dp else padding.calculateBottomPadding() + 20.dp)
+                        // 🔥🔥 [修复] 动态底部 padding
+                        .padding(bottom = when {
+                            isBottomBarFloating -> 100.dp
+                            bottomBarVisible -> 64.dp + navBarHeight + 20.dp
+                            else -> navBarHeight + 8.dp
+                        })
                 )
             } else {
                 // 🚀 [性能优化] 移除 AnimatedContent 包裹，减少分类切换时的重组开销
@@ -579,8 +633,13 @@ fun HomeScreen(
                     state = gridState,
                     columns = GridCells.Fixed(gridColumns),
                     contentPadding = PaddingValues(
-                        top = 156.dp,  // 🔥 Header 高度
-                        bottom = if (isBottomBarFloating) 100.dp else padding.calculateBottomPadding() + 20.dp,
+                        top = 140.dp,  // 🔥 Header 高度
+                        // 🔥🔥 [修复] 底栏隐藏时减少底部 padding，避免白色填充
+                        bottom = when {
+                            isBottomBarFloating -> 100.dp
+                            bottomBarVisible -> 64.dp + navBarHeight + 20.dp  // 底栏可见：底栏高度 + 导航栏 + 间距
+                            else -> navBarHeight + 8.dp  // 底栏隐藏：只需导航栏安全区 + 少量间距
+                        },
                         start = 8.dp, 
                         end = 8.dp
                     ),
@@ -588,7 +647,8 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(bottom = if (isBottomBarFloating) 0.dp else navBarHeight)
+                        // 🔥🔥 [修复] 底栏隐藏时不需要额外的导航栏 padding
+                        .padding(bottom = if (isBottomBarFloating || !bottomBarVisible) 0.dp else navBarHeight)
                         // 🔥 水平滑动手势切换分类
                         .pointerInput(targetCategory) {
                             var totalDragX = 0f

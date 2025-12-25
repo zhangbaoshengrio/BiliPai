@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ArrowForward  // 🔥 底栏管理箭头
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -43,7 +44,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppearanceSettingsScreen(
     viewModel: SettingsViewModel = viewModel(),
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToBottomBarSettings: () -> Unit = {}  // 🔥🔥 [新增] 底栏设置导航
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
@@ -138,36 +140,106 @@ fun AppearanceSettingsScreen(
             // 🔥🔥 [修复] 添加底部导航栏内边距，确保沉浸式效果
             contentPadding = WindowInsets.navigationBars.asPaddingValues()
         ) {
-            // 🍎 首页展示
+            // 🍎 首页展示 - 抽屉式选择
             item { SettingsSectionTitle("首页展示") }
             item {
                 SettingsGroup {
                     val displayMode = state.displayMode
+                    var isExpanded by remember { mutableStateOf(false) }
                     
-                    DisplayMode.entries.forEachIndexed { index, mode ->
+                    // 当前选中模式的名称
+                    val currentModeName = DisplayMode.entries.find { it.value == displayMode }?.title ?: "双列网格"
+                    
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        // 标题行 - 可点击展开/收起
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { viewModel.setDisplayMode(mode.value) }
-                                .padding(horizontal = 16.dp, vertical = 12.dp),
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable { isExpanded = !isExpanded }
+                                .padding(vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = mode.title,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.weight(1f)
+                            Icon(
+                                Icons.Outlined.GridView,
+                                contentDescription = null,
+                                tint = iOSBlue,
+                                modifier = Modifier.size(24.dp)
                             )
-                            if (displayMode == mode.value) {
-                                Icon(
-                                    Icons.Default.Check,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(20.dp)
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "展示样式",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = currentModeName,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
+                            Icon(
+                                imageVector = if (isExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                modifier = Modifier.size(24.dp)
+                            )
                         }
-                        // 🔥 已移除分割线
+                        
+                        // 展开后的选项 - 带动画
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = isExpanded,
+                            enter = androidx.compose.animation.expandVertically() + androidx.compose.animation.fadeIn(),
+                            exit = androidx.compose.animation.shrinkVertically() + androidx.compose.animation.fadeOut()
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(top = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
+                                DisplayMode.entries.forEach { mode ->
+                                    val isSelected = displayMode == mode.value
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .background(
+                                                if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                                                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                                            )
+                                            .clickable {
+                                                viewModel.setDisplayMode(mode.value)
+                                                isExpanded = false
+                                            }
+                                            .padding(horizontal = 14.dp, vertical = 12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(
+                                                mode.title,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                                                color = if (isSelected) MaterialTheme.colorScheme.primary 
+                                                        else MaterialTheme.colorScheme.onSurface
+                                            )
+                                            Text(
+                                                mode.description,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                                            )
+                                        }
+                                        if (isSelected) {
+                                            Icon(
+                                                Icons.Outlined.Check,
+                                                contentDescription = "已选择",
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.size(20.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -194,6 +266,11 @@ fun AppearanceSettingsScreen(
                             onCheckedChange = { viewModel.toggleDynamicColor(it) },
                             iconTint = iOSPink
                         )
+                        
+                        // 🔥🔥 [新增] 动态取色预览
+                        if (state.dynamicColor) {
+                            DynamicColorPreview()
+                        }
                     }
                     
                     Divider()
@@ -392,18 +469,53 @@ fun AppearanceSettingsScreen(
                     )
                 
                 SettingsGroup {
-                    SettingSwitchItem(
-                        icon = Icons.Outlined.ViewStream,
-                        title = "悬浮底栏",
-                        subtitle = "关闭后底栏将沉浸式贴底显示",
-                        checked = state.isBottomBarFloating,
-                        onCheckedChange = { viewModel.toggleBottomBarFloating(it) },
-                        iconTint = iOSTeal
-                    )
+                    // 🔥🔥 [导航入口] 底栏管理
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onNavigateToBottomBarSettings() }
+                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(iOSBlue.copy(alpha = 0.12f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Outlined.Dashboard,
+                                contentDescription = null,
+                                tint = iOSBlue,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(14.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "底栏管理",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = "自定义底栏项目和顺序",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Icon(
+                            Icons.Filled.ArrowForward,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        )
+                    }
                     
                     Divider()
                     
-                    // 🔥🔥 [新增] 底栏显示模式选择
+                    // ==================== 抽屉类选择器 ====================
+                    
+                    // 🔥 底栏显示模式选择（抽屉式）
                     var visibilityModeExpanded by remember { mutableStateOf(false) }
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(
@@ -501,52 +613,7 @@ fun AppearanceSettingsScreen(
                     
                     Divider()
                     
-                    // 🔥 底栏磨砂效果 (moved up)
-                    SettingSwitchItem(
-                        icon = Icons.Outlined.BlurCircular,
-                        title = "底栏磨砂效果",
-                        subtitle = "底部导航栏的毛玻璃模糊",
-                        checked = state.bottomBarBlurEnabled,
-                        onCheckedChange = { viewModel.toggleBottomBarBlur(it) },
-                        iconTint = iOSBlue
-                    )
-                    
-                    // 🔥🔥 [新增] 模糊强度选择
-                    if (state.bottomBarBlurEnabled) {
-                        Divider()
-                        BlurIntensitySelector(
-                            selectedIntensity = state.blurIntensity,
-                            onIntensityChange = { viewModel.setBlurIntensity(it) }
-                        )
-                    }
-                    
-                    Divider()
-                    
-                    // 🔥 卡片进场动画开关
-                    SettingSwitchItem(
-                        icon = Icons.Outlined.Animation,
-                        title = "卡片进场动画",
-                        subtitle = "首页视频卡片的入场动画效果",
-                        checked = state.cardAnimationEnabled,
-                        onCheckedChange = { viewModel.toggleCardAnimation(it) },
-                        iconTint = iOSPink
-                    )
-                    
-                    Divider()
-                    
-                    // 🔥 卡片过渡动画开关
-                    SettingSwitchItem(
-                        icon = Icons.Outlined.SwapHoriz,
-                        title = "卡片过渡动画",
-                        subtitle = "点击卡片时的共享元素过渡效果",
-                        checked = state.cardTransitionEnabled,
-                        onCheckedChange = { viewModel.toggleCardTransition(it) },
-                        iconTint = iOSTeal
-                    )
-                    
-                    Divider()
-                    
-                    // 🔥 底栏显示模式选择 (moved down)
+                    // 🔥 底栏标签样式（选择器）
                     Column(modifier = Modifier.padding(16.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
@@ -616,6 +683,65 @@ fun AppearanceSettingsScreen(
                             }
                         }
                     }
+                    
+                    Divider()
+                    
+                    // ==================== 开关类设置 ====================
+                    
+                    // 🔥 悬浮底栏开关
+                    SettingSwitchItem(
+                        icon = Icons.Outlined.ViewStream,
+                        title = "悬浮底栏",
+                        subtitle = "关闭后底栏将沉浸式贴底显示",
+                        checked = state.isBottomBarFloating,
+                        onCheckedChange = { viewModel.toggleBottomBarFloating(it) },
+                        iconTint = iOSTeal
+                    )
+                    
+                    Divider()
+                    
+                    // 🔥 底栏磨砂效果开关
+                    SettingSwitchItem(
+                        icon = Icons.Outlined.BlurCircular,
+                        title = "底栏磨砂效果",
+                        subtitle = "底部导航栏的毛玻璃模糊",
+                        checked = state.bottomBarBlurEnabled,
+                        onCheckedChange = { viewModel.toggleBottomBarBlur(it) },
+                        iconTint = iOSBlue
+                    )
+                    
+                    // 🔥 模糊强度选择（仅在磨砂开启时显示）
+                    if (state.bottomBarBlurEnabled) {
+                        Divider()
+                        BlurIntensitySelector(
+                            selectedIntensity = state.blurIntensity,
+                            onIntensityChange = { viewModel.setBlurIntensity(it) }
+                        )
+                    }
+                    
+                    Divider()
+                    
+                    // 🔥 卡片进场动画开关
+                    SettingSwitchItem(
+                        icon = Icons.Outlined.Animation,
+                        title = "卡片进场动画",
+                        subtitle = "首页视频卡片的入场动画效果",
+                        checked = state.cardAnimationEnabled,
+                        onCheckedChange = { viewModel.toggleCardAnimation(it) },
+                        iconTint = iOSPink
+                    )
+                    
+                    Divider()
+                    
+                    // 🔥 卡片过渡动画开关
+                    SettingSwitchItem(
+                        icon = Icons.Outlined.SwapHoriz,
+                        title = "卡片过渡动画",
+                        subtitle = "点击卡片时的共享元素过渡效果",
+                        checked = state.cardTransitionEnabled,
+                        onCheckedChange = { viewModel.toggleCardTransition(it) },
+                        iconTint = iOSTeal
+                    )
                 }
             }
         }
@@ -758,5 +884,82 @@ fun BlurIntensityOption(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+    }
+}
+
+/**
+ * 🔥🔥 动态取色预览组件
+ * 显示从壁纸提取的 Material You 颜色
+ */
+@Composable
+fun DynamicColorPreview() {
+    val colorScheme = MaterialTheme.colorScheme
+    
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+    ) {
+        Text(
+            text = "当前取色预览",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // Primary
+            ColorPreviewItem(
+                color = colorScheme.primary,
+                label = "主色",
+                modifier = Modifier.weight(1f)
+            )
+            // Secondary
+            ColorPreviewItem(
+                color = colorScheme.secondary,
+                label = "辅色",
+                modifier = Modifier.weight(1f)
+            )
+            // Tertiary
+            ColorPreviewItem(
+                color = colorScheme.tertiary,
+                label = "第三色",
+                modifier = Modifier.weight(1f)
+            )
+            // Primary Container
+            ColorPreviewItem(
+                color = colorScheme.primaryContainer,
+                label = "容器",
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+fun ColorPreviewItem(
+    color: Color,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(color)
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }

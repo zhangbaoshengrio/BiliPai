@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.util.FormatUtils
 import com.android.purebilibili.data.model.response.ReplyItem
 import java.text.SimpleDateFormat
@@ -103,7 +103,7 @@ fun ReplyItemView(
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Medium,
                         // 🔥 VIP 用户使用粉色，普通用户使用次要色适配深色模式
-                        color = if (item.member.vip?.vipStatus == 1) BiliPink
+                        color = if (item.member.vip?.vipStatus == 1) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.width(6.dp))

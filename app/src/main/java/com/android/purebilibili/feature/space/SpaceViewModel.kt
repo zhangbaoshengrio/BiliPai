@@ -20,7 +20,10 @@ sealed class SpaceUiState {
         val videos: List<SpaceVideoItem> = emptyList(),
         val totalVideos: Int = 0,
         val isLoadingMore: Boolean = false,
-        val hasMoreVideos: Boolean = true
+        val hasMoreVideos: Boolean = true,
+        // 🔥 视频分类
+        val categories: List<SpaceVideoCategory> = emptyList(),
+        val selectedTid: Int = 0  // 0 表示全部
     ) : SpaceUiState()
     data class Error(val message: String) : SpaceUiState()
 }
@@ -70,13 +73,25 @@ class SpaceViewModel : ViewModel() {
                 val videosResult = videosDeferred.await()
                 
                 if (userInfo != null) {
+                    val videos = videosResult?.list?.vlist ?: emptyList()
+                    
+                    // 🔥 调试日志
+                    com.android.purebilibili.core.util.Logger.d("SpaceVM", "📊 Videos loaded: ${videos.size}")
+                    videos.take(3).forEach { v ->
+                        com.android.purebilibili.core.util.Logger.d("SpaceVM", "📊 Video: typeid=${v.typeid}, typename='${v.typename}', title=${v.title.take(20)}")
+                    }
+                    
+                    val categories = extractCategories(videos)
+                    com.android.purebilibili.core.util.Logger.d("SpaceVM", "📊 Categories extracted: ${categories.size} - ${categories.map { it.name }}")
+                    
                     _uiState.value = SpaceUiState.Success(
                         userInfo = userInfo,
                         relationStat = relationStat,
                         upStat = upStat,
-                        videos = videosResult?.list?.vlist ?: emptyList(),
+                        videos = videos,
                         totalVideos = videosResult?.page?.count ?: 0,
-                        hasMoreVideos = (videosResult?.list?.vlist?.size ?: 0) >= pageSize
+                        hasMoreVideos = videos.size >= pageSize,
+                        categories = categories
                     )
                 } else {
                     _uiState.value = SpaceUiState.Error("获取用户信息失败")
@@ -164,14 +179,17 @@ class SpaceViewModel : ViewModel() {
         }
     }
     
-    private suspend fun fetchSpaceVideos(mid: Long, page: Int, imgKey: String, subKey: String): SpaceVideoData? {
+    // 🔥 支持 tid 参数的视频获取
+    private suspend fun fetchSpaceVideos(mid: Long, page: Int, imgKey: String, subKey: String, tid: Int = 0): SpaceVideoData? {
         return try {
-            val params = WbiUtils.sign(mapOf(
+            val params = WbiUtils.sign(mutableMapOf(
                 "mid" to mid.toString(),
                 "pn" to page.toString(),
                 "ps" to pageSize.toString(),
                 "order" to "pubdate"  // 按发布时间排序
-            ), imgKey, subKey)
+            ).apply {
+                if (tid > 0) put("tid", tid.toString())  // 🔥 添加分类筛选
+            }.toMap(), imgKey, subKey)
             val response = spaceApi.getSpaceVideos(params)
             if (response.code == 0) response.data else null
         } catch (e: Exception) {
@@ -179,5 +197,61 @@ class SpaceViewModel : ViewModel() {
             null
         }
     }
+    
+    // 🔥 分类选择
+    private var currentTid = 0
+    
+    fun selectCategory(tid: Int) {
+        val current = _uiState.value as? SpaceUiState.Success ?: return
+        if (current.selectedTid == tid) return  // 避免重复选择
+        
+        currentTid = tid
+        currentPage = 1
+        
+        viewModelScope.launch {
+            _uiState.value = current.copy(
+                selectedTid = tid,
+                videos = emptyList(),
+                isLoadingMore = true
+            )
+            
+            try {
+                val result = fetchSpaceVideos(currentMid, 1, cachedImgKey, cachedSubKey, tid)
+                val currentState = _uiState.value as? SpaceUiState.Success ?: return@launch
+                
+                if (result != null) {
+                    _uiState.value = currentState.copy(
+                        videos = result.list.vlist,
+                        totalVideos = result.page.count,
+                        hasMoreVideos = result.list.vlist.size >= pageSize,
+                        isLoadingMore = false
+                    )
+                } else {
+                    _uiState.value = currentState.copy(isLoadingMore = false)
+                }
+            } catch (e: Exception) {
+                val currentState = _uiState.value as? SpaceUiState.Success ?: return@launch
+                _uiState.value = currentState.copy(isLoadingMore = false)
+            }
+        }
+    }
+    
+    // 🔥 解析分类信息 - 从视频列表中统计分类
+    private fun extractCategories(videos: List<SpaceVideoItem>): List<SpaceVideoCategory> {
+        // 即使 typename 为空，也使用 typeid 创建分类
+        return videos
+            .filter { it.typeid > 0 }
+            .groupBy { it.typeid }
+            .map { (tid, list) ->
+                // 优先使用 typename，若为空则使用 typeid 作为名称
+                val name = list.firstOrNull { it.typename.isNotEmpty() }?.typename 
+                    ?: "分区$tid"
+                SpaceVideoCategory(
+                    tid = tid,
+                    name = name,
+                    count = list.size
+                )
+            }
+            .sortedByDescending { it.count }
+    }
 }
-

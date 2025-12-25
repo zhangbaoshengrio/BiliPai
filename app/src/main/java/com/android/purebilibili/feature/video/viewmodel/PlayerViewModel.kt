@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.android.purebilibili.core.cache.PlayUrlCache
+import com.android.purebilibili.core.cooldown.PlaybackCooldownManager
 import com.android.purebilibili.core.plugin.PluginManager
 import com.android.purebilibili.core.plugin.SkipAction
 import com.android.purebilibili.core.util.AnalyticsHelper
@@ -62,7 +63,10 @@ sealed class PlayerUiState {
         val isFavorited: Boolean = false,
         val isLiked: Boolean = false,
         val coinCount: Int = 0,
-        val emoteMap: Map<String, String> = emptyMap()
+        val emoteMap: Map<String, String> = emptyMap(),
+        val isInWatchLater: Boolean = false,  // 🔥 稍后再看状态
+        val followingMids: Set<Long> = emptySet(),  // 🔥 已关注用户 ID 列表
+        val videoTags: List<VideoTag> = emptyList()  // 🔥 视频标签列表
     ) : PlayerUiState()
     
     data class Error(
@@ -213,7 +217,27 @@ class PlayerViewModel : ViewModel() {
             _uiState.value = PlayerUiState.Loading.Initial
             
             // 🔥🔥 [网络感知] 根据网络类型选择默认清晰度
-            val defaultQuality = appContext?.let { NetworkUtils.getDefaultQualityId(it) } ?: 64
+            var defaultQuality = appContext?.let { NetworkUtils.getDefaultQualityId(it) } ?: 64
+            
+            // 📉 [省流量] 省流量模式逻辑：
+            // - ALWAYS: 任何网络都限制 480P
+            // - MOBILE_ONLY: 仅移动数据时限制 480P（WiFi不受限）
+            val isOnMobileNetwork = appContext?.let { NetworkUtils.isMobileData(it) } ?: false
+            val dataSaverMode = appContext?.let { 
+                com.android.purebilibili.core.store.SettingsManager.getDataSaverModeSync(it) 
+            } ?: com.android.purebilibili.core.store.SettingsManager.DataSaverMode.MOBILE_ONLY
+            
+            // 🔥 判断是否应该限制画质
+            val shouldLimitQuality = when (dataSaverMode) {
+                com.android.purebilibili.core.store.SettingsManager.DataSaverMode.OFF -> false
+                com.android.purebilibili.core.store.SettingsManager.DataSaverMode.ALWAYS -> true  // 任何网络都限制
+                com.android.purebilibili.core.store.SettingsManager.DataSaverMode.MOBILE_ONLY -> isOnMobileNetwork  // 仅移动数据
+            }
+            
+            if (shouldLimitQuality && defaultQuality > 32) {
+                defaultQuality = 32  // 480P
+                com.android.purebilibili.core.util.Logger.d("PlayerViewModel", "📉 省流量模式(${dataSaverMode.label}): 限制画质为480P")
+            }
             
             when (val result = playbackUseCase.loadVideo(bvid, defaultQuality)) {
                 is VideoLoadResult.Success -> {
@@ -244,6 +268,14 @@ class PlayerViewModel : ViewModel() {
                         isLiked = result.isLiked,
                         coinCount = result.coinCount
                     )
+                    
+                    // 🔥🔥 [新增] 异步加载关注列表（用于推荐视频的已关注标签）
+                    if (result.isLoggedIn) {
+                        loadFollowingMids()
+                    }
+                    
+                    // 🔥 异步加载视频标签
+                    loadVideoTags(bvid)
                     
                     // 🔥🔥 [新增] 更新播放列表
                     updatePlaylist(result.info, result.related)
@@ -305,6 +337,17 @@ class PlayerViewModel : ViewModel() {
     
     fun retry() {
         val bvid = currentBvid.takeIf { it.isNotBlank() } ?: return
+        
+        // 🔥 检查当前错误类型，如果是全局冷却则清除所有冷却
+        val currentState = _uiState.value
+        if (currentState is PlayerUiState.Error && 
+            currentState.error is VideoLoadError.GlobalCooldown) {
+            PlaybackCooldownManager.clearAll()
+        } else {
+            // 清除该视频的冷却状态，允许用户强制重试
+            PlaybackCooldownManager.clearForVideo(bvid)
+        }
+        
         PlayUrlCache.invalidate(bvid, currentCid)
         currentBvid = ""
         loadVideo(bvid)
@@ -345,6 +388,72 @@ class PlayerViewModel : ViewModel() {
                     toast(if (it) "\u70b9\u8d5e\u6210\u529f" else "\u5df2\u53d6\u6d88\u70b9\u8d5e")
                 }
                 .onFailure { toast(it.message ?: "\u64cd\u4f5c\u5931\u8d25") }
+        }
+    }
+    
+    // 🔥 稍后再看
+    fun toggleWatchLater() {
+        val current = _uiState.value as? PlayerUiState.Success ?: return
+        viewModelScope.launch {
+            interactionUseCase.toggleWatchLater(current.info.aid, current.isInWatchLater, currentBvid)
+                .onSuccess { inWatchLater ->
+                    _uiState.value = current.copy(isInWatchLater = inWatchLater)
+                    toast(if (inWatchLater) "已添加到稍后再看" else "已从稍后再看移除")
+                }
+                .onFailure { toast(it.message ?: "操作失败") }
+        }
+    }
+    
+    // 🔥 异步加载关注列表（用于推荐视频的已关注标签）
+    private fun loadFollowingMids() {
+        viewModelScope.launch {
+            try {
+                val mid = com.android.purebilibili.core.store.TokenManager.midCache ?: return@launch
+                val allMids = mutableSetOf<Long>()
+                var page = 1
+                val pageSize = 50
+                
+                // 只加载前 200 个关注（4页），避免请求过多
+                while (page <= 4) {
+                    try {
+                        val result = com.android.purebilibili.core.network.NetworkModule.api.getFollowings(mid, page, pageSize)
+                        if (result.code == 0 && result.data != null) {
+                            val list = result.data.list ?: break
+                            if (list.isEmpty()) break
+                            allMids.addAll(list.map { it.mid })
+                            if (list.size < pageSize) break
+                            page++
+                        } else {
+                            break
+                        }
+                    } catch (e: Exception) {
+                        break
+                    }
+                }
+                
+                // 更新 UI 状态
+                val current = _uiState.value as? PlayerUiState.Success ?: return@launch
+                _uiState.value = current.copy(followingMids = allMids)
+                Logger.d("PlayerVM", "🔥 Loaded ${allMids.size} following mids")
+            } catch (e: Exception) {
+                Logger.d("PlayerVM", "⚠️ Failed to load following mids: ${e.message}")
+            }
+        }
+    }
+    
+    // 🔥 异步加载视频标签
+    private fun loadVideoTags(bvid: String) {
+        viewModelScope.launch {
+            try {
+                val response = com.android.purebilibili.core.network.NetworkModule.api.getVideoTags(bvid)
+                if (response.code == 0 && response.data != null) {
+                    val current = _uiState.value as? PlayerUiState.Success ?: return@launch
+                    _uiState.value = current.copy(videoTags = response.data)
+                    Logger.d("PlayerVM", "🏷️ Loaded ${response.data.size} video tags")
+                }
+            } catch (e: Exception) {
+                Logger.d("PlayerVM", "⚠️ Failed to load video tags: ${e.message}")
+            }
         }
     }
     

@@ -63,6 +63,10 @@ object SettingsManager {
     private val KEY_CARD_TRANSITION_ENABLED = booleanPreferencesKey("card_transition_enabled")
     // 🚀 [合并] 崩溃追踪同意弹窗
     private val KEY_CRASH_TRACKING_CONSENT_SHOWN = booleanPreferencesKey("crash_tracking_consent_shown")
+    // 🔥🔥 [新增] 底栏自定义 - 顺序和可见性
+    private val KEY_BOTTOM_BAR_ORDER = stringPreferencesKey("bottom_bar_order")  // 逗号分隔的项目顺序
+    private val KEY_BOTTOM_BAR_VISIBLE_TABS = stringPreferencesKey("bottom_bar_visible_tabs")  // 逗号分隔的可见项目
+    private val KEY_BOTTOM_BAR_ITEM_COLORS = stringPreferencesKey("bottom_bar_item_colors")  // 🔥 格式: HOME:0,DYNAMIC:1,...
 
     /**
      * 🚀 合并首页相关设置为单一 Flow
@@ -609,5 +613,144 @@ object SettingsManager {
      */
     fun getDefaultDownloadPath(context: Context): String {
         return context.getExternalFilesDir(null)?.absolutePath + "/downloads"
+    }
+    
+    // ========== 📉 省流量模式 ==========
+    
+    private val KEY_DATA_SAVER_MODE = intPreferencesKey("data_saver_mode")
+    
+    /**
+     * 🔥 省流量模式
+     * - OFF: 关闭省流量
+     * - MOBILE_ONLY: 仅移动数据时启用（默认）
+     * - ALWAYS: 始终启用
+     */
+    enum class DataSaverMode(val value: Int, val label: String, val description: String) {
+        OFF(0, "关闭", "不限制流量使用"),
+        MOBILE_ONLY(1, "仅移动数据", "使用移动数据时自动省流量"),
+        ALWAYS(2, "始终开启", "始终使用省流量模式");
+        
+        companion object {
+            fun fromValue(value: Int): DataSaverMode = entries.find { it.value == value } ?: MOBILE_ONLY
+        }
+    }
+    
+    // --- 省流量模式设置 ---
+    fun getDataSaverMode(context: Context): Flow<DataSaverMode> = context.settingsDataStore.data
+        .map { preferences -> 
+            DataSaverMode.fromValue(preferences[KEY_DATA_SAVER_MODE] ?: DataSaverMode.MOBILE_ONLY.value)
+        }
+
+    suspend fun setDataSaverMode(context: Context, mode: DataSaverMode) {
+        context.settingsDataStore.edit { preferences -> 
+            preferences[KEY_DATA_SAVER_MODE] = mode.value 
+        }
+        // 🔥 同步到 SharedPreferences，供同步读取使用
+        context.getSharedPreferences("data_saver", Context.MODE_PRIVATE)
+            .edit().putInt("mode", mode.value).apply()
+    }
+    
+    // 🔥 同步读取省流量模式
+    fun getDataSaverModeSync(context: Context): DataSaverMode {
+        val value = context.getSharedPreferences("data_saver", Context.MODE_PRIVATE)
+            .getInt("mode", DataSaverMode.MOBILE_ONLY.value)
+        return DataSaverMode.fromValue(value)
+    }
+    
+    /**
+     * 🔥 判断当前是否应该启用省流量
+     * 根据模式和当前网络状态判断
+     */
+    fun isDataSaverActive(context: Context): Boolean {
+        val mode = getDataSaverModeSync(context)
+        return when (mode) {
+            DataSaverMode.OFF -> false
+            DataSaverMode.ALWAYS -> true
+            DataSaverMode.MOBILE_ONLY -> {
+                // 检测当前网络是否为移动数据
+                val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) 
+                    as android.net.ConnectivityManager
+                val network = connectivityManager.activeNetwork
+                val capabilities = connectivityManager.getNetworkCapabilities(network)
+                // 如果是蜂窝网络，则启用省流量
+                capabilities?.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR) == true
+            }
+        }
+    }
+    
+    // 🔥🔥 [新增] --- 底栏顺序配置 ---
+    // 默认顺序: HOME,DYNAMIC,HISTORY,PROFILE
+    fun getBottomBarOrder(context: Context): Flow<List<String>> = context.settingsDataStore.data.map { prefs ->
+        val orderString = prefs[KEY_BOTTOM_BAR_ORDER] ?: "HOME,DYNAMIC,HISTORY,PROFILE"
+        orderString.split(",").filter { it.isNotBlank() }
+    }
+    
+    suspend fun setBottomBarOrder(context: Context, order: List<String>) {
+        context.settingsDataStore.edit { prefs ->
+            prefs[KEY_BOTTOM_BAR_ORDER] = order.joinToString(",")
+        }
+    }
+    
+    // 🔥🔥 [新增] --- 底栏可见项配置 ---
+    // 默认可见: HOME,DYNAMIC,HISTORY,PROFILE
+    // 可选项: HOME,DYNAMIC,HISTORY,PROFILE,FAVORITE,LIVE,WATCHLATER
+    fun getBottomBarVisibleTabs(context: Context): Flow<Set<String>> = context.settingsDataStore.data.map { prefs ->
+        val tabsString = prefs[KEY_BOTTOM_BAR_VISIBLE_TABS] ?: "HOME,DYNAMIC,HISTORY,PROFILE"
+        tabsString.split(",").filter { it.isNotBlank() }.toSet()
+    }
+    
+    suspend fun setBottomBarVisibleTabs(context: Context, tabs: Set<String>) {
+        context.settingsDataStore.edit { prefs ->
+            prefs[KEY_BOTTOM_BAR_VISIBLE_TABS] = tabs.joinToString(",")
+        }
+    }
+    
+    // 🔥🔥 [新增] 获取有序的可见底栏项目列表
+    fun getOrderedVisibleTabs(context: Context): Flow<List<String>> = context.settingsDataStore.data.map { prefs ->
+        val orderString = prefs[KEY_BOTTOM_BAR_ORDER] ?: "HOME,DYNAMIC,HISTORY,PROFILE"
+        val tabsString = prefs[KEY_BOTTOM_BAR_VISIBLE_TABS] ?: "HOME,DYNAMIC,HISTORY,PROFILE"
+        val order = orderString.split(",").filter { it.isNotBlank() }
+        val visibleSet = tabsString.split(",").filter { it.isNotBlank() }.toSet()
+        order.filter { it in visibleSet }
+    }
+    
+    // 🔥🔥 [新增] --- 底栏项目颜色自定义 ---
+    /**
+     * 获取所有底栏项目的颜色索引映射
+     * @return Map<项目ID, 颜色索引>
+     */
+    fun getBottomBarItemColors(context: Context): Flow<Map<String, Int>> = context.settingsDataStore.data.map { prefs ->
+        val colorsString = prefs[KEY_BOTTOM_BAR_ITEM_COLORS] ?: ""
+        if (colorsString.isBlank()) {
+            emptyMap()  // 返回空 Map，使用默认颜色
+        } else {
+            colorsString.split(",")
+                .filter { it.contains(":") }
+                .associate { pair ->
+                    val (id, index) = pair.split(":")
+                    id to (index.toIntOrNull() ?: 0)
+                }
+        }
+    }
+    
+    /**
+     * 设置单个底栏项目的颜色索引
+     */
+    suspend fun setBottomBarItemColor(context: Context, itemId: String, colorIndex: Int) {
+        context.settingsDataStore.edit { prefs ->
+            val current = prefs[KEY_BOTTOM_BAR_ITEM_COLORS] ?: ""
+            val colorMap = if (current.isBlank()) {
+                mutableMapOf()
+            } else {
+                current.split(",")
+                    .filter { it.contains(":") }
+                    .associate { pair ->
+                        val (id, index) = pair.split(":")
+                        id to (index.toIntOrNull() ?: 0)
+                    }.toMutableMap()
+            }
+            colorMap[itemId] = colorIndex
+            prefs[KEY_BOTTOM_BAR_ITEM_COLORS] = colorMap.entries.joinToString(",") { "${it.key}:${it.value}" }
+        }
     }
 }

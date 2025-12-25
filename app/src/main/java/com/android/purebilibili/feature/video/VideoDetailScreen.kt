@@ -42,10 +42,11 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 
 import com.android.purebilibili.data.model.response.RelatedVideo
 import com.android.purebilibili.data.model.response.ReplyItem
+import com.android.purebilibili.data.model.response.VideoTag
 import com.android.purebilibili.data.model.response.ViewInfo
 // Refactored UI components
 import com.android.purebilibili.feature.video.ui.section.VideoTitleSection
@@ -498,6 +499,9 @@ fun VideoDetailScreen(
                                     coinCount = success.coinCount,
                                     currentPageIndex = currentPageIndex,
                                     downloadProgress = downloadProgress,
+                                    isInWatchLater = success.isInWatchLater,
+                                    followingMids = success.followingMids,
+                                    videoTags = success.videoTags,  // 🔥 视频标签
                                     onFollowClick = { viewModel.toggleFollow() },
                                     onFavoriteClick = { viewModel.toggleFavorite() },
                                     onLikeClick = { viewModel.toggleLike() },
@@ -509,6 +513,7 @@ fun VideoDetailScreen(
                                     onSubReplyClick = { commentViewModel.openSubReply(it) },
                                     onLoadMoreReplies = { commentViewModel.loadComments() },
                                     onDownloadClick = { viewModel.openDownloadDialog() },
+                                    onWatchLaterClick = { viewModel.toggleWatchLater() },
                                     // 🔥🔥 [新增] 时间戳点击跳转
                                     onTimestampClick = { positionMs ->
                                         playerState.player.seekTo(positionMs)
@@ -533,6 +538,9 @@ fun VideoDetailScreen(
                                                 is com.android.purebilibili.data.model.VideoLoadError.NetworkError -> "📡"
                                                 is com.android.purebilibili.data.model.VideoLoadError.VideoNotFound -> "🔍"
                                                 is com.android.purebilibili.data.model.VideoLoadError.RegionRestricted -> "🌐"
+                                                is com.android.purebilibili.data.model.VideoLoadError.RateLimited -> "⏳"
+                                                is com.android.purebilibili.data.model.VideoLoadError.GlobalCooldown -> "🔒"
+                                                is com.android.purebilibili.data.model.VideoLoadError.PlayUrlEmpty -> "⚡"
                                                 else -> "⚠️"
                                             },
                                             fontSize = 48.sp
@@ -544,8 +552,36 @@ fun VideoDetailScreen(
                                             fontSize = 16.sp,
                                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
                                         )
-                                        // 🔥 只有可重试的错误才显示重试按钮
-                                        if (errorState.canRetry) {
+                                        
+                                        // 🔥 针对风控错误显示额外建议
+                                        when (errorState.error) {
+                                            is com.android.purebilibili.data.model.VideoLoadError.GlobalCooldown,
+                                            is com.android.purebilibili.data.model.VideoLoadError.PlayUrlEmpty -> {
+                                                Spacer(Modifier.height(8.dp))
+                                                Text(
+                                                    text = "💡 建议：切换 WiFi/移动数据 或 清除缓存后重试",
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                    fontSize = 13.sp,
+                                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                                )
+                                            }
+                                            is com.android.purebilibili.data.model.VideoLoadError.RateLimited -> {
+                                                Spacer(Modifier.height(8.dp))
+                                                Text(
+                                                    text = "💡 该视频可能暂时不可用，请尝试其他视频",
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                    fontSize = 13.sp,
+                                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                                )
+                                            }
+                                            else -> {}
+                                        }
+                                        
+                                        // 🔥 只有可重试的错误才显示重试按钮（或者风控错误允许强制重试）
+                                        val showRetryButton = errorState.canRetry || 
+                                            errorState.error is com.android.purebilibili.data.model.VideoLoadError.RateLimited ||
+                                            errorState.error is com.android.purebilibili.data.model.VideoLoadError.PlayUrlEmpty
+                                        if (showRetryButton) {
                                             Spacer(Modifier.height(24.dp))
                                             Button(
                                                 onClick = { viewModel.retry() },
@@ -553,7 +589,13 @@ fun VideoDetailScreen(
                                                     containerColor = MaterialTheme.colorScheme.primary
                                                 )
                                             ) {
-                                                Text("重试")
+                                                Text(
+                                                    text = when (errorState.error) {
+                                                        is com.android.purebilibili.data.model.VideoLoadError.RateLimited -> "强制重试"
+                                                        is com.android.purebilibili.data.model.VideoLoadError.GlobalCooldown -> "清除冷却并重试"
+                                                        else -> "重试"
+                                                    }
+                                                )
                                             }
                                         }
                                     }
@@ -691,6 +733,9 @@ fun VideoContentSection(
     coinCount: Int,
     currentPageIndex: Int,
     downloadProgress: Float = -1f,  // 🔥 下载进度
+    isInWatchLater: Boolean = false,  // 🔥 稍后再看状态
+    followingMids: Set<Long> = emptySet(),  // 🔥 已关注用户 ID 列表
+    videoTags: List<VideoTag> = emptyList(),  // 🔥 视频标签列表
     onFollowClick: () -> Unit,
     onFavoriteClick: () -> Unit,
     onLikeClick: () -> Unit,
@@ -702,6 +747,7 @@ fun VideoContentSection(
     onSubReplyClick: (ReplyItem) -> Unit,
     onLoadMoreReplies: () -> Unit,
     onDownloadClick: () -> Unit = {},  // 🔥 下载点击
+    onWatchLaterClick: () -> Unit = {},  // 🔥 稍后再看点击
     onTimestampClick: ((Long) -> Unit)? = null  // 🔥🔥 [新增] 时间戳点击跳转
 ) {
     val listState = rememberLazyListState()
@@ -732,6 +778,13 @@ fun VideoContentSection(
                 info = info
             )
         }
+        
+        // 🔥 视频标签
+        if (videoTags.isNotEmpty()) {
+            item {
+                VideoTagsRow(tags = videoTags)
+            }
+        }
 
         // 🔥🔥 [官方布局] 3. 操作按钮行
         item {
@@ -741,12 +794,14 @@ fun VideoContentSection(
                 isLiked = isLiked,
                 coinCount = coinCount,
                 downloadProgress = downloadProgress,
+                isInWatchLater = isInWatchLater,  // 🔥 稍后再看状态
                 onFavoriteClick = onFavoriteClick,
                 onLikeClick = onLikeClick,
                 onCoinClick = onCoinClick,
                 onTripleClick = onTripleClick,
                 onCommentClick = {},  // 已有评论 Tab
-                onDownloadClick = onDownloadClick
+                onDownloadClick = onDownloadClick,
+                onWatchLaterClick = onWatchLaterClick  // 🔥 稍后再看点击
             )
         }
 
@@ -773,7 +828,7 @@ fun VideoContentSection(
                                 text = title,
                                 fontSize = 14.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                color = if (isSelected) BiliPink else MaterialTheme.colorScheme.onSurfaceVariant
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             // 下划线指示器
@@ -782,7 +837,7 @@ fun VideoContentSection(
                                     .width(24.dp)
                                     .height(2.dp)
                                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(1.dp))
-                                    .background(if (isSelected) BiliPink else Color.Transparent)
+                                    .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
                             )
                         }
                         if (index < tabs.lastIndex) {
@@ -812,7 +867,7 @@ fun VideoContentSection(
                             modifier = Modifier
                                 .size(20.dp)
                                 .clip(androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
-                                .background(BiliPink),
+                                .background(MaterialTheme.colorScheme.primary),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -850,7 +905,11 @@ fun VideoContentSection(
             }
 
             items(relatedVideos, key = { it.bvid }) { video ->
-                RelatedVideoItem(video = video, onClick = { onRelatedVideoClick(video.bvid) })
+                RelatedVideoItem(
+                    video = video, 
+                    isFollowed = video.owner.mid in followingMids,  // 🔥 判断是否已关注
+                    onClick = { onRelatedVideoClick(video.bvid) }
+                )
             }
             
         } else {
@@ -913,6 +972,43 @@ private fun VideoRecommendationHeader() {
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+/**
+ * 🔥 视频标签行组件 - 使用 FlowRow 分列展示
+ */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+private fun VideoTagsRow(tags: List<VideoTag>) {
+    androidx.compose.foundation.layout.FlowRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        tags.take(10).forEach { tag ->
+            VideoTagChip(tagName = tag.tag_name)
+        }
+    }
+}
+
+/**
+ * 🔥 视频标签芯片
+ */
+@Composable
+private fun VideoTagChip(tagName: String) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f),
+        shape = RoundedCornerShape(14.dp)
+    ) {
+        Text(
+            text = tagName,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
         )
     }
 }

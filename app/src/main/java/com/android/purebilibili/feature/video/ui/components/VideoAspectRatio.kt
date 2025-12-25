@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.media3.ui.AspectRatioFrameLayout
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 
 /**
  * 视频比例枚举
@@ -71,7 +71,7 @@ fun AspectRatioMenu(
                         .fillMaxWidth()
                         .padding(vertical = 2.dp),
                     shape = RoundedCornerShape(8.dp),
-                    color = if (isSelected) BiliPink.copy(alpha = 0.2f) else Color.Transparent,
+                    color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else Color.Transparent,
                     onClick = {
                         onRatioSelected(ratio)
                         onDismiss()
@@ -79,7 +79,7 @@ fun AspectRatioMenu(
                 ) {
                     Text(
                         text = ratio.displayName,
-                        color = if (isSelected) BiliPink else Color.White,
+                        color = if (isSelected) MaterialTheme.colorScheme.primary else Color.White,
                         fontSize = 14.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)

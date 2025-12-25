@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.ui.PlayerView
-import com.android.purebilibili.core.theme.BiliPink
+// 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.util.FormatUtils
 // Refactored gesture components
 import com.android.purebilibili.feature.video.ui.gesture.GestureMode
@@ -391,7 +391,7 @@ fun FullscreenPlayerOverlay(
                             Icon(
                                 if (danmakuEnabled) Icons.Rounded.Subtitles else Icons.Rounded.SubtitlesOff,
                                 contentDescription = "弹幕开关",
-                                tint = if (danmakuEnabled) BiliPink else Color.White.copy(0.5f)
+                                tint = if (danmakuEnabled) MaterialTheme.colorScheme.primary else Color.White.copy(0.5f)
                             )
                         }
                         
@@ -638,7 +638,7 @@ private fun FullscreenControlButton(
     ) {
         Text(
             text = text,
-            color = if (isHighlighted) BiliPink else Color.White,
+            color = if (isHighlighted) MaterialTheme.colorScheme.primary else Color.White,
             fontSize = 12.sp,
             fontWeight = if (isHighlighted) FontWeight.Bold else FontWeight.Normal,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)

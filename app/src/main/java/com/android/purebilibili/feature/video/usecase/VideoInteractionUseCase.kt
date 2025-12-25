@@ -130,6 +130,24 @@ class VideoInteractionUseCase {
             coinCount = coinCountDeferred.await()
         )
     }
+    
+    /**
+     * 🔥 Toggle watch later status (添加/移除稍后再看)
+     */
+    suspend fun toggleWatchLater(
+        aid: Long,
+        currentlyInWatchLater: Boolean,
+        bvid: String = ""
+    ): Result<Boolean> {
+        Logger.d(TAG, "toggleWatchLater: aid=$aid, currentlyInWatchLater=$currentlyInWatchLater")
+        val newInWatchLater = !currentlyInWatchLater
+        
+        return ActionRepository.toggleWatchLater(aid, newInWatchLater).also { result ->
+            result.onSuccess { inWatchLater ->
+                Logger.d(TAG, "toggleWatchLater success: bvid=$bvid, action=${if (inWatchLater) "add" else "remove"}")
+            }
+        }
+    }
 }
 
 /**
