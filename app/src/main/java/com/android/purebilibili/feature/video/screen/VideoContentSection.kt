@@ -1,6 +1,7 @@
 // 文件路径: feature/video/screen/VideoContentSection.kt
 package com.android.purebilibili.feature.video.screen
 
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -83,6 +84,7 @@ fun VideoContentSection(
     var showImagePreview by remember { mutableStateOf(false) }
     var previewImages by remember { mutableStateOf<List<String>>(emptyList()) }
     var previewInitialIndex by remember { mutableIntStateOf(0) }
+    var sourceRect by remember { mutableStateOf<Rect?>(null) }
     
     // 合集展开状态
     var showCollectionSheet by remember { mutableStateOf(false) }
@@ -92,6 +94,7 @@ fun VideoContentSection(
         ImagePreviewDialog(
             images = previewImages,
             initialIndex = previewInitialIndex,
+            sourceRect = sourceRect,
             onDismiss = { showImagePreview = false }
         )
     }
@@ -235,9 +238,10 @@ fun VideoContentSection(
                         onClick = {},
                         onSubClick = { onSubReplyClick(reply) },
                         onTimestampClick = onTimestampClick,
-                        onImagePreview = { images, index ->
+                        onImagePreview = { images, index, rect ->
                             previewImages = images
                             previewInitialIndex = index
+                            sourceRect = rect
                             showImagePreview = true
                         }
                     )

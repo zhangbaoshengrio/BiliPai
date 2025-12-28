@@ -470,10 +470,11 @@ fun VideoDetailScreen(
                     ) {
                         // 🔥 播放器内部使用 padding 避开状态栏
                         // 🔥🔥 [关键] 即使高度为0也保持播放器渲染，避免重载
+                        // 🔥🔥 [修复] 高度需要包含statusBarHeight，扣除padding后视频内容才是完整的16:9
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(videoHeight)  // 🔥 使用固定视频高度，不受动画影响
+                                .height(videoHeight + statusBarHeight)  // 🔥 修复：包含状态栏高度
                                 .padding(top = statusBarHeight)  // 🔥 顶部 padding 避开状态栏
                         ) {
                             VideoPlayerSection(
@@ -496,8 +497,8 @@ fun VideoDetailScreen(
                         }
                     }
                     
-                    // 🔥 播放器隐藏/恢复切换栏 - 仅在启用上滑隐藏功能时显示
-                    if (swipeHidePlayerEnabled) {
+                    // 🔥 播放器隐藏/恢复切换栏 - 仅在播放器被隐藏时显示（避免播放器显示时多出一块区域）
+                    if (swipeHidePlayerEnabled && isPlayerHidden) {
                         Surface(
                             modifier = Modifier
                                 .fillMaxWidth()

@@ -1,5 +1,9 @@
 package com.android.purebilibili.feature.video.ui.components
 
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -26,6 +30,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import android.os.Build
 // 🔥 已改用 MaterialTheme.colorScheme.primary
 import com.android.purebilibili.core.util.FormatUtils
 import com.android.purebilibili.data.model.response.ReplyItem
@@ -71,7 +79,7 @@ fun ReplyItemView(
     onClick: () -> Unit,
     onSubClick: (ReplyItem) -> Unit,
     onTimestampClick: ((Long) -> Unit)? = null,
-    onImagePreview: ((List<String>, Int) -> Unit)? = null  // 🔥 图片预览回调
+    onImagePreview: ((List<String>, Int, Rect?) -> Unit)? = null  // 🔥 图片预览回调
 ) {
     // 判断是否是 UP 主的评论
     val isUpComment = upMid > 0 && item.mid == upMid
@@ -145,8 +153,8 @@ fun ReplyItemView(
                     Spacer(modifier = Modifier.height(8.dp))
                     CommentPictures(
                         pictures = item.content.pictures,
-                        onImageClick = { images, index ->
-                            onImagePreview?.invoke(images, index)
+                        onImageClick = { images, index, rect ->
+                            onImagePreview?.invoke(images, index, rect)
                         }
                     )
                 }
@@ -492,14 +500,31 @@ fun PinnedTag() {
     }
 }
 
-// 🔥🔥 评论图片网格组件
+// 🔥🔥 评论图片网格组件 - 支持 GIF 动画
 @Composable
 fun CommentPictures(
     pictures: List<ReplyPicture>,
-    onImageClick: (List<String>, Int) -> Unit
+    onImageClick: (List<String>, Int, Rect?) -> Unit
 ) {
     val imageUrls = pictures.map { FormatUtils.fixImageUrl(it.imgSrc) }
     val context = LocalContext.current
+    
+    // 🔥 GIF 图片加载器
+    val gifImageLoader = remember {
+        ImageLoader.Builder(context)
+            .components {
+                if (Build.VERSION.SDK_INT >= 28) {
+                    add(ImageDecoderDecoder.Factory())
+                } else {
+                    add(GifDecoder.Factory())
+                }
+            }
+            .crossfade(true)
+            .build()
+    }
+    
+    // 检测是否是 GIF
+    fun isGif(url: String) = url.contains(".gif", ignoreCase = true)
     
     // 根据图片数量选择不同的布局
     when (pictures.size) {
@@ -507,12 +532,15 @@ fun CommentPictures(
             // 单张图片：限制最大宽度和高度
             val pic = pictures[0]
             val aspectRatio = if (pic.imgHeight > 0) pic.imgWidth.toFloat() / pic.imgHeight else 1f
+            var imageRect by remember { mutableStateOf<Rect?>(null) }
             AsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(imageUrls[0])
+                    .addHeader("Referer", "https://www.bilibili.com/")  // 🔥 必需
                     .crossfade(true)
                     .build(),
                 contentDescription = null,
+                imageLoader = gifImageLoader,  // 🔥 支持 GIF 和其他格式
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .widthIn(max = 200.dp)
@@ -520,7 +548,10 @@ fun CommentPictures(
                     .aspectRatio(aspectRatio.coerceIn(0.5f, 2f))
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .clickable { onImageClick(imageUrls, 0) }
+                    .onGloballyPositioned { coordinates ->
+                        imageRect = coordinates.boundsInWindow()
+                    }
+                    .clickable { onImageClick(imageUrls, 0, imageRect) }
             )
         }
         else -> {
@@ -534,18 +565,24 @@ fun CommentPictures(
                         for (col in 0 until columns) {
                             val index = row * columns + col
                             if (index < pictures.size) {
+                                var imageRect by remember { mutableStateOf<Rect?>(null) }
                                 AsyncImage(
                                     model = ImageRequest.Builder(context)
                                         .data(imageUrls[index])
+                                        .addHeader("Referer", "https://www.bilibili.com/")  // 🔥 必需
                                         .crossfade(true)
                                         .build(),
                                     contentDescription = null,
+                                    imageLoader = gifImageLoader,  // 🔥 支持 GIF
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier
                                         .size(80.dp)
                                         .clip(RoundedCornerShape(6.dp))
                                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                                        .clickable { onImageClick(imageUrls, index) }
+                                        .onGloballyPositioned { coordinates ->
+                                            imageRect = coordinates.boundsInWindow()
+                                        }
+                                        .clickable { onImageClick(imageUrls, index, imageRect) }
                                 )
                             }
                         }
