@@ -36,6 +36,8 @@ import com.android.purebilibili.feature.video.ui.components.DanmakuSettingsPanel
 import com.android.purebilibili.feature.video.ui.components.VideoAspectRatio
 import com.android.purebilibili.feature.video.ui.components.AspectRatioMenu
 import com.android.purebilibili.feature.video.ui.components.VideoSettingsPanel
+import com.android.purebilibili.feature.video.ui.components.ChapterListPanel
+import com.android.purebilibili.data.model.response.ViewPoint
 import io.github.alexzhirkevich.cupertino.CupertinoActivityIndicator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -100,13 +102,16 @@ fun VideoPlayerOverlay(
     onSwitchCdn: () -> Unit = {},
     onSwitchCdnTo: (Int) -> Unit = {},
     // 🖼️ [新增] 视频预览图数据
-    videoshotData: com.android.purebilibili.data.model.response.VideoshotData? = null
+    videoshotData: com.android.purebilibili.data.model.response.VideoshotData? = null,
+    // 📖 [新增] 视频章节数据
+    viewPoints: List<ViewPoint> = emptyList()
 ) {
     var showQualityMenu by remember { mutableStateOf(false) }
     var showSpeedMenu by remember { mutableStateOf(false) }
     var showRatioMenu by remember { mutableStateOf(false) }
     var showDanmakuSettings by remember { mutableStateOf(false) }
     var showVideoSettings by remember { mutableStateOf(false) }  //  新增
+    var showChapterList by remember { mutableStateOf(false) }  // 📖 章节列表
     var currentSpeed by remember { mutableFloatStateOf(1.0f) }
     //  使用传入的比例状态
     var isPlaying by remember { mutableStateOf(player.isPlaying) }
@@ -129,6 +134,12 @@ fun VideoPlayerOverlay(
             val delayMs = if (isVisible && player.isPlaying) 200L else 500L
             delay(delayMs)
         }
+    }
+    
+    // 📖 计算当前章节（必须在 progressState 之后定义）
+    val currentChapter = remember(progressState.current, viewPoints) {
+        if (viewPoints.isEmpty()) null
+        else viewPoints.lastOrNull { progressState.current >= it.fromMs }?.content
     }
 
     LaunchedEffect(isVisible, isPlaying) {
@@ -260,6 +271,10 @@ fun VideoPlayerOverlay(
                     onQualityClick = { showQualityMenu = true },
                     // 🖼️ [新增] 视频预览图数据
                     videoshotData = videoshotData,
+                    // 📖 [新增] 视频章节数据
+                    viewPoints = viewPoints,
+                    currentChapter = currentChapter,
+                    onChapterClick = { showChapterList = true },
                     //  [修复] 传入 modifier 确保在底部
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
@@ -356,27 +371,49 @@ fun VideoPlayerOverlay(
         
         // --- 7.  [新增] 倍速选择菜单 ---
         if (showSpeedMenu) {
-            SpeedSelectionMenu(
-                currentSpeed = currentSpeed,
-                onSpeedSelected = { speed ->
-                    currentSpeed = speed
-                    player.setPlaybackSpeed(speed)
-                    showSpeedMenu = false
-                },
-                onDismiss = { showSpeedMenu = false }
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { showSpeedMenu = false },
+                contentAlignment = Alignment.Center
+            ) {
+                SpeedSelectionMenu(
+                    currentSpeed = currentSpeed,
+                    onSpeedSelected = { speed ->
+                        currentSpeed = speed
+                        player.setPlaybackSpeed(speed)
+                        showSpeedMenu = false
+                    },
+                    onDismiss = { showSpeedMenu = false }
+                )
+            }
         }
         
         // --- 7.5  [新增] 视频比例选择菜单 ---
         if (showRatioMenu) {
-            AspectRatioMenu(
-                currentRatio = currentAspectRatio,
-                onRatioSelected = { ratio ->
-                    onAspectRatioChange(ratio)
-                    showRatioMenu = false
-                },
-                onDismiss = { showRatioMenu = false }
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) { showRatioMenu = false },
+                contentAlignment = Alignment.Center
+            ) {
+                AspectRatioMenu(
+                    currentRatio = currentAspectRatio,
+                    onRatioSelected = { ratio ->
+                        onAspectRatioChange(ratio)
+                        showRatioMenu = false
+                    },
+                    onDismiss = { showRatioMenu = false }
+                )
+            }
         }
         
         // --- 8.  [新增] 弹幕设置面板 ---
@@ -428,6 +465,16 @@ fun VideoPlayerOverlay(
                     showVideoSettings = false
                 },
                 onDismiss = { showVideoSettings = false }
+            )
+        }
+        
+        // --- 10. 📖 [新增] 章节列表面板 ---
+        if (showChapterList && viewPoints.isNotEmpty()) {
+            ChapterListPanel(
+                viewPoints = viewPoints,
+                currentPositionMs = progressState.current,
+                onSeek = { position -> player.seekTo(position) },
+                onDismiss = { showChapterList = false }
             )
         }
     }

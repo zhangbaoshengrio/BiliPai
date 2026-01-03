@@ -40,12 +40,12 @@ data class PartitionCategory(
  */
 val allPartitions = listOf(
     // === 视频分区（支持 newlist API）===
-    PartitionCategory(1, "动画", "", Color(0xFF7BBEEC)),
-    PartitionCategory(13, "番剧", "", Color(0xFFFF6B9D)),      // 特殊分区
+    PartitionCategory(1, "动画", "🎬", Color(0xFF7BBEEC)),
+    PartitionCategory(13, "番剧", "📺", Color(0xFFFF6B9D)),      // 特殊分区
     PartitionCategory(167, "国创", "🇨🇳", Color(0xFFFF7575)),     // 特殊分区
     PartitionCategory(3, "音乐", "🎵", Color(0xFF6BB5FF)),
     PartitionCategory(129, "舞蹈", "💃", Color(0xFFFF7777)),
-    PartitionCategory(4, "游戏", "", Color(0xFF7FD37F)),
+    PartitionCategory(4, "游戏", "🎮", Color(0xFF7FD37F)),
     PartitionCategory(36, "知识", "📚", Color(0xFFFFD166)),
     PartitionCategory(188, "科技", "💻", Color(0xFF6ECFFF)),
     PartitionCategory(234, "运动", "⚽", Color(0xFF7BC96F)),
@@ -58,8 +58,8 @@ val allPartitions = listOf(
     PartitionCategory(202, "资讯", "📰", Color(0xFF98D8C8)),
     PartitionCategory(5, "娱乐", "🎪", Color(0xFFFFB347)),
     // === 特殊分区（番剧/电影等使用不同 API）===
-    PartitionCategory(23, "电影", "🎞️", Color(0xFFFF9E7A)),      // 特殊分区
-    PartitionCategory(11, "电视剧", "", Color(0xFFFF85A2)),    // 特殊分区
+    PartitionCategory(23, "电影", "🎬", Color(0xFFFF9E7A)),      // 特殊分区
+    PartitionCategory(11, "电视剧", "📺", Color(0xFFFF85A2)),    // 特殊分区
     PartitionCategory(177, "纪录片", "🎥", Color(0xFF7BC8F6)),   // 特殊分区
     PartitionCategory(181, "影视", "🎦", Color(0xFFC7A4FF))      // 特殊分区
 )

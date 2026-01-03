@@ -8,6 +8,7 @@ import com.android.purebilibili.feature.video.viewmodel.PlayerUiState
 import com.android.purebilibili.feature.video.ui.overlay.VideoPlayerOverlay
 import com.android.purebilibili.feature.video.ui.components.SponsorSkipButton
 import com.android.purebilibili.feature.video.ui.components.VideoAspectRatio
+import com.android.purebilibili.data.model.response.ViewPoint
 
 import android.app.Activity
 import android.content.Context
@@ -18,6 +19,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.animation.*
 //  Cupertino Icons - iOS SF Symbols 风格图标
@@ -89,7 +91,10 @@ fun VideoPlayerSection(
     onSleepTimerChange: (Int?) -> Unit = {},
     
     // 🖼️ [新增] 视频预览图数据
-    videoshotData: com.android.purebilibili.data.model.response.VideoshotData? = null
+    videoshotData: com.android.purebilibili.data.model.response.VideoshotData? = null,
+    
+    // 📖 [新增] 视频章节数据
+    viewPoints: List<ViewPoint> = emptyList()
 ) {
     val context = LocalContext.current
     val audioManager = remember { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
@@ -609,7 +614,14 @@ fun VideoPlayerSection(
             }
         }
         
-        //  [新增] 长按倍速视觉反馈 (显示当前倍速)
+        //  长按倍速提示（简洁版，1秒后消失）
+        LaunchedEffect(longPressSpeedFeedbackVisible) {
+            if (longPressSpeedFeedbackVisible) {
+                kotlinx.coroutines.delay(1000)
+                longPressSpeedFeedbackVisible = false
+            }
+        }
+        
         AnimatedVisibility(
             visible = longPressSpeedFeedbackVisible && !isInPipMode,
             modifier = Modifier.align(Alignment.Center),
@@ -618,28 +630,16 @@ fun VideoPlayerSection(
         ) {
             Box(
                 modifier = Modifier
-                    .background(Color.Black.copy(0.75f), RoundedCornerShape(20.dp))
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
-                contentAlignment = Alignment.Center
+                    .background(Color.Black.copy(0.75f), RoundedCornerShape(16.dp))
+                    .padding(horizontal = 20.dp, vertical = 12.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = CupertinoIcons.Default.Forward,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(24.dp)
+                Text(
+                    text = "${longPressSpeed}x",
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        text = "${longPressSpeed}x 快进中",
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
+                )
             }
         }
 
@@ -733,7 +733,10 @@ fun VideoPlayerSection(
                 onSleepTimerChange = onSleepTimerChange,
                 
                 // 🖼️ [新增] 视频预览图数据
-                videoshotData = videoshotData
+                videoshotData = videoshotData,
+                
+                // 📖 [新增] 视频章节数据
+                viewPoints = viewPoints
             )
         }
         

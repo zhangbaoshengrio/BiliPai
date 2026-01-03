@@ -125,6 +125,10 @@ class PlayerViewModel : ViewModel() {
     private val _downloadProgress = MutableStateFlow(-1f)
     val downloadProgress = _downloadProgress.asStateFlow()
     
+    //  [新增] 视频章节/看点数据
+    private val _viewPoints = MutableStateFlow<List<ViewPoint>>(emptyList())
+    val viewPoints = _viewPoints.asStateFlow()
+    
     // Internal state
     private var currentBvid = ""
     private var currentCid = 0L
@@ -396,6 +400,9 @@ class PlayerViewModel : ViewModel() {
                     
                     // 🖼️ 异步加载视频预览图（用于进度条拖动预览）
                     loadVideoshot(bvid, result.info.cid)
+                    
+                    // 📖 异步加载视频章节信息（用于进度条章节标记）
+                    loadChapterInfo(bvid, result.info.cid)
                     
                     //  [新增] 更新播放列表
                     updatePlaylist(result.info, result.related)
@@ -716,6 +723,28 @@ class PlayerViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 Logger.d("PlayerVM", "🖼️ Failed to load videoshot: ${e.message}")
+            }
+        }
+    }
+    
+    //  [新增] 异步加载视频章节/看点数据（用于进度条章节标记）
+    private fun loadChapterInfo(bvid: String, cid: Long) {
+        viewModelScope.launch {
+            try {
+                val response = com.android.purebilibili.core.network.NetworkModule.api.getPlayerInfo(bvid, cid)
+                if (response.code == 0 && response.data != null) {
+                    val points = response.data.viewPoints
+                    if (points.isNotEmpty()) {
+                        _viewPoints.value = points
+                        Logger.d("PlayerVM", "📖 Loaded ${points.size} chapter points")
+                    } else {
+                        _viewPoints.value = emptyList()
+                        Logger.d("PlayerVM", "📖 No chapter points for this video")
+                    }
+                }
+            } catch (e: Exception) {
+                Logger.d("PlayerVM", "📖 Failed to load chapter info: ${e.message}")
+                _viewPoints.value = emptyList()
             }
         }
     }

@@ -51,6 +51,7 @@ import com.android.purebilibili.data.model.response.RelatedVideo
 import com.android.purebilibili.data.model.response.ReplyItem
 import com.android.purebilibili.data.model.response.VideoTag
 import com.android.purebilibili.data.model.response.ViewInfo
+import com.android.purebilibili.data.model.response.ViewPoint
 // Refactored UI components
 import com.android.purebilibili.feature.video.ui.section.VideoTitleSection
 import com.android.purebilibili.feature.video.ui.section.VideoTitleWithDesc
@@ -135,6 +136,9 @@ fun VideoDetailScreen(
     
     //  [新增] 监听定时关闭状态
     val sleepTimerMinutes by viewModel.sleepTimerMinutes.collectAsState()
+    
+    // 📖 [新增] 监听视频章节数据
+    val viewPoints by viewModel.viewPoints.collectAsState()
     
     //  [PiP修复] 记录视频播放器在屏幕上的位置，用于PiP窗口只显示视频区域
     var videoPlayerBounds by remember { mutableStateOf<android.graphics.Rect?>(null) }
@@ -404,7 +408,10 @@ fun VideoDetailScreen(
                     onSleepTimerChange = { viewModel.setSleepTimer(it) },
                     
                     // 🖼️ [新增] 视频预览图数据
-                    videoshotData = (uiState as? PlayerUiState.Success)?.videoshotData
+                    videoshotData = (uiState as? PlayerUiState.Success)?.videoshotData,
+                    
+                    // 📖 [新增] 视频章节数据
+                    viewPoints = viewPoints
                 )
             } else {
                 //  沉浸式布局：视频延伸到状态栏 + 内容区域
@@ -520,7 +527,10 @@ fun VideoDetailScreen(
                                 onSleepTimerChange = { viewModel.setSleepTimer(it) },
                                 
                                 // 🖼️ [新增] 视频预览图数据
-                                videoshotData = (uiState as? PlayerUiState.Success)?.videoshotData
+                                videoshotData = (uiState as? PlayerUiState.Success)?.videoshotData,
+                                
+                                // 📖 [新增] 视频章节数据
+                                viewPoints = viewPoints
                                 //  空降助手 - 已由插件系统自动处理
                                 // sponsorSegment = sponsorSegment,
                                 // showSponsorSkipButton = showSponsorSkipButton,

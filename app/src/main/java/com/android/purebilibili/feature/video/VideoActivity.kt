@@ -120,6 +120,7 @@ class VideoActivity : ComponentActivity() {
                 val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
                 val sleepTimerMinutes by viewModel.sleepTimerMinutes.collectAsStateWithLifecycle()
                 val isAudioOnly by viewModel.isInAudioMode.collectAsStateWithLifecycle()
+                val viewPoints by viewModel.viewPoints.collectAsStateWithLifecycle()
                 
                 //  空降助手状态 - 已由插件系统自动处理，无需UI
                 // val sponsorSegment by viewModel.currentSponsorSegment.collectAsStateWithLifecycle()
@@ -178,7 +179,10 @@ class VideoActivity : ComponentActivity() {
                             
                             //  [新增] 定时关闭
                             sleepTimerMinutes = sleepTimerMinutes,
-                            onSleepTimerChange = { viewModel.setSleepTimer(it) }
+                            onSleepTimerChange = { viewModel.setSleepTimer(it) },
+                            
+                            // 📖 [新增] 视频章节数据
+                            viewPoints = viewPoints
                             
                             //  空降助手 - 已由插件系统自动处理
                             // sponsorSegment = sponsorSegment,

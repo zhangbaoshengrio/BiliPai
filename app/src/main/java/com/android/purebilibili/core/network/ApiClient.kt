@@ -211,6 +211,13 @@ interface BilibiliApi {
         @Query("cid") cid: Long,
         @Query("index") index: Int = 1  // 是否返回时间索引，1=是
     ): VideoshotResponse
+    
+    //  [新增] 获取播放器信息（包含章节/看点数据）
+    @GET("x/player/v2")
+    suspend fun getPlayerInfo(
+        @Query("bvid") bvid: String,
+        @Query("cid") cid: Long
+    ): PlayerInfoResponse
 
     @GET("x/web-interface/archive/related")
     suspend fun getRelatedVideos(@Query("bvid") bvid: String): RelatedResponse

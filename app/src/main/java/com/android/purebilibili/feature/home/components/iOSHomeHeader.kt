@@ -206,7 +206,7 @@ fun iOSHomeHeader(
                     modifier = Modifier.size(34.dp)
                 ) {
                     Icon(
-                        CupertinoIcons.Outlined.Gearshape,
+                        CupertinoIcons.Default.Gear,
                         contentDescription = "Settings",
                         tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                         modifier = Modifier.size(20.dp)

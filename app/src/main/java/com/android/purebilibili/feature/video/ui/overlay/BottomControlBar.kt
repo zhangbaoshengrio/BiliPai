@@ -2,10 +2,14 @@
 package com.android.purebilibili.feature.video.ui.overlay
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.text.style.TextOverflow
 //  Cupertino Icons - iOS SF Symbols 风格图标
 import io.github.alexzhirkevich.cupertino.icons.CupertinoIcons
 import io.github.alexzhirkevich.cupertino.icons.outlined.*
@@ -64,6 +68,10 @@ fun BottomControlBar(
     onQualityClick: () -> Unit = {},
     // 🖼️ [新增] 视频预览图数据
     videoshotData: com.android.purebilibili.data.model.response.VideoshotData? = null,
+    // 📖 [新增] 视频章节数据
+    viewPoints: List<com.android.purebilibili.data.model.response.ViewPoint> = emptyList(),
+    currentChapter: String? = null,
+    onChapterClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -80,7 +88,10 @@ fun BottomControlBar(
             duration = progress.duration,
             bufferedPosition = progress.buffered,
             onSeek = onSeek,
-            videoshotData = videoshotData
+            videoshotData = videoshotData,
+            viewPoints = viewPoints,
+            currentChapter = currentChapter,
+            onChapterClick = onChapterClick
         )
 
         Row(
@@ -210,7 +221,7 @@ fun BottomControlBar(
 }
 
 /**
- * Video Progress Bar - 自定义细进度条（支持拖动预览）
+ * Video Progress Bar - 自定义细进度条（支持拖动预览和章节标记）
  */
 @Composable
 fun VideoProgressBar(
@@ -218,7 +229,11 @@ fun VideoProgressBar(
     duration: Long,
     bufferedPosition: Long,
     onSeek: (Long) -> Unit,
-    videoshotData: com.android.purebilibili.data.model.response.VideoshotData? = null
+    videoshotData: com.android.purebilibili.data.model.response.VideoshotData? = null,
+    // 📖 [新增] 视频章节数据
+    viewPoints: List<com.android.purebilibili.data.model.response.ViewPoint> = emptyList(),
+    currentChapter: String? = null,
+    onChapterClick: () -> Unit = {}
 ) {
     val progress = if (duration > 0) currentPosition.toFloat() / duration else 0f
     val bufferedProgress = if (duration > 0) bufferedPosition.toFloat() / duration else 0f
@@ -238,11 +253,15 @@ fun VideoProgressBar(
     
     // 计算拖动时的目标时间
     val targetPositionMs = (tempProgress * duration).toLong()
+    
+    // 根据是否有章节标签和是否正在拖动计算高度
+    val baseHeight = if (currentChapter != null) 40.dp else 24.dp
+    val containerHeight = if (isDragging && videoshotData != null) 120.dp else baseHeight
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(if (isDragging && videoshotData != null) 120.dp else 24.dp)  // 拖动时增加高度显示预览
+            .height(containerHeight)  // 动态高度
             .pointerInput(Unit) {
                 containerWidth = size.width.toFloat()
                 detectTapGestures { offset ->
@@ -303,49 +322,98 @@ fun VideoProgressBar(
         }
         
         // 进度条本体（放在底部）
-        Box(
+        Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .fillMaxWidth()
-                .height(24.dp),
-            contentAlignment = Alignment.CenterStart
         ) {
-            // 背景轨道
+            // 📖 当前章节标签（如有）
+            if (currentChapter != null) {
+                Row(
+                    modifier = Modifier
+                        .clickable(onClick = onChapterClick)
+                        .padding(bottom = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        CupertinoIcons.Default.ListBullet,
+                        contentDescription = "章节",
+                        tint = Color.White.copy(alpha = 0.8f),
+                        modifier = Modifier.size(12.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = currentChapter,
+                        color = Color.White.copy(alpha = 0.9f),
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+            
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(3.dp)
-                    .background(Color.White.copy(alpha = 0.3f), RoundedCornerShape(1.5.dp))
-            )
-            
-            // 缓冲进度
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(bufferedProgress.coerceIn(0f, 1f))
-                    .height(3.dp)
-                    .background(Color.White.copy(alpha = 0.5f), RoundedCornerShape(1.5.dp))
-            )
-            
-            // 当前进度
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(displayProgress.coerceIn(0f, 1f))
-                    .height(3.dp)
-                    .background(primaryColor, RoundedCornerShape(1.5.dp))
-            )
-            
-            // 滑块（圆点）- 拖动时放大
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(displayProgress.coerceIn(0f, 1f))
+                    .height(24.dp),
+                contentAlignment = Alignment.CenterStart
             ) {
+                // 背景轨道（带章节分隔线）
                 Box(
                     modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .size(if (isDragging) 16.dp else 12.dp)
-                        .offset(x = if (isDragging) 8.dp else 6.dp)
-                        .background(primaryColor, androidx.compose.foundation.shape.CircleShape)
+                        .fillMaxWidth()
+                        .height(3.dp)
+                        .background(Color.White.copy(alpha = 0.3f), RoundedCornerShape(1.5.dp))
+                        .drawWithContent {
+                            drawContent()
+                            // 📖 绘制章节分隔线
+                            if (duration > 0 && viewPoints.isNotEmpty()) {
+                                viewPoints.forEach { point ->
+                                    val position = point.fromMs.toFloat() / duration
+                                    if (position > 0.01f && position < 0.99f) {
+                                        val x = size.width * position
+                                        drawLine(
+                                            color = Color.White.copy(alpha = 0.8f),
+                                            start = Offset(x, 0f),
+                                            end = Offset(x, size.height),
+                                            strokeWidth = 2f
+                                        )
+                                    }
+                                }
+                            }
+                        }
                 )
+                
+                // 缓冲进度
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(bufferedProgress.coerceIn(0f, 1f))
+                        .height(3.dp)
+                        .background(Color.White.copy(alpha = 0.5f), RoundedCornerShape(1.5.dp))
+                )
+                
+                // 当前进度
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(displayProgress.coerceIn(0f, 1f))
+                        .height(3.dp)
+                        .background(primaryColor, RoundedCornerShape(1.5.dp))
+                )
+                
+                // 滑块（圆点）- 拖动时放大
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(displayProgress.coerceIn(0f, 1f))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .size(if (isDragging) 16.dp else 12.dp)
+                            .offset(x = if (isDragging) 8.dp else 6.dp)
+                            .background(primaryColor, androidx.compose.foundation.shape.CircleShape)
+                    )
+                }
             }
         }
     }

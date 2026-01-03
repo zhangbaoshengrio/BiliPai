@@ -48,7 +48,7 @@ fun AspectRatioMenu(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier,
+        modifier = modifier.widthIn(min = 120.dp, max = 200.dp),
         shape = RoundedCornerShape(12.dp),
         color = Color.Black.copy(alpha = 0.85f),
         shadowElevation = 8.dp
