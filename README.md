@@ -23,12 +23,7 @@
   <a href="https://x.com/YangY_0x00"><img src="https://img.shields.io/badge/X-Follow-000000?style=flat-square&logo=x" alt="X"></a>
 </p>
 
-> [!IMPORTANT]
-> **📢 公告 (2026-01-06)**
->
-> 由于Telegram账号被误封，目前无法使用 Telegram。近期不会在Telegran频道更新，请电报群组的群友们相互告诉并关注 **[GitHub Releases](https://github.com/jay3-yy/BiliPai/releases)** 获取最新版本和更新动态。感谢大家的理解与支持！
 
----
 
 ## 📸 应用预览
 
