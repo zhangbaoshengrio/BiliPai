@@ -48,7 +48,7 @@ fun SubReplySheet(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f))
+                    .background(Color.Black.copy(alpha = 0.7f))  // [修复] 增加透明度减少背景干扰
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
@@ -89,7 +89,7 @@ fun SubReplySheet(
                         emoteMap = emoteMap,
                         onLoadMore = onLoadMore,
                         onTimestampClick = onTimestampClick,
-                        upMid = state.rootReply!!.oid  //  传递 UP 主 mid
+                        upMid = state.upMid  // [修复] 使用正确的 UP 主 mid
                     )
                 }
             }
@@ -141,7 +141,8 @@ fun SubReplyList(
                     emoteMap = emoteMap, 
                     onClick = {}, 
                     onSubClick = {},
-                    onTimestampClick = onTimestampClick
+                    onTimestampClick = onTimestampClick,
+                    hideSubPreview = true  // [修复] 隐藏楼中楼预览，避免重复显示
                 )
                 HorizontalDivider(thickness = 8.dp, color = MaterialTheme.colorScheme.surfaceContainerHigh)
             }

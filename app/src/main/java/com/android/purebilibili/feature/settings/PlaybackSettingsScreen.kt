@@ -174,7 +174,11 @@ fun PlaybackSettingsSheetContent(
                         title = "启用硬件解码",
                         subtitle = "减少发热和耗电 (推荐开启)",
                         checked = state.hwDecode,
-                        onCheckedChange = { viewModel.toggleHwDecode(it) },
+                        onCheckedChange = { 
+                            viewModel.toggleHwDecode(it)
+                            //  [埋点] 设置变更追踪
+                            com.android.purebilibili.core.util.AnalyticsHelper.logSettingChange("hw_decode", it.toString())
+                        },
                         iconTint = iOSGreen
                     )
                 }
@@ -416,7 +420,11 @@ fun PlaybackSettingsSheetContent(
                         title = "双击点赞",
                         subtitle = "双击视频画面快捷点赞",
                         checked = state.doubleTapLike,
-                        onCheckedChange = { viewModel.toggleDoubleTapLike(it) },
+                        onCheckedChange = { 
+                            viewModel.toggleDoubleTapLike(it)
+                            //  [埋点] 设置变更追踪
+                            com.android.purebilibili.core.util.AnalyticsHelper.logSettingChange("double_tap_like", it.toString())
+                        },
                         iconTint = com.android.purebilibili.core.theme.iOSPink
                     )
                     Divider()

@@ -128,6 +128,11 @@ fun DynamicScreen(
             totalItems > 0 && lastVisibleItemIndex >= totalItems - 3 && !state.isLoading && state.hasMore
         }
     }
+    //  [埋点] 页面浏览追踪
+    LaunchedEffect(Unit) {
+        com.android.purebilibili.core.util.AnalyticsHelper.logScreenView("DynamicScreen")
+    }
+    
     LaunchedEffect(shouldLoadMore) { if (shouldLoadMore) viewModel.loadMore() }
 
     Scaffold(

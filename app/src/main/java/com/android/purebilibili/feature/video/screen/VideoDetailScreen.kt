@@ -231,6 +231,8 @@ fun VideoDetailScreen(
     //  初始化进度持久化存储
     LaunchedEffect(Unit) {
         viewModel.initWithContext(context)
+        //  [埋点] 页面浏览追踪
+        com.android.purebilibili.core.util.AnalyticsHelper.logScreenView("VideoDetailScreen")
     }
     
     //  [PiP修复] 当视频播放器位置更新时，同步更新PiP参数
@@ -556,7 +558,39 @@ fun VideoDetailScreen(
                                 
                                 // 📱 [新增] 竖屏全屏模式
                                 isVerticalVideo = isVerticalVideo,
-                                onPortraitFullscreen = { playerState.setPortraitFullscreen(true) }
+                                onPortraitFullscreen = { playerState.setPortraitFullscreen(true) },
+                                // 📲 [修复] 小窗模式 - 转移到应用内小窗而非直接进入系统 PiP
+                                onPipClick = {
+                                    // 使用 MiniPlayerManager 进入应用内小窗模式
+                                    miniPlayerManager?.let { manager ->
+                                        //  [埋点] PiP 进入事件
+                                        com.android.purebilibili.core.util.AnalyticsHelper.logPictureInPicture(
+                                            videoId = bvid,
+                                            action = "enter_mini"
+                                        )
+                                        
+                                        // 1. 将当前播放器信息传递给小窗管理器
+                                        val info = uiState as? PlayerUiState.Success
+                                        manager.setVideoInfo(
+                                            bvid = bvid,
+                                            title = info?.info?.title ?: "",
+                                            cover = info?.info?.pic ?: "",
+                                            owner = info?.info?.owner?.name ?: "",
+                                            cid = info?.info?.cid ?: 0L,
+                                            externalPlayer = playerState.player
+                                        )
+                                        
+                                        // 2. 进入小窗模式
+                                        manager.enterMiniMode()
+                                        
+                                        // 3. 返回上一页（首页）
+                                        onBack()
+                                    } ?: run {
+                                        // 如果 miniPlayerManager 不存在，直接返回
+                                        com.android.purebilibili.core.util.Logger.w("VideoDetailScreen", "⚠️ miniPlayerManager 为 null，无法进入小窗")
+                                        onBack()
+                                    }
+                                }
                                 //  空降助手 - 已由插件系统自动处理
                                 // sponsorSegment = sponsorSegment,
                                 // showSponsorSkipButton = showSponsorSkipButton,

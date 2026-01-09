@@ -45,6 +45,8 @@ fun SpaceScreen(
     
     LaunchedEffect(mid) {
         viewModel.loadSpaceInfo(mid)
+        //  [埋点] 页面浏览追踪
+        com.android.purebilibili.core.util.AnalyticsHelper.logScreenView("SpaceScreen")
     }
     
     Scaffold(

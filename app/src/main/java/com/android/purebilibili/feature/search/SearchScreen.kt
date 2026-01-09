@@ -90,6 +90,11 @@ fun SearchScreen(
     val context = LocalContext.current
     val cardAnimationEnabled by SettingsManager.getCardAnimationEnabled(context).collectAsState(initial = true)
     val cardTransitionEnabled by SettingsManager.getCardTransitionEnabled(context).collectAsState(initial = false)
+    
+    //  [埋点] 页面浏览追踪
+    LaunchedEffect(Unit) {
+        com.android.purebilibili.core.util.AnalyticsHelper.logScreenView("SearchScreen")
+    }
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),

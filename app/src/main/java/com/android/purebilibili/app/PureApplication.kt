@@ -278,6 +278,12 @@ class PureApplication : Application(), ImageLoaderFactory, ComponentCallbacks2 {
             
             // alias 映射 - 必须与 AndroidManifest.xml 中声明的完全一致
             val allAliases = listOf(
+                // 🎀 二次元少女系列
+                "Yuki" to "${packageName}.MainActivityAliasYuki",
+                "Anime" to "${packageName}.MainActivityAliasAnime",
+                "Tv" to "${packageName}.MainActivityAliasTv",
+                "Headphone" to "${packageName}.MainActivityAliasHeadphone",
+                // 经典系列
                 "3D" to "${packageName}.MainActivityAlias3D",
                 "Blue" to "${packageName}.MainActivityAliasBlue",
                 "Retro" to "${packageName}.MainActivityAliasRetro",
@@ -294,33 +300,33 @@ class PureApplication : Application(), ImageLoaderFactory, ComponentCallbacks2 {
             //  [重装检测] 检查目标alias是否可用
             // 找到需要启用的 alias
             val targetAlias = allAliases.find { it.first == currentIcon }?.second
-                ?: "${packageName}.MainActivityAlias3D" // 默认3D
+                ?: "${packageName}.MainActivityAliasYuki" // 默认 Yuki (比心少女)
             
             val targetAliasComponent = android.content.ComponentName(packageName, targetAlias)
             val targetState = pm.getComponentEnabledSetting(targetAliasComponent)
             
-            // 如果目标alias是disabled（说明之前被禁用了，可能是重装），强制重置为3D
-            if (currentIcon != "3D" && targetState == android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
-                Logger.d(TAG, " Detected reinstall: target icon '$currentIcon' is disabled, resetting to '3D'")
+            // 如果目标alias是disabled（说明之前被禁用了，可能是重装），强制重置为Yuki
+            if (currentIcon != "Yuki" && targetState == android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
+                Logger.d(TAG, " Detected reinstall: target icon '$currentIcon' is disabled, resetting to 'Yuki'")
                 runBlocking {
-                    SettingsManager.setAppIcon(this@PureApplication, "3D")
+                    SettingsManager.setAppIcon(this@PureApplication, "Yuki")
                 }
-                // 确保3D被启用
-                val alias3D = android.content.ComponentName(packageName, "${packageName}.MainActivityAlias3D")
+                // 确保Yuki被启用
+                val aliasYuki = android.content.ComponentName(packageName, "${packageName}.MainActivityAliasYuki")
                 pm.setComponentEnabledSetting(
-                    alias3D,
+                    aliasYuki,
                     android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     android.content.pm.PackageManager.DONT_KILL_APP
                 )
                 // 禁用其他所有alias
-                allAliases.filter { it.second != "${packageName}.MainActivityAlias3D" }.forEach { (_, aliasFullName) ->
+                allAliases.filter { it.second != "${packageName}.MainActivityAliasYuki" }.forEach { (_, aliasFullName) ->
                     pm.setComponentEnabledSetting(
                         android.content.ComponentName(packageName, aliasFullName),
                         android.content.pm.PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                         android.content.pm.PackageManager.DONT_KILL_APP
                     )
                 }
-                Logger.d(TAG, " Reset to default 3D icon")
+                Logger.d(TAG, " Reset to default Yuki icon")
                 return
             }
             

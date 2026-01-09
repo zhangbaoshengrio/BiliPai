@@ -98,7 +98,9 @@ fun VideoPlayerSection(
     
     // 📱 [新增] 竖屏全屏模式
     isVerticalVideo: Boolean = false,
-    onPortraitFullscreen: () -> Unit = {}
+    onPortraitFullscreen: () -> Unit = {},
+    // 📲 [新增] 小窗模式
+    onPipClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val audioManager = remember { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
@@ -729,7 +731,9 @@ fun VideoPlayerSection(
                 
                 // 📱 [新增] 竖屏全屏模式
                 isVerticalVideo = isVerticalVideo,
-                onPortraitFullscreen = onPortraitFullscreen
+                onPortraitFullscreen = onPortraitFullscreen,
+                // 📲 [新增] 小窗模式
+                onPipClick = onPipClick
             )
         }
         

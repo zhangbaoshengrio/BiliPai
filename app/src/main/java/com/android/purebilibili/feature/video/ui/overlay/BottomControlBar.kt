@@ -75,6 +75,8 @@ fun BottomControlBar(
     // 📱 [新增] 竖屏全屏模式
     isVerticalVideo: Boolean = false,
     onPortraitFullscreen: () -> Unit = {},
+    // 📲 [新增] 小窗模式
+    onPipClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -208,6 +210,21 @@ fun BottomControlBar(
                             fontSize = 10.sp,
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp)
+                        )
+                    }
+                }
+                
+                // 📲 [新增] 小窗按钮 - 仅竖屏非全屏时显示
+                if (!isFullscreen) {
+                    IconButton(
+                        onClick = onPipClick,
+                        modifier = Modifier.size(32.dp)
+                    ) {
+                        Icon(
+                            CupertinoIcons.Default.Pip,
+                            contentDescription = "小窗播放",
+                            tint = Color.White,
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }

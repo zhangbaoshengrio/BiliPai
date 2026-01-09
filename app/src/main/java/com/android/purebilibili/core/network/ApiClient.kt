@@ -263,6 +263,62 @@ interface BilibiliApi {
         @Query("ps") ps: Int = 20 // 每页数量
     ): ReplyResponse // 复用 ReplyResponse 结构
     
+    // [新增] 发送评论
+    @retrofit2.http.FormUrlEncoded
+    @retrofit2.http.POST("x/v2/reply/add")
+    suspend fun addReply(
+        @retrofit2.http.Field("oid") oid: Long,
+        @retrofit2.http.Field("type") type: Int = 1,
+        @retrofit2.http.Field("message") message: String,
+        @retrofit2.http.Field("root") root: Long = 0,
+        @retrofit2.http.Field("parent") parent: Long = 0,
+        @retrofit2.http.Field("csrf") csrf: String
+    ): AddReplyResponse
+    
+    // [新增] 点赞评论
+    @retrofit2.http.FormUrlEncoded
+    @retrofit2.http.POST("x/v2/reply/action")
+    suspend fun likeReply(
+        @retrofit2.http.Field("oid") oid: Long,
+        @retrofit2.http.Field("type") type: Int = 1,
+        @retrofit2.http.Field("rpid") rpid: Long,
+        @retrofit2.http.Field("action") action: Int,
+        @retrofit2.http.Field("csrf") csrf: String
+    ): SimpleApiResponse
+    
+    // [新增] 点踩评论
+    @retrofit2.http.FormUrlEncoded
+    @retrofit2.http.POST("x/v2/reply/hate")
+    suspend fun hateReply(
+        @retrofit2.http.Field("oid") oid: Long,
+        @retrofit2.http.Field("type") type: Int = 1,
+        @retrofit2.http.Field("rpid") rpid: Long,
+        @retrofit2.http.Field("action") action: Int,
+        @retrofit2.http.Field("csrf") csrf: String
+    ): SimpleApiResponse
+    
+    // [新增] 删除评论
+    @retrofit2.http.FormUrlEncoded
+    @retrofit2.http.POST("x/v2/reply/del")
+    suspend fun deleteReply(
+        @retrofit2.http.Field("oid") oid: Long,
+        @retrofit2.http.Field("type") type: Int = 1,
+        @retrofit2.http.Field("rpid") rpid: Long,
+        @retrofit2.http.Field("csrf") csrf: String
+    ): SimpleApiResponse
+    
+    // [新增] 举报评论
+    @retrofit2.http.FormUrlEncoded
+    @retrofit2.http.POST("x/v2/reply/report")
+    suspend fun reportReply(
+        @retrofit2.http.Field("oid") oid: Long,
+        @retrofit2.http.Field("type") type: Int = 1,
+        @retrofit2.http.Field("rpid") rpid: Long,
+        @retrofit2.http.Field("reason") reason: Int,
+        @retrofit2.http.Field("content") content: String = "",
+        @retrofit2.http.Field("csrf") csrf: String
+    ): SimpleApiResponse
+    
     // ==================== 用户交互模块 ====================
     // 查询与 UP 主的关注关系
     @GET("x/relation")

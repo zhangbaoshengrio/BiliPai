@@ -86,6 +86,9 @@ data class ReplyItem(
     val rcount: Int = 0,
     val like: Int = 0,
     val ctime: Long = 0,
+    
+    // [新增] 当前用户是否已点赞: 0=未点赞, 1=已点赞
+    val action: Int = 0,
 
     //  核心修复：给对象类型加上默认值 = ReplyMember()
     // 遇到被删除用户或特殊评论时，member 字段可能缺失或为 null，不加默认值会导致整个列表解析崩溃
@@ -96,7 +99,11 @@ data class ReplyItem(
     
     //  UP主操作信息（UP觉得很赞/UP回复了）
     @SerialName("up_action")
-    val upAction: ReplyUpAction? = null
+    val upAction: ReplyUpAction? = null,
+    
+    // [新增] 评论控制信息（IP属地等）
+    @SerialName("reply_control")
+    val replyControl: ReplyControl? = null
 )
 
 //  UP主操作信息
@@ -153,4 +160,28 @@ data class ReplyEmote(
     val id: Long = 0,
     val text: String = "",
     val url: String = ""
+)
+
+// [新增] 发送评论响应
+@Serializable
+data class AddReplyResponse(
+    val code: Int = 0,
+    val message: String = "",
+    val data: AddReplyData? = null
+)
+
+@Serializable
+data class AddReplyData(
+    val rpid: Long = 0,
+    @SerialName("rpid_str") val rpidStr: String = "",
+    val dialog: Long = 0,
+    val root: Long = 0,
+    val parent: Long = 0,
+    val reply: ReplyItem? = null
+)
+
+// [新增] 评论控制信息（IP属地等）
+@Serializable
+data class ReplyControl(
+    val location: String = ""  // IP 属地，如 "IP属地：北京"
 )

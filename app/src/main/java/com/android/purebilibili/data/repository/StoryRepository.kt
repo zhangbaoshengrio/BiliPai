@@ -3,7 +3,18 @@ package com.android.purebilibili.data.repository
 
 import com.android.purebilibili.core.network.NetworkModule
 import com.android.purebilibili.data.model.response.StoryItem
+import com.android.purebilibili.data.model.response.getBestAudio
 import com.android.purebilibili.core.util.Logger
+
+/**
+ * Story 模式播放 URL 数据类
+ * @param videoUrl 视频流 URL
+ * @param audioUrl 音频流 URL（DASH 格式需要，durl 格式为 null）
+ */
+data class StoryPlayUrls(
+    val videoUrl: String,
+    val audioUrl: String?
+)
 
 /**
  * 故事模式 (竖屏短视频) 数据仓库
@@ -56,7 +67,7 @@ object StoryRepository {
         return try {
             // 复用 VideoRepository 的播放 URL 获取逻辑
             val playData = VideoRepository.getPlayUrlData(bvid, cid, 80)
-            extractPlayUrl(playData)
+            extractPlayUrls(playData)?.videoUrl
         } catch (e: Exception) {
             Logger.e(TAG, " 获取播放 URL 异常", e)
             null
@@ -64,11 +75,12 @@ object StoryRepository {
     }
     
     /**
-     * 获取视频播放 URL (通过 aid) - 用于 Story 模式
+     * 获取视频和音频播放 URL (通过 aid) - 用于 Story 模式
      * @param aid 视频 AV 号
      * @param cid 视频 CID
+     * @return StoryPlayUrls 包含视频和音频 URL，如果失败返回 null
      */
-    suspend fun getVideoPlayUrlByAid(aid: Long, cid: Long): String? {
+    suspend fun getVideoPlayUrlByAid(aid: Long, cid: Long): StoryPlayUrls? {
         if (aid <= 0 || cid <= 0) {
             Logger.e(TAG, " aid=$aid 或 cid=$cid 无效")
             return null
@@ -80,10 +92,10 @@ object StoryRepository {
             val response = NetworkModule.api.getPlayUrlByAid(aid = aid, cid = cid)
             
             if (response.code == 0 && response.data != null) {
-                val url = extractPlayUrl(response.data)
-                if (url != null) {
-                    Logger.d(TAG, " 获取播放 URL 成功: ${url.take(50)}...")
-                    return url
+                val urls = extractPlayUrls(response.data)
+                if (urls != null) {
+                    Logger.d(TAG, " 获取播放 URL 成功: video=${urls.videoUrl.take(50)}..., hasAudio=${urls.audioUrl != null}")
+                    return urls
                 }
             }
             
@@ -96,23 +108,33 @@ object StoryRepository {
     }
     
     /**
-     * 从 PlayUrlData 中提取播放地址
+     * 从 PlayUrlData 中提取视频和音频播放地址
      */
-    private fun extractPlayUrl(playData: com.android.purebilibili.data.model.response.PlayUrlData?): String? {
+    private fun extractPlayUrls(playData: com.android.purebilibili.data.model.response.PlayUrlData?): StoryPlayUrls? {
         if (playData == null) return null
         
-        // 优先取 durl (MP4) - 对短视频更友好
+        // 优先取 durl (MP4) - 音视频合一，无需单独音频流
         val durlUrl = playData.durl?.firstOrNull()?.url
         if (!durlUrl.isNullOrEmpty()) {
-            Logger.d(TAG, " durl URL: ${durlUrl.take(50)}...")
-            return durlUrl
+            Logger.d(TAG, " durl URL (音视频合一): ${durlUrl.take(50)}...")
+            return StoryPlayUrls(videoUrl = durlUrl, audioUrl = null)
         }
         
-        // 降级到 DASH 视频流
-        val dashUrl = playData.dash?.video?.firstOrNull()?.baseUrl
-        if (!dashUrl.isNullOrEmpty()) {
-            Logger.d(TAG, " DASH URL: ${dashUrl.take(50)}...")
-            return dashUrl
+        // 降级到 DASH 格式 - 需要分别获取视频和音频流
+        val dash = playData.dash
+        if (dash != null) {
+            val videoUrl = dash.video.firstOrNull()?.baseUrl
+            val audioUrl = dash.getBestAudio()?.getValidUrl()
+            
+            if (!videoUrl.isNullOrEmpty()) {
+                Logger.d(TAG, " DASH video URL: ${videoUrl.take(50)}...")
+                if (!audioUrl.isNullOrEmpty()) {
+                    Logger.d(TAG, " DASH audio URL: ${audioUrl.take(50)}...")
+                } else {
+                    Logger.w(TAG, "⚠️ DASH 格式但无音频流")
+                }
+                return StoryPlayUrls(videoUrl = videoUrl, audioUrl = audioUrl)
+            }
         }
         
         Logger.e(TAG, " 无法获取播放 URL")

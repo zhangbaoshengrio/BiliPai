@@ -21,7 +21,7 @@ data class SettingsUiState(
     val bgPlay: Boolean = false,
     val gestureSensitivity: Float = 1.0f,
     val themeColorIndex: Int = 0,
-    val appIcon: String = "3D",
+    val appIcon: String = "Yuki",
     val isBottomBarFloating: Boolean = true,
     val bottomBarLabelMode: Int = 1,  // 0=图标+文字, 1=仅图标, 2=仅文字
     val headerBlurEnabled: Boolean = true,
@@ -325,7 +325,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     //  [新增] 切换应用图标
     fun setAppIcon(iconKey: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             // 1. 保存偏好
             SettingsManager.setAppIcon(context, iconKey)
             
@@ -335,6 +335,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             
             // alias 映射 - 必须与 AndroidManifest.xml 中声明的完全一致
             val allAliases = listOf(
+                // 🎀 二次元少女系列 (新增)
+                "Yuki" to "${packageName}.MainActivityAliasYuki",
+                "Anime" to "${packageName}.MainActivityAliasAnime",
+                "Tv" to "${packageName}.MainActivityAliasTv",
+                "Headphone" to "${packageName}.MainActivityAliasHeadphone",
+                // 经典系列
                 "3D" to "${packageName}.MainActivityAlias3D",
                 "Blue" to "${packageName}.MainActivityAliasBlue",
                 "Retro" to "${packageName}.MainActivityAliasRetro",
@@ -350,7 +356,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             
             // 找到需要启用的 alias
             val targetAlias = allAliases.find { it.first == iconKey }?.second
-                ?: "${packageName}.MainActivityAlias3D" // 默认3D
+                ?: "${packageName}.MainActivityAliasYuki" // 默认Yuki (比心少女)
             
             //  [修复] 先启用目标 alias，再禁用其他 alias
             // 关键：确保在任何时刻都有一个活动的入口点，避免系统卡死

@@ -167,4 +167,174 @@ object CommentRepository {
         } catch (e: Exception) { e.printStackTrace() }
         map
     }
+    
+    /**
+     * [新增] 发送评论
+     * @param aid 视频 aid
+     * @param message 评论内容
+     * @param root 根评论 rpid（回复时需要）
+     * @param parent 父评论 rpid
+     * @return 新评论的 rpid
+     */
+    suspend fun addComment(aid: Long, message: String, root: Long = 0, parent: Long = 0): Result<ReplyItem?> = withContext(Dispatchers.IO) {
+        try {
+            val csrf = com.android.purebilibili.core.store.TokenManager.csrfCache
+            if (csrf.isNullOrEmpty()) {
+                return@withContext Result.failure(Exception("请先登录"))
+            }
+            
+            val response = api.addReply(
+                oid = aid,
+                type = 1,
+                message = message,
+                root = root,
+                parent = parent,
+                csrf = csrf
+            )
+            
+            if (response.code == 0) {
+                Result.success(response.data?.reply)
+            } else {
+                val errorMsg = when (response.code) {
+                    -101 -> "请先登录"
+                    -102 -> "账号被封禁"
+                    -509 -> "请求过于频繁"
+                    12002 -> "评论区已关闭"
+                    12015 -> "需要评论验证码"
+                    12016 -> "评论内容包含敏感信息"
+                    12025 -> "评论字数过多"
+                    12035 -> "您已被UP主拉黑"
+                    12051 -> "重复评论，请勿刷屏"
+                    else -> response.message.ifEmpty { "发送失败 (${response.code})" }
+                }
+                Result.failure(Exception(errorMsg))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    /**
+     * [新增] 点赞评论
+     */
+    suspend fun likeComment(aid: Long, rpid: Long, like: Boolean): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val csrf = com.android.purebilibili.core.store.TokenManager.csrfCache
+            if (csrf.isNullOrEmpty()) {
+                return@withContext Result.failure(Exception("请先登录"))
+            }
+            
+            val response = api.likeReply(
+                oid = aid,
+                type = 1,
+                rpid = rpid,
+                action = if (like) 1 else 0,
+                csrf = csrf
+            )
+            
+            if (response.code == 0) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception(response.message.ifEmpty { "操作失败" }))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    /**
+     * [新增] 点踩评论
+     */
+    suspend fun hateComment(aid: Long, rpid: Long, hate: Boolean): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val csrf = com.android.purebilibili.core.store.TokenManager.csrfCache
+            if (csrf.isNullOrEmpty()) {
+                return@withContext Result.failure(Exception("请先登录"))
+            }
+            
+            val response = api.hateReply(
+                oid = aid,
+                type = 1,
+                rpid = rpid,
+                action = if (hate) 1 else 0,
+                csrf = csrf
+            )
+            
+            if (response.code == 0) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception(response.message.ifEmpty { "操作失败" }))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    /**
+     * [新增] 删除评论
+     */
+    suspend fun deleteComment(aid: Long, rpid: Long): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val csrf = com.android.purebilibili.core.store.TokenManager.csrfCache
+            if (csrf.isNullOrEmpty()) {
+                return@withContext Result.failure(Exception("请先登录"))
+            }
+            
+            val response = api.deleteReply(
+                oid = aid,
+                type = 1,
+                rpid = rpid,
+                csrf = csrf
+            )
+            
+            if (response.code == 0) {
+                Result.success(Unit)
+            } else {
+                val errorMsg = when (response.code) {
+                    -403 -> "无权删除此评论"
+                    12022 -> "评论已被删除"
+                    else -> response.message.ifEmpty { "删除失败" }
+                }
+                Result.failure(Exception(errorMsg))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    /**
+     * [新增] 举报评论
+     * @param reason 举报原因: 0=其他, 1=垃圾广告, 2=色情, 3=刷屏, 4=引战, 5=剧透, 6=政治, 7=人身攻击
+     */
+    suspend fun reportComment(aid: Long, rpid: Long, reason: Int, content: String = ""): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val csrf = com.android.purebilibili.core.store.TokenManager.csrfCache
+            if (csrf.isNullOrEmpty()) {
+                return@withContext Result.failure(Exception("请先登录"))
+            }
+            
+            val response = api.reportReply(
+                oid = aid,
+                type = 1,
+                rpid = rpid,
+                reason = reason,
+                content = content,
+                csrf = csrf
+            )
+            
+            if (response.code == 0) {
+                Result.success(Unit)
+            } else {
+                val errorMsg = when (response.code) {
+                    12008 -> "已经举报过了"
+                    12019 -> "举报过于频繁"
+                    else -> response.message.ifEmpty { "举报失败" }
+                }
+                Result.failure(Exception(errorMsg))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
+

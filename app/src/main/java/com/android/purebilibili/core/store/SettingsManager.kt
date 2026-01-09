@@ -274,7 +274,7 @@ object SettingsManager {
 
     //  [新增] --- 应用图标 ---
     fun getAppIcon(context: Context): Flow<String> = context.settingsDataStore.data
-        .map { preferences -> preferences[KEY_APP_ICON] ?: "3D" }
+        .map { preferences -> preferences[KEY_APP_ICON] ?: "Yuki" }
 
     suspend fun setAppIcon(context: Context, iconKey: String) {
         context.settingsDataStore.edit { preferences -> 
@@ -288,7 +288,7 @@ object SettingsManager {
     //  同步读取当前图标设置（用于 Application 启动时同步）
     fun getAppIconSync(context: Context): String {
         return context.getSharedPreferences("app_icon_cache", Context.MODE_PRIVATE)
-            .getString("current_icon", "3D") ?: "3D"
+            .getString("current_icon", "Yuki") ?: "Yuki"
     }
 
     //  [新增] --- 底部栏样式 ---

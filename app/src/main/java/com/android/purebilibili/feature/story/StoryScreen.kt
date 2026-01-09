@@ -33,9 +33,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.MergingMediaSource
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.android.purebilibili.data.model.response.StoryItem
+import com.android.purebilibili.data.repository.StoryPlayUrls
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -128,7 +131,7 @@ private fun StoryPageContent(
 ) {
     var isPlaying by remember { mutableStateOf(true) }
     var showDoubleTapHeart by remember { mutableStateOf(false) }
-    var videoUrl by remember { mutableStateOf<String?>(null) }
+    var playUrls by remember { mutableStateOf<StoryPlayUrls?>(null) }
     var isLoading by remember { mutableStateOf(true) }
     
     val context = LocalContext.current
@@ -140,7 +143,7 @@ private fun StoryPageContent(
         if (aid <= 0 || cid <= 0) return@LaunchedEffect
         
         isLoading = true
-        videoUrl = com.android.purebilibili.data.repository.StoryRepository.getVideoPlayUrlByAid(aid, cid)
+        playUrls = com.android.purebilibili.data.repository.StoryRepository.getVideoPlayUrlByAid(aid, cid)
         isLoading = false
     }
     
@@ -148,16 +151,31 @@ private fun StoryPageContent(
     val exoPlayer = remember(context) {
         ExoPlayer.Builder(context).build().apply {
             repeatMode = Player.REPEAT_MODE_ONE  // 循环播放
+            volume = 1.0f  // 确保音量开启
         }
     }
     
-    // 设置视频源
-    LaunchedEffect(videoUrl) {
-        val url = videoUrl ?: return@LaunchedEffect
-        val mediaItem = MediaItem.Builder()
-            .setUri(Uri.parse(url))
-            .build()
-        exoPlayer.setMediaItem(mediaItem)
+    // 创建 MediaSourceFactory
+    val mediaSourceFactory = remember(context) {
+        DefaultMediaSourceFactory(context)
+    }
+    
+    // 设置视频源 (支持 DASH 音视频分离)
+    LaunchedEffect(playUrls) {
+        val urls = playUrls ?: return@LaunchedEffect
+        
+        val videoSource = mediaSourceFactory.createMediaSource(MediaItem.fromUri(urls.videoUrl))
+        
+        val finalSource = if (!urls.audioUrl.isNullOrEmpty()) {
+            // DASH 格式：合并视频和音频流
+            val audioSource = mediaSourceFactory.createMediaSource(MediaItem.fromUri(urls.audioUrl))
+            MergingMediaSource(videoSource, audioSource)
+        } else {
+            // durl 格式：音视频合一，直接使用视频源
+            videoSource
+        }
+        
+        exoPlayer.setMediaSource(finalSource)
         exoPlayer.prepare()
         if (isCurrentPage) {
             exoPlayer.play()
@@ -166,7 +184,7 @@ private fun StoryPageContent(
     
     // 当前页面状态变化时控制播放
     LaunchedEffect(isCurrentPage) {
-        if (isCurrentPage && videoUrl != null) {
+        if (isCurrentPage && playUrls != null) {
             exoPlayer.play()
         } else {
             exoPlayer.pause()
@@ -175,7 +193,7 @@ private fun StoryPageContent(
     
     // 手动控制播放/暂停
     LaunchedEffect(isPlaying) {
-        if (isCurrentPage && videoUrl != null) {
+        if (isCurrentPage && playUrls != null) {
             if (isPlaying) exoPlayer.play() else exoPlayer.pause()
         }
     }
@@ -207,7 +225,7 @@ private fun StoryPageContent(
             }
     ) {
         // 视频背景：先显示封面，视频加载后显示播放器
-        if (videoUrl == null || isLoading) {
+        if (playUrls == null || isLoading) {
             // 封面图
             AsyncImage(
                 model = item.cover,
@@ -239,7 +257,7 @@ private fun StoryPageContent(
         }
         
         // 暂停图标
-        if (!isPlaying && isCurrentPage && videoUrl != null) {
+        if (!isPlaying && isCurrentPage && playUrls != null) {
             Icon(
                 Icons.Filled.PlayArrow,
                 contentDescription = null,

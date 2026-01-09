@@ -171,6 +171,12 @@ fun AppearanceSettingsScreen(
                         icon = CupertinoIcons.Default.SquareStack3dUp,
                         title = "应用图标",
                         value = when(state.appIcon) {
+                            // 🎀 二次元少女系列
+                            "Yuki" -> "比心少女"
+                            "Anime" -> "蓝发电视"
+                            "Tv" -> "双马尾"
+                            "Headphone" -> "耳机少女"
+                            // 经典系列
                             "3D" -> "3D立体"
                             "Blue" -> "经典蓝"
                             "Retro" -> "复古怀旧"
@@ -182,7 +188,7 @@ fun AppearanceSettingsScreen(
                             "Purple" -> "香芋紫"
                             "Green" -> "薄荷绿"
                             "Dark" -> "暗夜蓝"
-                            else -> "默认"
+                            else -> "比心少女"  // 默认是 Yuki
                         },
                         onClick = onNavigateToIconSettings,
                         iconTint = iOSPurple
@@ -538,7 +544,11 @@ fun AppearanceSettingsScreen(
                         title = "悬浮底栏",
                         subtitle = "关闭后底栏将沉浸式贴底显示",
                         checked = state.isBottomBarFloating,
-                        onCheckedChange = { viewModel.toggleBottomBarFloating(it) },
+                        onCheckedChange = { 
+                            viewModel.toggleBottomBarFloating(it)
+                            //  [埋点] 设置变更追踪
+                            com.android.purebilibili.core.util.AnalyticsHelper.logSettingChange("bottom_bar_floating", it.toString())
+                        },
                         iconTint = iOSTeal
                     )
                     
@@ -550,7 +560,11 @@ fun AppearanceSettingsScreen(
                         title = "底栏磨砂效果",
                         subtitle = "底部导航栏的毛玻璃模糊",
                         checked = state.bottomBarBlurEnabled,
-                        onCheckedChange = { viewModel.toggleBottomBarBlur(it) },
+                        onCheckedChange = { 
+                            viewModel.toggleBottomBarBlur(it)
+                            //  [埋点] 设置变更追踪
+                            com.android.purebilibili.core.util.AnalyticsHelper.logSettingChange("bottom_bar_blur", it.toString())
+                        },
                         iconTint = iOSBlue
                     )
                     
@@ -571,7 +585,11 @@ fun AppearanceSettingsScreen(
                         title = "卡片进场动画",
                         subtitle = "首页视频卡片的入场动画效果",
                         checked = state.cardAnimationEnabled,
-                        onCheckedChange = { viewModel.toggleCardAnimation(it) },
+                        onCheckedChange = { 
+                            viewModel.toggleCardAnimation(it)
+                            //  [埋点] 设置变更追踪
+                            com.android.purebilibili.core.util.AnalyticsHelper.logSettingChange("card_animation", it.toString())
+                        },
                         iconTint = iOSPink
                     )
                     
@@ -583,7 +601,11 @@ fun AppearanceSettingsScreen(
                         title = "卡片过渡动画",
                         subtitle = "点击卡片时的共享元素过渡效果",
                         checked = state.cardTransitionEnabled,
-                        onCheckedChange = { viewModel.toggleCardTransition(it) },
+                        onCheckedChange = { 
+                            viewModel.toggleCardTransition(it)
+                            //  [埋点] 设置变更追踪
+                            com.android.purebilibili.core.util.AnalyticsHelper.logSettingChange("card_transition", it.toString())
+                        },
                         iconTint = iOSTeal
                     )
                 }

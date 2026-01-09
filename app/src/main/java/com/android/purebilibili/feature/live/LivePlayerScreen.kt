@@ -209,6 +209,23 @@ fun LivePlayerScreen(
         }
     }
     
+    //  [埋点] 页面浏览追踪 + 观看时长记录
+    var watchStartTime by remember { mutableStateOf(0L) }
+    LaunchedEffect(Unit) {
+        com.android.purebilibili.core.util.AnalyticsHelper.logScreenView("LivePlayerScreen")
+        watchStartTime = System.currentTimeMillis()
+    }
+    
+    //  [埋点] 离开时记录观看时长
+    DisposableEffect(roomId) {
+        onDispose {
+            val watchDuration = (System.currentTimeMillis() - watchStartTime) / 1000
+            if (watchDuration > 5) { // 观看超过5秒才记录
+                com.android.purebilibili.core.util.AnalyticsHelper.logLiveWatchTime(roomId, watchDuration)
+            }
+        }
+    }
+    
     //  加载直播流 - 使用 ViewModel
     LaunchedEffect(roomId) {
         Logger.d(TAG, "🔴 LaunchedEffect: Loading live stream for roomId=$roomId")
@@ -216,6 +233,7 @@ fun LivePlayerScreen(
     }
     
     //  监听 ViewModel 状态变化，播放新 URL
+    var hasLoggedLivePlay by remember { mutableStateOf(false) }
     LaunchedEffect(uiState) {
         val state = uiState
         Logger.d(TAG, "🔴 uiState changed: ${state::class.simpleName}")
@@ -224,6 +242,16 @@ fun LivePlayerScreen(
             Logger.d(TAG, "🔴 Current quality: ${state.currentQuality}")
             Logger.d(TAG, "🔴 Quality list count: ${state.qualityList.size}")
             playLiveStream(state.playUrl)
+            
+            //  [埋点] 直播播放开始（只记录一次）
+            if (!hasLoggedLivePlay) {
+                com.android.purebilibili.core.util.AnalyticsHelper.logLivePlay(
+                    roomId = roomId,
+                    title = title.ifEmpty { "直播间 $roomId" },
+                    upName = uname
+                )
+                hasLoggedLivePlay = true
+            }
         } else if (state is LivePlayerState.Error) {
             Logger.e(TAG, " Error state: ${state.message}")
         }

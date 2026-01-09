@@ -74,16 +74,76 @@
             </intent-filter>
         </activity>
 
-        <!-- Default Alias (3D - 默认) -->
+        <!-- Yuki 比心少女 (可在设置中切换) -->
+        <activity-alias
+            android:name=".MainActivityAliasYuki"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <!-- 🔥 高优先级：启动器显示此图标 -->
+            <intent-filter android:priority="1">
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Anime TV Girl (蓝发少女小电视) -->
+        <activity-alias
+            android:name=".MainActivityAliasAnime"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_anime"
+            android:roundIcon="@mipmap/ic_launcher_anime"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter android:priority="1">
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- TV Girl (双马尾坐电视) -->
+        <activity-alias
+            android:name=".MainActivityAliasTv"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_tv"
+            android:roundIcon="@mipmap/ic_launcher_tv"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter android:priority="1">
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Headphone Girl (耳机少女) -->
+        <activity-alias
+            android:name=".MainActivityAliasHeadphone"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_headphone"
+            android:roundIcon="@mipmap/ic_launcher_headphone"
+            android:label="@string/app_name"
+            android:targetActivity=".MainActivity">
+            <intent-filter android:priority="1">
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- 3D (默认) -->
         <activity-alias
             android:name=".MainActivityAlias3D"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="true"
             android:icon="@mipmap/ic_launcher_3d"
             android:roundIcon="@mipmap/ic_launcher_3d_round"
             android:label="@string/app_name"
             android:targetActivity=".MainActivity">
-            <!-- 🔥 高优先级：启动器显示此图标 -->
             <intent-filter android:priority="1">
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

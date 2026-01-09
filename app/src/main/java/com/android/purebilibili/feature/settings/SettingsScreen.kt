@@ -123,6 +123,8 @@ fun SettingsScreen(
 
     LaunchedEffect(Unit) {
         viewModel.refreshCacheSize()
+        //  [埋点] 页面浏览追踪
+        com.android.purebilibili.core.util.AnalyticsHelper.logScreenView("SettingsScreen")
     }
     
     //  [修复] 设置导航栏透明，确保底部手势栏沉浸式效果

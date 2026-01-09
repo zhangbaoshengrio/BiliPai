@@ -107,7 +107,9 @@ fun VideoPlayerOverlay(
     viewPoints: List<ViewPoint> = emptyList(),
     // 📱 [新增] 竖屏全屏模式
     isVerticalVideo: Boolean = false,
-    onPortraitFullscreen: () -> Unit = {}
+    onPortraitFullscreen: () -> Unit = {},
+    // 📲 [新增] 小窗模式
+    onPipClick: () -> Unit = {}
 ) {
     var showQualityMenu by remember { mutableStateOf(false) }
     var showSpeedMenu by remember { mutableStateOf(false) }
@@ -284,6 +286,8 @@ fun VideoPlayerOverlay(
                     // 📱 [新增] 竖屏全屏模式
                     isVerticalVideo = isVerticalVideo,
                     onPortraitFullscreen = onPortraitFullscreen,
+                    // 📲 [新增] 小窗模式
+                    onPipClick = onPipClick,
                     //  [修复] 传入 modifier 确保在底部
                     modifier = Modifier.align(Alignment.BottomStart)
                 )

@@ -480,4 +480,108 @@ object AnalyticsHelper {
             Log.e(TAG, "Failed to log danmaku toggle", e)
         }
     }
+    
+    // ========== 📱 特色功能追踪 ==========
+    
+    /**
+     * 记录画中画模式使用
+     * @param videoId 视频 ID
+     * @param action 动作: "enter" / "exit"
+     */
+    fun logPictureInPicture(videoId: String, action: String) {
+        if (!isEnabled) return
+        try {
+            analytics?.logEvent("picture_in_picture") {
+                param("video_id", videoId)
+                param("action", action)
+            }
+            Logger.d(TAG, "📱 PiP: $action for $videoId")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to log PiP", e)
+        }
+    }
+    
+    /**
+     * 记录后台播放使用
+     * @param videoId 视频 ID
+     * @param action 动作: "enter" / "exit"
+     */
+    fun logBackgroundPlay(videoId: String, action: String) {
+        if (!isEnabled) return
+        try {
+            analytics?.logEvent("background_play") {
+                param("video_id", videoId)
+                param("action", action)
+            }
+            Logger.d(TAG, "🔊 Background play: $action for $videoId")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to log background play", e)
+        }
+    }
+    
+    /**
+     * 记录音频模式使用
+     * @param videoId 视频 ID
+     * @param enabled 是否开启
+     */
+    fun logAudioMode(videoId: String, enabled: Boolean) {
+        if (!isEnabled) return
+        try {
+            analytics?.logEvent("audio_mode") {
+                param("video_id", videoId)
+                param("enabled", if (enabled) "true" else "false")
+            }
+            Logger.d(TAG, "🎵 Audio mode: ${if (enabled) "enabled" else "disabled"} for $videoId")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to log audio mode", e)
+        }
+    }
+    
+    /**
+     * 记录直播画质切换
+     * @param roomId 直播间 ID
+     * @param fromQuality 原画质
+     * @param toQuality 新画质
+     */
+    fun logLiveQualityChange(roomId: Long, fromQuality: Int, toQuality: Int) {
+        if (!isEnabled) return
+        try {
+            analytics?.logEvent("live_quality_change") {
+                param("room_id", roomId.toString())
+                param("from_quality", fromQuality.toLong())
+                param("to_quality", toQuality.toLong())
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to log live quality change", e)
+        }
+    }
+    
+    /**
+     * 记录首页视频点击 (含分区信息，用于分析用户偏好)
+     * @param videoId 视频 ID
+     * @param title 视频标题
+     * @param tid 分区 ID
+     * @param tname 分区名称
+     * @param position 在列表中的位置
+     */
+    fun logVideoClick(
+        videoId: String,
+        title: String,
+        tid: Int? = null,
+        tname: String? = null,
+        position: Int? = null
+    ) {
+        if (!isEnabled) return
+        try {
+            analytics?.logEvent("video_click") {
+                param("video_id", videoId)
+                param("video_title", title.take(100))
+                tid?.let { param("category_id", it.toLong()) }
+                tname?.let { param("category_name", it) }
+                position?.let { param("list_position", it.toLong()) }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to log video click", e)
+        }
+    }
 }

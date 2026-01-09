@@ -111,6 +111,19 @@ fun HomeScreen(
         }
     }
     
+    //  [埋点] 页面浏览追踪
+    LaunchedEffect(Unit) {
+        com.android.purebilibili.core.util.AnalyticsHelper.logScreenView("HomeScreen")
+    }
+    
+    //  [埋点] 分类切换追踪
+    LaunchedEffect(state.currentCategory) {
+        com.android.purebilibili.core.util.AnalyticsHelper.logCategoryView(
+            categoryName = state.currentCategory.label,
+            categoryId = state.currentCategory.tid
+        )
+    }
+    
     //  [彩蛋] 彩蛋开关设置
     val easterEggEnabled by SettingsManager.getEasterEggEnabled(context).collectAsState(initial = true)
     var showEasterEggDialog by remember { mutableStateOf(false) }

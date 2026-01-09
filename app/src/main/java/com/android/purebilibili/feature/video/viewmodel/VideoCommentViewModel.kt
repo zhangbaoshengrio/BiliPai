@@ -26,7 +26,13 @@ data class CommentUiState(
     //  [新增] 排序和筛选状态
     val sortMode: CommentSortMode = CommentSortMode.HOT,
     val upOnlyFilter: Boolean = false,
-    val upMid: Long = 0  // UP主的 mid，用于筛选
+    val upMid: Long = 0,  // UP主的 mid，用于筛选
+    // [新增] 评论交互状态
+    val isSending: Boolean = false,
+    val sendError: String? = null,
+    val replyTarget: ReplyItem? = null,  // 回复目标评论（为空则是一级评论）
+    val likedComments: Set<Long> = emptySet(),  // 已点赞的评论 rpid 集合
+    val hatedComments: Set<Long> = emptySet()   // 已点踩的评论 rpid 集合
 )
 
 // 二级评论状态 (从 PlayerViewModel 移过来)
@@ -37,7 +43,8 @@ data class SubReplyUiState(
     val isLoading: Boolean = false,
     val page: Int = 1,
     val isEnd: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val upMid: Long = 0  // [新增] UP 主 mid，用于显示 UP 标签
 )
 
 class VideoCommentViewModel : ViewModel() {
@@ -185,7 +192,8 @@ class VideoCommentViewModel : ViewModel() {
             visible = true,
             rootReply = rootReply,
             isLoading = true,
-            page = 1
+            page = 1,
+            upMid = _commentState.value.upMid  // [修复] 使用正确的 UP 主 mid
         )
         loadSubReplies(rootReply.oid, rootReply.rpid, 1)
     }
@@ -224,6 +232,92 @@ class VideoCommentViewModel : ViewModel() {
                 )
             }
         }
+    }
+    
+    // --- [新增] 评论交互逻辑 ---
+    
+    fun sendComment(message: String) {
+        if (message.isBlank()) return
+        val currentState = _commentState.value
+        if (currentState.isSending) return
+        
+        _commentState.value = currentState.copy(isSending = true, sendError = null)
+        
+        viewModelScope.launch {
+            val replyTarget = currentState.replyTarget
+            val root = replyTarget?.rpid ?: 0
+            val parent = replyTarget?.rpid ?: 0
+            
+            val result = CommentRepository.addComment(currentAid, message, root, parent)
+            
+            result.onSuccess { newReply ->
+                val current = _commentState.value
+                val updatedReplies = if (newReply != null && replyTarget == null) {
+                    listOf(newReply) + allReplies
+                } else allReplies
+                allReplies = updatedReplies
+                
+                _commentState.value = current.copy(
+                    replies = updatedReplies,
+                    isSending = false,
+                    sendError = null,
+                    replyTarget = null,
+                    replyCount = current.replyCount + 1
+                )
+            }.onFailure { e ->
+                _commentState.value = _commentState.value.copy(isSending = false, sendError = e.message)
+            }
+        }
+    }
+    
+    fun replyTo(reply: ReplyItem) {
+        _commentState.value = _commentState.value.copy(replyTarget = reply)
+    }
+    
+    fun cancelReply() {
+        _commentState.value = _commentState.value.copy(replyTarget = null)
+    }
+    
+    fun likeComment(rpid: Long) {
+        val currentState = _commentState.value
+        val isCurrentlyLiked = rpid in currentState.likedComments
+        val newLikedComments = if (isCurrentlyLiked) currentState.likedComments - rpid else currentState.likedComments + rpid
+        val newHatedComments = currentState.hatedComments - rpid
+        _commentState.value = currentState.copy(likedComments = newLikedComments, hatedComments = newHatedComments)
+        
+        viewModelScope.launch {
+            CommentRepository.likeComment(currentAid, rpid, !isCurrentlyLiked).onFailure {
+                _commentState.value = _commentState.value.copy(likedComments = currentState.likedComments, hatedComments = currentState.hatedComments)
+            }
+        }
+    }
+    
+    fun hateComment(rpid: Long) {
+        val currentState = _commentState.value
+        val isCurrentlyHated = rpid in currentState.hatedComments
+        val newHatedComments = if (isCurrentlyHated) currentState.hatedComments - rpid else currentState.hatedComments + rpid
+        val newLikedComments = currentState.likedComments - rpid
+        _commentState.value = currentState.copy(likedComments = newLikedComments, hatedComments = newHatedComments)
+        
+        viewModelScope.launch {
+            CommentRepository.hateComment(currentAid, rpid, !isCurrentlyHated).onFailure {
+                _commentState.value = _commentState.value.copy(likedComments = currentState.likedComments, hatedComments = currentState.hatedComments)
+            }
+        }
+    }
+    
+    fun deleteComment(rpid: Long) {
+        viewModelScope.launch {
+            CommentRepository.deleteComment(currentAid, rpid).onSuccess {
+                allReplies = allReplies.filter { it.rpid != rpid }
+                val current = _commentState.value
+                _commentState.value = current.copy(replies = allReplies, replyCount = maxOf(0, current.replyCount - 1))
+            }
+        }
+    }
+    
+    fun reportComment(rpid: Long, reason: Int, content: String = "") {
+        viewModelScope.launch { CommentRepository.reportComment(currentAid, rpid, reason, content) }
     }
 }
 

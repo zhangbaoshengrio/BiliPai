@@ -103,6 +103,8 @@ fun ProfileScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadProfile()
+        //  [埋点] 页面浏览追踪
+        com.android.purebilibili.core.util.AnalyticsHelper.logScreenView("ProfileScreen")
     }
 
     //  未登录状态使用沉浸式全屏布局，已登录使用正常 Scaffold

@@ -79,7 +79,14 @@ fun ReplyItemView(
     onClick: () -> Unit,
     onSubClick: (ReplyItem) -> Unit,
     onTimestampClick: ((Long) -> Unit)? = null,
-    onImagePreview: ((List<String>, Int, Rect?) -> Unit)? = null  //  图片预览回调
+    onImagePreview: ((List<String>, Int, Rect?) -> Unit)? = null,  //  图片预览回调
+    // [新增] 评论交互回调
+    isLiked: Boolean = item.action == 1,  // 是否已点赞
+    onLikeClick: (() -> Unit)? = null,    // 点赞回调
+    onReplyClick: (() -> Unit)? = null,   // 回复回调
+    onLongClick: (() -> Unit)? = null,    // 长按回调
+    location: String? = item.replyControl?.location,  // IP属地
+    hideSubPreview: Boolean = false  // [新增] 隐藏楼中楼预览（在二级评论弹窗中使用）
 ) {
     // 判断是否是 UP 主的评论
     val isUpComment = upMid > 0 && item.mid == upMid
@@ -161,44 +168,67 @@ fun ReplyItemView(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                //  时间 + 点赞 + 回复 - 统一使用浅灰色
+                //  时间 + IP属地 + 点赞 + 回复
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = formatTime(item.ctime),
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.width(20.dp))
-
-                    Icon(
-                        imageVector = CupertinoIcons.Default.Heart,
-                        contentDescription = "点赞",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(14.dp)
-                    )
-                    if (item.like > 0) {
-                        Spacer(modifier = Modifier.width(4.dp))
+                    
+                    // [新增] IP 属地显示
+                    if (!location.isNullOrEmpty()) {
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = FormatUtils.formatStat(item.like.toLong()),
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            text = location,
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )
                     }
-
+                    
                     Spacer(modifier = Modifier.width(20.dp))
 
+                    // [修改] 可点击的点赞按钮
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .clickable(enabled = onLikeClick != null) { onLikeClick?.invoke() }
+                            .padding(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (isLiked) CupertinoIcons.Filled.Heart else CupertinoIcons.Default.Heart,
+                            contentDescription = "点赞",
+                            tint = if (isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        if (item.like > 0 || isLiked) {
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = FormatUtils.formatStat((item.like + if (isLiked && item.action != 1) 1 else 0).toLong()),
+                                fontSize = 12.sp,
+                                color = if (isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    // [修改] 回复按钮
                     Icon(
                         imageVector = CupertinoIcons.Default.Message,
                         contentDescription = "回复",
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier
                             .size(14.dp)
-                            .clickable { onSubClick(item) }
+                            .clickable { 
+                                onReplyClick?.invoke() ?: onSubClick(item) 
+                            }
                     )
                 }
 
-                //  楼中楼预览 - 使用更浅的背景色
-                if (!item.replies.isNullOrEmpty() || item.rcount > 0) {
+                //  楼中楼预览 - 使用更浅的背景色（hideSubPreview 为 true 时隐藏）
+                if (!hideSubPreview && (!item.replies.isNullOrEmpty() || item.rcount > 0)) {
                     Spacer(modifier = Modifier.height(10.dp))
                     Column(
                         modifier = Modifier
