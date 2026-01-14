@@ -104,44 +104,28 @@ class DanmakuManager private constructor(
         get() = config.opacity
         set(value) {
             config.opacity = value
-            controller?.let { 
-                config.applyTo(it.config)
-                it.invalidateView()
-                Log.w(TAG, " Opacity changed to $value")
-            }
+            applyConfigToController("opacity")
         }
     
     var fontScale: Float
         get() = config.fontScale
         set(value) {
             config.fontScale = value
-            controller?.let { 
-                config.applyTo(it.config)
-                it.invalidateView()
-                Log.w(TAG, " FontScale changed to $value")
-            }
+            applyConfigToController("fontScale")
         }
     
     var speedFactor: Float
         get() = config.speedFactor
         set(value) {
             config.speedFactor = value
-            controller?.let { 
-                config.applyTo(it.config)
-                it.invalidateView()
-                Log.w(TAG, " SpeedFactor changed to $value")
-            }
+            applyConfigToController("speedFactor")
         }
     
     var displayArea: Float
         get() = config.displayAreaRatio
         set(value) {
             config.displayAreaRatio = value
-            controller?.let { 
-                config.applyTo(it.config)
-                it.invalidateView()
-                Log.w(TAG, " DisplayArea changed to $value")
-            }
+            applyConfigToController("displayArea")
         }
     
     /**
@@ -157,11 +141,48 @@ class DanmakuManager private constructor(
         config.fontScale = fontScale
         config.speedFactor = speed
         config.displayAreaRatio = displayArea
-        
+        applyConfigToController("batch")
+    }
+
+    /**
+     * 应用弹幕配置到 Controller，并同步倍速基准
+     *  [修复] fontScale/displayArea 改变时重新设置数据，让新配置生效
+     */
+    private fun applyConfigToController(reason: String) {
         controller?.let { ctrl ->
             config.applyTo(ctrl.config)
-            ctrl.invalidateView()
-            Log.w(TAG, " Settings updated: opacity=$opacity, fontScale=$fontScale, speed=$speed, displayArea=$displayArea")
+
+            // 记录设置后的基准滚动时间，供倍速同步使用
+            originalMoveTime = ctrl.config.scroll.moveTime
+
+            // 若视频非 1.0x，则按倍速调整弹幕滚动时间
+            if (currentVideoSpeed != 1.0f) {
+                ctrl.config.scroll.moveTime = (originalMoveTime / currentVideoSpeed).toLong()
+            }
+
+            //  [关键修复] fontScale/displayArea 改变时，需要重新设置弹幕数据
+            // 因为引擎的 config.text.size 只对新弹幕生效，已显示的弹幕不会更新
+            if (reason == "fontScale" || reason == "displayArea" || reason == "batch") {
+                cachedDanmakuList?.let { list ->
+                    val currentPos = player?.currentPosition ?: 0L
+                    Log.w(TAG, " Re-applying danmaku data after $reason change at ${currentPos}ms")
+                    ctrl.setData(list, 0)
+                    ctrl.start(currentPos)
+                    if (player?.isPlaying != true) {
+                        ctrl.pause()
+                    }
+                }
+            } else {
+                ctrl.invalidateView()
+            }
+            
+            Log.w(
+                TAG,
+                " Config applied ($reason): opacity=${config.opacity}, fontScale=${config.fontScale}, " +
+                    "speed=${config.speedFactor}, area=${config.displayAreaRatio}, " +
+                    "baseMoveTime=$originalMoveTime, videoSpeed=$currentVideoSpeed, " +
+                    "moveTime=${ctrl.config.scroll.moveTime}"
+            )
         }
     }
     
@@ -208,13 +229,8 @@ class DanmakuManager private constructor(
         // 内置渲染层（ScrollLayer, TopCenterLayer, BottomCenterLayer）由 DanmakuRenderEngine 自动注册
         // 不需要手动添加，手动添加会报错 "The custom LayerType must not be less than 2000"
         
-        // 应用配置
-        controller?.let { ctrl ->
-            config.applyTo(ctrl.config)
-            //  [新增] 保存原始 moveTime，用于倍速同步
-            originalMoveTime = ctrl.config.scroll.moveTime
-            Log.w(TAG, " DanmakuController configured, originalMoveTime=$originalMoveTime")
-        } ?: Log.e(TAG, " Controller is null!")
+        // 应用配置并同步倍速基准
+        applyConfigToController("attachView")
         
         //  [关键修复] 等待 View 布局完成后再设置弹幕数据
         // DanmakuRenderEngine 需要有效的 View 尺寸来计算弹幕轨道位置
@@ -446,10 +462,16 @@ class DanmakuManager private constructor(
         Log.w(TAG, "========== loadDanmaku CALLED cid=$cid, duration=${durationMs}ms ==========")
         Log.w(TAG, " loadDanmaku: cid=$cid, cached=$cachedCid, isLoading=$isLoading, controller=${controller != null}")
         
-        // 如果正在加载，跳过
+        // 如果正在加载，优先处理新 cid
         if (isLoading) {
-            Log.w(TAG, " Already loading, skipping")
-            return
+            if (cid != cachedCid) {
+                Log.w(TAG, " Loading in progress for cid=$cachedCid, canceling to load cid=$cid")
+                loadJob?.cancel()
+                isLoading = false
+            } else {
+                Log.w(TAG, " Already loading same cid=$cid, skipping")
+                return
+            }
         }
         
         // 如果是同一个 cid 且已有缓存数据，直接使用（横竖屏切换场景）

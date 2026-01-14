@@ -173,10 +173,10 @@ object BangumiRepository {
     ): Result<BangumiVideoInfo> = withContext(Dispatchers.IO) {
         try {
             val response = api.getBangumiPlayUrl(epId = epId, qn = qn)
-            android.util.Log.d("BangumiRepo", "getBangumiPlayUrl response code: ${response.code}, has result: ${response.result != null}, has videoInfo: ${response.result?.videoInfo != null}")
+            android.util.Log.d("BangumiRepo", "getBangumiPlayUrl response code: ${response.code}, has result: ${response.result != null}")
             
-            if (response.code == 0 && response.result?.videoInfo != null) {
-                Result.success(response.result.videoInfo)
+            if (response.code == 0 && response.result != null) {
+                Result.success(response.result)
             } else {
                 val errorMsg = when (response.code) {
                     -10403 -> "需要大会员才能观看"

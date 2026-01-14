@@ -542,7 +542,8 @@ fun VideoDetailScreen(
                     videoshotData = (uiState as? PlayerUiState.Success)?.videoshotData,
                     
                     // 📖 [新增] 视频章节数据
-                    viewPoints = viewPoints
+                    viewPoints = viewPoints,
+                    isPortraitFullscreen = isPortraitFullscreen
                 )
             } else {
                 //  沉浸式布局：视频延伸到状态栏 + 内容区域
@@ -596,6 +597,7 @@ fun VideoDetailScreen(
                         onToggleFullscreen = { toggleFullscreen() },  // 📺 平板全屏切换
                         isInPipMode = isPipMode,
                         onPipClick = handlePipClick,
+                        isPortraitFullscreen = isPortraitFullscreen,
 
                         transitionEnabled = transitionEnabled,  //  传递过渡动画开关
                         // [New] Codec & Audio
@@ -721,11 +723,12 @@ fun VideoDetailScreen(
                                 videoshotData = (uiState as? PlayerUiState.Success)?.videoshotData,
                                 
                                 // 📖 [新增] 视频章节数据
-                                viewPoints = viewPoints,
-                                
-                                // 📱 [新增] 竖屏全屏模式
-                                isVerticalVideo = isVerticalVideo,
-                                onPortraitFullscreen = { playerState.setPortraitFullscreen(true) },
+                        viewPoints = viewPoints,
+                        
+                        // 📱 [新增] 竖屏全屏模式
+                        isVerticalVideo = isVerticalVideo,
+                        onPortraitFullscreen = { playerState.setPortraitFullscreen(true) },
+                        isPortraitFullscreen = isPortraitFullscreen,
 
                                 // 📲 [修复] 小窗模式 - 转移到应用内小窗而非直接进入系统 PiP
                                 onPipClick = handlePipClick,
@@ -1012,6 +1015,80 @@ fun VideoDetailScreen(
             
             //  弹幕管理器（用于进度条拖动时清除弹幕）
             val danmakuManager = rememberDanmakuManager()
+
+            // 弹幕设置
+            val danmakuOpacity by com.android.purebilibili.core.store.SettingsManager
+                .getDanmakuOpacity(context)
+                .collectAsState(initial = 0.85f)
+            val danmakuFontScale by com.android.purebilibili.core.store.SettingsManager
+                .getDanmakuFontScale(context)
+                .collectAsState(initial = 1.0f)
+            val danmakuSpeed by com.android.purebilibili.core.store.SettingsManager
+                .getDanmakuSpeed(context)
+                .collectAsState(initial = 1.0f)
+            val danmakuDisplayArea by com.android.purebilibili.core.store.SettingsManager
+                .getDanmakuArea(context)
+                .collectAsState(initial = 0.5f)
+
+            // 绑定 Player（单例保持状态）
+            DisposableEffect(playerState.player) {
+                danmakuManager.attachPlayer(playerState.player)
+                onDispose { }
+            }
+
+            // 使用 LifecycleOwner 在 Activity 销毁时清理引用
+            val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+            DisposableEffect(lifecycleOwner) {
+                val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+                    if (event == androidx.lifecycle.Lifecycle.Event.ON_DESTROY) {
+                        com.android.purebilibili.core.util.Logger.d("PortraitDanmaku", " ON_DESTROY: Clearing danmaku references")
+                        danmakuManager.clearViewReference()
+                    }
+                }
+                lifecycleOwner.lifecycle.addObserver(observer)
+                onDispose {
+                    lifecycleOwner.lifecycle.removeObserver(observer)
+                }
+            }
+
+            // 弹幕开关变化时更新
+            LaunchedEffect(danmakuEnabled) {
+                danmakuManager.isEnabled = danmakuEnabled
+            }
+
+            // 弹幕设置变化时实时应用
+            LaunchedEffect(danmakuOpacity, danmakuFontScale, danmakuSpeed, danmakuDisplayArea) {
+                danmakuManager.updateSettings(
+                    opacity = danmakuOpacity,
+                    fontScale = danmakuFontScale,
+                    speed = danmakuSpeed,
+                    displayArea = danmakuDisplayArea
+                )
+            }
+
+            // 加载弹幕数据（等待 duration 可用）
+            val portraitCid = success.info.cid
+            LaunchedEffect(portraitCid) {
+                if (portraitCid > 0) {
+                    danmakuManager.isEnabled = danmakuEnabled
+
+                    var durationMs = 0L
+                    var retries = 0
+                    while (durationMs <= 0 && retries < 50) {
+                        durationMs = playerState.player.duration.takeIf { it > 0 } ?: 0L
+                        if (durationMs <= 0) {
+                            kotlinx.coroutines.delay(100)
+                            retries++
+                        }
+                    }
+
+                    com.android.purebilibili.core.util.Logger.d(
+                        "PortraitDanmaku",
+                        " Loading danmaku: cid=$portraitCid, duration=${durationMs}ms (after $retries retries)"
+                    )
+                    danmakuManager.loadDanmaku(portraitCid, durationMs)
+                }
+            }
             
             // 状态栏隐藏控制
             var isStatusBarHidden by remember { mutableStateOf(false) }
@@ -1087,6 +1164,29 @@ fun VideoDetailScreen(
                     },
                     modifier = Modifier.fillMaxSize()
                 )
+
+                // 弹幕视图（覆盖在 PlayerView 上方）
+                if (danmakuEnabled) {
+                    androidx.compose.ui.viewinterop.AndroidView(
+                        factory = { ctx ->
+                            com.bytedance.danmaku.render.engine.DanmakuView(ctx).apply {
+                                setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                                danmakuManager.attachView(this)
+                                com.android.purebilibili.core.util.Logger.d("PortraitDanmaku", " DanmakuView created")
+                            }
+                        },
+                        update = { view ->
+                            if (view.width > 0 && view.height > 0) {
+                                danmakuManager.attachView(view)
+                                com.android.purebilibili.core.util.Logger.d(
+                                    "PortraitDanmaku",
+                                    " DanmakuView update: size=${view.width}x${view.height}"
+                                )
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
                 
                 // 竖屏全屏控件覆盖层
                 PortraitFullscreenOverlay(

@@ -625,8 +625,8 @@ interface BangumiApi {
         @Query("ep_id") epId: Long? = null
     ): ResponseBody
     
-    // 番剧播放地址
-    @GET("pgc/player/web/v2/playurl")
+    // 番剧播放地址 - 使用标准接口
+    @GET("pgc/player/web/playurl")
     suspend fun getBangumiPlayUrl(
         @Query("ep_id") epId: Long,
         @Query("qn") qn: Int = 80,

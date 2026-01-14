@@ -99,6 +99,7 @@ fun VideoPlayerSection(
     // 📱 [新增] 竖屏全屏模式
     isVerticalVideo: Boolean = false,
     onPortraitFullscreen: () -> Unit = {},
+    isPortraitFullscreen: Boolean = false,
     // 📲 [新增] 小窗模式
     // 📲 [新增] 小窗模式
     onPipClick: () -> Unit = {},
@@ -495,7 +496,7 @@ fun VideoPlayerSection(
         
         // 2. DanmakuView (使用 ByteDance DanmakuRenderEngine - 覆盖在 PlayerView 上方)
         android.util.Log.d("VideoPlayerSection", "🔍 DanmakuView check: isInPipMode=$isInPipMode, danmakuEnabled=$danmakuEnabled")
-        if (!isInPipMode && danmakuEnabled) {
+        if (!isInPipMode && danmakuEnabled && !isPortraitFullscreen) {
             android.util.Log.d("VideoPlayerSection", " Conditions met, creating DanmakuView...")
             //  计算状态栏高度
             val statusBarHeightPx = remember(context) {

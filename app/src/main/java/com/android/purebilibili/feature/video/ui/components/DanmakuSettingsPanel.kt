@@ -18,7 +18,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput  // [#6修复] 手势拦截
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -56,30 +57,25 @@ fun DanmakuSettingsPanel(
     onDisplayAreaChange: (Float) -> Unit = {},
     onDismiss: () -> Unit
 ) {
+    // 使用 Box + 手势检测来实现：点击面板外部关闭，面板内部正常交互
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.6f))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { onDismiss() },
+            // 使用 pointerInput 检测点击位置
+            .pointerInput(Unit) {
+                detectTapGestures { 
+                    // 点击背景区域时关闭面板（面板内的点击不会传递到这里）
+                    onDismiss() 
+                }
+            },
         contentAlignment = Alignment.Center
     ) {
         Surface(
             modifier = Modifier
                 .widthIn(min = 300.dp, max = 380.dp)
-                .heightIn(max = 500.dp)  // 限制最大高度
-                // [#6修复] 完全消费触摸事件，防止手势穿透到视频进度条
-                .pointerInput(Unit) {
-                    awaitPointerEventScope {
-                        while (true) {
-                            val event = awaitPointerEvent()
-                            // 消费所有触摸事件
-                            event.changes.forEach { it.consume() }
-                        }
-                    }
-                },
+                .heightIn(max = 480.dp),
+            // Surface 本身就会阻止触摸穿透到背景，无需额外处理
             color = PanelBackground,
             shape = RoundedCornerShape(20.dp),
             tonalElevation = 16.dp,
@@ -87,8 +83,8 @@ fun DanmakuSettingsPanel(
         ) {
             Column(
                 modifier = Modifier
+                    .verticalScroll(rememberScrollState())  // [修复] 先滚动再加 padding，确保可以滚动
                     .padding(24.dp)
-                    .verticalScroll(rememberScrollState())  // 添加滚动支持
             ) {
                 // Header
                 Row(

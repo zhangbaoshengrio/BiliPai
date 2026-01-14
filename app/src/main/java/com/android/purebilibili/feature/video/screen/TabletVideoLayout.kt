@@ -71,6 +71,7 @@ fun TabletVideoLayout(
     onToggleFullscreen: () -> Unit,  // 📺 全屏切换回调
     isInPipMode: Boolean,
     onPipClick: () -> Unit,
+    isPortraitFullscreen: Boolean = false,
 
     // [New] Codec & Audio Params
     currentCodec: String = "hev1", 
@@ -158,6 +159,7 @@ fun TabletVideoLayout(
                         viewPoints = viewPoints,
                         isVerticalVideo = isVerticalVideo,
                         onPortraitFullscreen = { playerState.setPortraitFullscreen(true) },
+                        isPortraitFullscreen = isPortraitFullscreen,
 
                         onPipClick = onPipClick,
                         // [New] Codec & Audio

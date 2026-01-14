@@ -439,6 +439,12 @@ fun FullscreenPlayerOverlay(
                             com.android.purebilibili.core.util.Logger.d("FullscreenDanmaku", " DanmakuView (RenderEngine) created for fullscreen")
                         }
                     },
+                    update = { view ->
+                        if (view.width > 0 && view.height > 0) {
+                            danmakuManager.attachView(view)
+                            com.android.purebilibili.core.util.Logger.d("FullscreenDanmaku", " DanmakuView update: size=${view.width}x${view.height}")
+                        }
+                    },
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -496,7 +502,14 @@ fun FullscreenPlayerOverlay(
                         )
                         
                         //  [新增] 弹幕开关按钮
-                        IconButton(onClick = { danmakuManager.isEnabled = !danmakuManager.isEnabled }) {
+                        IconButton(
+                            onClick = {
+                                val newValue = !danmakuEnabled
+                                danmakuManager.isEnabled = newValue
+                                scope.launch { SettingsManager.setDanmakuEnabled(context, newValue) }
+                                com.android.purebilibili.core.util.Logger.d("FullscreenDanmaku", " Danmaku toggle: $newValue")
+                            }
+                        ) {
                             Icon(
                                 if (danmakuEnabled) CupertinoIcons.Default.TextBubble else CupertinoIcons.Default.TextBubble,
                                 contentDescription = "弹幕开关",
