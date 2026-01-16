@@ -25,6 +25,13 @@
 
 ## 📸 应用预览
 
+<p align="center">
+  <img src="docs/images/screenshot_preview_1.png" alt="预览图 1" height="500">
+  <img src="docs/images/screenshot_preview_2.png" alt="预览图 2" height="500">
+  <img src="docs/images/screenshot_preview_3.png" alt="预览图 3" height="500">
+  <img src="docs/images/screenshot_preview_4.png" alt="预览图 4" height="500">
+  <img src="docs/images/screenshot_preview_5.png" alt="预览图 5" height="500">
+</p>
 ---
 
 ## ✨ 功能亮点
