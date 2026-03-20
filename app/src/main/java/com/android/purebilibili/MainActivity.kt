@@ -1442,6 +1442,7 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         miniPlayerManager.clearUserLeaveHint()
+        miniPlayerManager.clearPlaybackNotificationIfIdleOnResume()
         if (!hasCompletedInitialResume) {
             hasCompletedInitialResume = true
         }

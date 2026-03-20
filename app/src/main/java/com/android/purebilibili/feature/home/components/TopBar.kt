@@ -400,7 +400,7 @@ fun CategoryTabRow(
     isViewportSyncEnabled: Boolean = true
 ) {
     val uiPreset = LocalUiPreset.current
-    val visualTuning = remember { resolveTopTabVisualTuning() }
+    val visualTuning = remember(uiPreset) { resolveTopTabVisualTuning(uiPreset) }
     val primaryColor = MaterialTheme.colorScheme.primary
     val isLightMode = MaterialTheme.colorScheme.surface.luminance() > 0.5f
     val unselectedColor = resolveTopTabUnselectedColor(isLightMode = isLightMode)
@@ -651,13 +651,19 @@ fun CategoryTabRow(
                             liquidGlassTuning = resolvedLiquidGlassTuning,
                             backdrop = indicatorBackdrop,
                             color = if (resolvedLiquidGlassTuning.useNeutralIndicatorTint) {
-                                Color.White.copy(
-                                    alpha = if (isSystemInDarkTheme()) {
-                                        resolvedLiquidGlassTuning.indicatorTintAlpha * 0.68f
-                                    } else {
-                                        resolvedLiquidGlassTuning.indicatorTintAlpha * 0.82f
-                                    }
-                                )
+                                if (uiPreset == UiPreset.IOS) {
+                                    resolveIos26BottomIndicatorGrayColor(isDarkTheme = isSystemInDarkTheme()).copy(
+                                        alpha = resolvedLiquidGlassTuning.indicatorTintAlpha
+                                    )
+                                } else {
+                                    Color.White.copy(
+                                        alpha = if (isSystemInDarkTheme()) {
+                                            resolvedLiquidGlassTuning.indicatorTintAlpha * 0.68f
+                                        } else {
+                                            resolvedLiquidGlassTuning.indicatorTintAlpha * 0.82f
+                                        }
+                                    )
+                                }
                             } else {
                                 MaterialTheme.colorScheme.primary.copy(alpha = resolvedLiquidGlassTuning.indicatorTintAlpha)
                             }
@@ -673,13 +679,19 @@ fun CategoryTabRow(
                             liquidGlassTuning = resolvedLiquidGlassTuning,
                             backdrop = indicatorBackdrop,
                             indicatorColor = if (resolvedLiquidGlassTuning.useNeutralIndicatorTint) {
-                                Color.White.copy(
-                                    alpha = if (isSystemInDarkTheme()) {
-                                        resolvedLiquidGlassTuning.indicatorTintAlpha * 0.68f
-                                    } else {
-                                        resolvedLiquidGlassTuning.indicatorTintAlpha * 0.82f
-                                    }
-                                )
+                                if (uiPreset == UiPreset.IOS) {
+                                    resolveIos26BottomIndicatorGrayColor(isDarkTheme = isSystemInDarkTheme()).copy(
+                                        alpha = resolvedLiquidGlassTuning.indicatorTintAlpha
+                                    )
+                                } else {
+                                    Color.White.copy(
+                                        alpha = if (isSystemInDarkTheme()) {
+                                            resolvedLiquidGlassTuning.indicatorTintAlpha * 0.68f
+                                        } else {
+                                            resolvedLiquidGlassTuning.indicatorTintAlpha * 0.82f
+                                        }
+                                    )
+                                }
                             } else {
                                 MaterialTheme.colorScheme.primary.copy(alpha = resolvedLiquidGlassTuning.indicatorTintAlpha)
                             },
@@ -1061,14 +1073,12 @@ fun CategoryTabItem(
      val textLineHeight = resolveTopTabLabelLineHeightSp(normalizedLabelMode).sp
      val contentMinHeight = resolveTopTabContentMinHeightDp().dp
      
-     // [Updated] Louder Scale Effect
-     val smoothFraction = androidx.compose.animation.core.FastOutSlowInEasing.transform(selectionFraction)
-     val targetScale = if (showIcon && showText) {
-         // 图标+文字模式不放大，避免“选中项视觉下坠”导致看起来不齐。
-         1.0f
-     } else {
-         androidx.compose.ui.util.lerp(1.0f, 1.04f, smoothFraction)
-     }
+     val targetScale = resolveTopTabContentScale(
+         selectionFraction = selectionFraction,
+         showIcon = showIcon,
+         showText = showText,
+         uiPreset = uiPreset
+     )
      
      // Font weight change still triggers relayout, but it's discrete (only happens at 0.6 threshold)
      // This is acceptable as it doesn't happen every frame.

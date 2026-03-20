@@ -197,7 +197,6 @@ fun AppNavigation(
         if (canNav) lastNavigationTime.longValue = currentTime
         canNav
     }
-
     fun navigateToVideoRoute(route: String) {
         // 🔒 防抖检查
         if (!canNavigate()) return

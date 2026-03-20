@@ -9,11 +9,11 @@
 </p>
 
 <p align="center">
-  <sub>最后更新：2026-03-20 · 文档已同步至 v7.0.0 RC2（以 <a href="CHANGELOG.md">CHANGELOG</a> 与源码为准）</sub>
+  <sub>最后更新：2026-03-20 · 文档已同步至 v7.0.0（以 <a href="CHANGELOG.md">CHANGELOG</a> 与源码为准）</sub>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-7.0.0%20RC2-fb7299?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/Version-7.0.0-fb7299?style=flat-square" alt="Version">
   <img src="https://img.shields.io/github/stars/jay3-yy/BiliPai?style=flat-square&color=yellow" alt="Stars">
   <img src="https://img.shields.io/github/forks/jay3-yy/BiliPai?style=flat-square&color=green" alt="Forks">
   <img src="https://img.shields.io/github/last-commit/jay3-yy/BiliPai?style=flat-square&color=purple" alt="Last Commit">
@@ -560,12 +560,12 @@ app/src/main/java/com/android/purebilibili
 
 查看完整更新记录：[CHANGELOG.md](CHANGELOG.md)
 
-### 最近更新 (v7.0.0 RC2 · 2026-03-20)
+### 最近更新 (v7.0.0 · 2026-03-20)
 
-- 🫧 **首页液态玻璃与壳层继续收口**：首页顶部、底栏和标签壳层进一步统一到新的玻璃表面策略，新增 `CLEAR / BALANCED / FROSTED` 三档液态玻璃模式与强度调节，MD3 预设下也会自动避开不合适的玻璃效果。
-- 🔎 **搜索深链与导航补齐**：入口链接现在可以直接解析搜索关键字并带入搜索页，个人页、历史、收藏、稍后再看和设置等顶层导航的落点也更一致。
-- 🎨 **主题强调色与列表对比度更稳定**：引导页、番剧详情、搜索与空间筛选、通用列表等位置统一接入自适应强调色策略，暗色和 AMOLED 场景下的高亮可读性更稳。
-- 🎬 **播放器后台降载更彻底**：后台音频时会禁用视频轨、清空视频 Surface、停止后台轮询并按生命周期收紧状态收集，播放调试面板也补齐了码率、编解码器和解码器信息。
+- 🎨 **双预设与视觉体系完成一轮正式收口**：`iOS / MD3` 双预设、首页顶部/底栏/标签壳层、液态玻璃模式与强度、自适应强调色、Material You 校正，以及应用内字体/缩放/DPI 调节现已整合到同一版正式体验中。
+- 🔎 **导航、入口链接和搜索链路统一**：`b23.tv / bilibili.com / bilibili://`、应用内 WebView、搜索关键字深链、历史/收藏/稍后再看/空间等入口都已接入统一目标解析与路由分发。
+- 🎬 **播放与后台能力明显收敛**：视频画质选择、听视频模式、离线/后台播放、通知栏与系统媒体控制、播放器调试信息、详情页布局与评论交互都做了系统性修复和统一。
+- 🧪 **稳定性优先**：补强了首页、搜索、显示策略、主题色、版本比较、画质链路与后台播放等关键路径测试，并移除了实验性的“视频界面实时模糊”入口。
 
 ### 历史版本
 

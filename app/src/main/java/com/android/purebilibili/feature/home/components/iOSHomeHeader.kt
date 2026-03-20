@@ -293,7 +293,7 @@ internal fun resolveHomeTopSearchToTabsSpacing(uiPreset: UiPreset = UiPreset.IOS
     return if (uiPreset == UiPreset.MD3) 6.dp else 6.dp
 }
 
-internal fun resolveHomeTopContentOverlap(uiPreset: UiPreset = UiPreset.IOS): Dp {
+internal fun resolveHomeTopContinuousSlabOverlap(uiPreset: UiPreset = UiPreset.IOS): Dp {
     return if (uiPreset == UiPreset.MD3) 24.dp else 0.dp
 }
 
@@ -313,7 +313,7 @@ internal fun resolveHomeTopReservedListPadding(
     } else {
         searchBarHeight + resolveHomeTopSearchToTabsSpacing(uiPreset) + tabRowHeight
     }
-    return statusBarHeight + chromeHeight - resolveHomeTopContentOverlap(uiPreset)
+    return statusBarHeight + chromeHeight
 }
 
 internal fun resolveHomeTopBlurContainerColors(
@@ -358,7 +358,7 @@ internal fun resolveHomeTopContinuousSlabHeight(
 ): Dp {
     if (renderMode != HomeTopChromeRenderMode.BLUR) return 0.dp
     return if (uiPreset == UiPreset.MD3) {
-        statusBarHeight + resolveHomeTopContentOverlap(uiPreset)
+        statusBarHeight + resolveHomeTopContinuousSlabOverlap(uiPreset)
     } else {
         statusBarHeight + searchBarHeight + tabRowHeight
     }

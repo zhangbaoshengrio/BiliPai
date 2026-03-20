@@ -168,7 +168,7 @@ class iOSHomeHeaderVisualPolicyTest {
     }
 
     @Test
-    fun `home list top padding grows with unified ios header height`() {
+    fun `home list top padding reserves full unified header height without underlapping md3 tabs`() {
         assertEquals(
             175.dp,
             resolveHomeTopReservedListPadding(
@@ -179,7 +179,7 @@ class iOSHomeHeaderVisualPolicyTest {
             )
         )
         assertEquals(
-            147.dp,
+            171.dp,
             resolveHomeTopReservedListPadding(
                 statusBarHeight = 44.dp,
                 searchBarHeight = 52.dp,

@@ -185,6 +185,14 @@ internal fun normalizeDanmakuDisplayArea(value: Float): Float {
     return supportedOptions.minByOrNull { abs(it - normalized) } ?: 0.5f
 }
 
+internal const val DEFAULT_HOME_REFRESH_COUNT = 20
+internal const val MIN_HOME_REFRESH_COUNT = 10
+internal const val MAX_HOME_REFRESH_COUNT = 30
+
+internal fun normalizeHomeRefreshCount(count: Int): Int {
+    return count.coerceIn(MIN_HOME_REFRESH_COUNT, MAX_HOME_REFRESH_COUNT)
+}
+
 data class HomeSettings(
     val displayMode: Int = 0,              // 展示模式 (0=网格, 1=故事卡片)
     val isBottomBarFloating: Boolean = true,
@@ -201,6 +209,7 @@ data class HomeSettings(
     val gridColumnCount: Int = 0, // [New] 网格列数 (0=自动, 1-6=固定)
     val cardAnimationEnabled: Boolean = false,    //  卡片进场动画（默认关闭）
     val cardTransitionEnabled: Boolean = true,    //  卡片过渡动画（默认开启）
+    val videoTransitionRealtimeBlurEnabled: Boolean = true, // 视频转场实时模糊（默认开启）
     val predictiveBackAnimationEnabled: Boolean = true, // [New] 预测性返回手势支持（默认开启）
     val smartVisualGuardEnabled: Boolean = false, // [Retired] 智能流畅优先已下线，固定关闭
     val compactVideoStatsOnCover: Boolean = true, //  播放量/评论数显示在封面底部（默认开启）
@@ -503,6 +512,8 @@ object SettingsManager {
     private val KEY_CARD_ANIMATION_ENABLED = booleanPreferencesKey("card_animation_enabled")
     //  [新增] 卡片过渡动画开关
     private val KEY_CARD_TRANSITION_ENABLED = booleanPreferencesKey("card_transition_enabled")
+    private val KEY_VIDEO_TRANSITION_REALTIME_BLUR_ENABLED =
+        booleanPreferencesKey("video_transition_realtime_blur_enabled")
     // [New] 预测性返回手势支持开关
     private val KEY_PREDICTIVE_BACK_ANIMATION_ENABLED = booleanPreferencesKey("predictive_back_animation_enabled")
     // [New] 运行时视觉降级守卫开关
@@ -565,6 +576,8 @@ object SettingsManager {
             gridColumnCount = preferences[KEY_GRID_COLUMN_COUNT] ?: 0,
             cardAnimationEnabled = preferences[KEY_CARD_ANIMATION_ENABLED] ?: false,
             cardTransitionEnabled = preferences[KEY_CARD_TRANSITION_ENABLED] ?: true,
+            videoTransitionRealtimeBlurEnabled =
+                preferences[KEY_VIDEO_TRANSITION_REALTIME_BLUR_ENABLED] ?: true,
             predictiveBackAnimationEnabled = preferences[KEY_PREDICTIVE_BACK_ANIMATION_ENABLED] ?: true,
             smartVisualGuardEnabled = false,
             compactVideoStatsOnCover = preferences[KEY_COMPACT_VIDEO_STATS_ON_COVER] ?: true,
@@ -1097,6 +1110,16 @@ object SettingsManager {
 
     suspend fun setCardTransitionEnabled(context: Context, value: Boolean) {
         context.settingsDataStore.edit { preferences -> preferences[KEY_CARD_TRANSITION_ENABLED] = value }
+    }
+
+    fun getVideoTransitionRealtimeBlurEnabled(context: Context): Flow<Boolean> =
+        context.settingsDataStore.data
+            .map { preferences -> preferences[KEY_VIDEO_TRANSITION_REALTIME_BLUR_ENABLED] ?: true }
+
+    suspend fun setVideoTransitionRealtimeBlurEnabled(context: Context, value: Boolean) {
+        context.settingsDataStore.edit { preferences ->
+            preferences[KEY_VIDEO_TRANSITION_REALTIME_BLUR_ENABLED] = value
+        }
     }
 
     fun getPredictiveBackAnimationEnabled(context: Context): Flow<Boolean> = context.settingsDataStore.data
@@ -1799,6 +1822,7 @@ object SettingsManager {
     
     private val KEY_FEED_API_TYPE = intPreferencesKey("feed_api_type")
     private val KEY_INCREMENTAL_TIMELINE_REFRESH = booleanPreferencesKey("incremental_timeline_refresh")
+    private val KEY_HOME_REFRESH_COUNT = intPreferencesKey("home_refresh_count")
     
     /**
      *  推荐流 API 类型
@@ -1844,6 +1868,28 @@ object SettingsManager {
         context.settingsDataStore.edit { preferences ->
             preferences[KEY_INCREMENTAL_TIMELINE_REFRESH] = value
         }
+    }
+
+    fun getHomeRefreshCount(context: Context): Flow<Int> = context.settingsDataStore.data
+        .map { preferences ->
+            normalizeHomeRefreshCount(preferences[KEY_HOME_REFRESH_COUNT] ?: DEFAULT_HOME_REFRESH_COUNT)
+        }
+
+    suspend fun setHomeRefreshCount(context: Context, count: Int) {
+        val normalized = normalizeHomeRefreshCount(count)
+        context.settingsDataStore.edit { preferences ->
+            preferences[KEY_HOME_REFRESH_COUNT] = normalized
+        }
+        context.getSharedPreferences("feed_api", Context.MODE_PRIVATE)
+            .edit()
+            .putInt("home_refresh_count", normalized)
+            .apply()
+    }
+
+    fun getHomeRefreshCountSync(context: Context): Int {
+        val value = context.getSharedPreferences("feed_api", Context.MODE_PRIVATE)
+            .getInt("home_refresh_count", DEFAULT_HOME_REFRESH_COUNT)
+        return normalizeHomeRefreshCount(value)
     }
     
     // ==========  实验性功能 ==========
@@ -3019,6 +3065,10 @@ object SettingsManager {
             IntShareablePreferenceDefinition(KEY_GRID_COLUMN_COUNT, SettingsShareSection.APPEARANCE),
             BooleanShareablePreferenceDefinition(KEY_CARD_ANIMATION_ENABLED, SettingsShareSection.APPEARANCE),
             BooleanShareablePreferenceDefinition(KEY_CARD_TRANSITION_ENABLED, SettingsShareSection.APPEARANCE),
+            BooleanShareablePreferenceDefinition(
+                KEY_VIDEO_TRANSITION_REALTIME_BLUR_ENABLED,
+                SettingsShareSection.APPEARANCE
+            ),
             BooleanShareablePreferenceDefinition(KEY_PREDICTIVE_BACK_ANIMATION_ENABLED, SettingsShareSection.APPEARANCE),
             BooleanShareablePreferenceDefinition(KEY_COMPACT_VIDEO_STATS_ON_COVER, SettingsShareSection.APPEARANCE),
 
@@ -3098,7 +3148,8 @@ object SettingsManager {
             BooleanShareablePreferenceDefinition(KEY_TABLET_NAVIGATION_MODE, SettingsShareSection.NAVIGATION),
             IntShareablePreferenceDefinition(KEY_DYNAMIC_PAGE_LAYOUT_DIRECTION, SettingsShareSection.NAVIGATION),
             IntShareablePreferenceDefinition(KEY_FEED_API_TYPE, SettingsShareSection.NAVIGATION),
-            BooleanShareablePreferenceDefinition(KEY_INCREMENTAL_TIMELINE_REFRESH, SettingsShareSection.NAVIGATION)
+            BooleanShareablePreferenceDefinition(KEY_INCREMENTAL_TIMELINE_REFRESH, SettingsShareSection.NAVIGATION),
+            IntShareablePreferenceDefinition(KEY_HOME_REFRESH_COUNT, SettingsShareSection.NAVIGATION)
         )
     }
 

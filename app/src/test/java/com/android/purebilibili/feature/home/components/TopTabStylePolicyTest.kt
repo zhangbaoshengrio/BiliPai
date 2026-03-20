@@ -112,12 +112,39 @@ class TopTabStylePolicyTest {
     }
 
     @Test
-    fun `balanced visual tuning shrinks top indicator footprint`() {
-        val tuning = resolveTopTabVisualTuning()
+    fun `ios top tab tuning uses bottom bar sized indicator footprint`() {
+        val tuning = resolveTopTabVisualTuning(UiPreset.IOS)
 
-        assertTrue(tuning.nonFloatingIndicatorHeightDp < 34f)
-        assertTrue(tuning.nonFloatingIndicatorWidthRatio < 0.78f)
-        assertTrue(tuning.floatingIndicatorHeightDp < 52f)
+        assertEquals(44f, tuning.nonFloatingIndicatorHeightDp, 0.001f)
+        assertEquals(22f, tuning.nonFloatingIndicatorCornerDp, 0.001f)
+        assertEquals(1.34f, tuning.nonFloatingIndicatorWidthRatio, 0.001f)
+        assertEquals(90f, tuning.nonFloatingIndicatorMinWidthDp, 0.001f)
+        assertEquals(0f, tuning.nonFloatingIndicatorHorizontalInsetDp, 0.001f)
+        assertEquals(46f, tuning.floatingIndicatorHeightDp, 0.001f)
+    }
+
+    @Test
+    fun `ios top tab keeps icon plus text scale stable inside large capsule`() {
+        assertEquals(
+            1f,
+            resolveTopTabContentScale(
+                selectionFraction = 1f,
+                showIcon = true,
+                showText = true,
+                uiPreset = UiPreset.IOS
+            ),
+            0.001f
+        )
+        assertEquals(
+            1.03f,
+            resolveTopTabContentScale(
+                selectionFraction = 1f,
+                showIcon = true,
+                showText = false,
+                uiPreset = UiPreset.IOS
+            ),
+            0.001f
+        )
     }
 
     @Test

@@ -31,6 +31,7 @@ class HomeSettingsMappingPolicyTest {
         assertEquals(0.52f, result.liquidGlassStrength)
         assertFalse(result.cardAnimationEnabled)
         assertTrue(result.cardTransitionEnabled)
+        assertTrue(result.videoTransitionRealtimeBlurEnabled)
         assertTrue(result.predictiveBackAnimationEnabled)
         assertFalse(result.smartVisualGuardEnabled)
         assertTrue(result.compactVideoStatsOnCover)
@@ -53,6 +54,7 @@ class HomeSettingsMappingPolicyTest {
             intPreferencesKey("grid_column_count") to 4,
             booleanPreferencesKey("card_animation_enabled") to true,
             booleanPreferencesKey("card_transition_enabled") to false,
+            booleanPreferencesKey("video_transition_realtime_blur_enabled") to false,
             booleanPreferencesKey("predictive_back_animation_enabled") to false,
             booleanPreferencesKey("smart_visual_guard_enabled") to false,
             booleanPreferencesKey("compact_video_stats_on_cover") to false,
@@ -77,6 +79,7 @@ class HomeSettingsMappingPolicyTest {
         assertEquals(4, result.gridColumnCount)
         assertTrue(result.cardAnimationEnabled)
         assertFalse(result.cardTransitionEnabled)
+        assertFalse(result.videoTransitionRealtimeBlurEnabled)
         assertFalse(result.predictiveBackAnimationEnabled)
         assertFalse(result.smartVisualGuardEnabled)
         assertFalse(result.compactVideoStatsOnCover)
@@ -126,5 +129,14 @@ class HomeSettingsMappingPolicyTest {
         assertEquals(LiquidGlassStyle.SIMP_MUSIC, result.liquidGlassStyle)
         assertEquals(LiquidGlassMode.BALANCED, result.liquidGlassMode)
         assertEquals(0.31f, result.liquidGlassStrength)
+    }
+
+    @Test
+    fun normalizeHomeRefreshCount_clampsToSupportedRange() {
+        assertEquals(10, normalizeHomeRefreshCount(1))
+        assertEquals(30, normalizeHomeRefreshCount(30))
+        assertEquals(20, DEFAULT_HOME_REFRESH_COUNT)
+        assertEquals(30, MAX_HOME_REFRESH_COUNT)
+        assertEquals(30, normalizeHomeRefreshCount(999))
     }
 }

@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
-import com.kyant.backdrop.backdrops.LayerBackdrop
+import com.kyant.backdrop.Backdrop
 import com.kyant.backdrop.drawBackdrop
 import com.kyant.backdrop.effects.lens
 import com.kyant.backdrop.effects.blur
@@ -72,9 +72,12 @@ fun LiquidIndicator(
     lensIntensityBoost: Float = 1f,
     edgeWarpBoost: Float = 1f,
     chromaticBoost: Float = 1f,
+    lensAmountScale: Float = 1f,
+    lensHeightScale: Float = 1f,
+    forceChromaticAberration: Boolean = false,
     liquidGlassStyle: LiquidGlassStyle = LiquidGlassStyle.CLASSIC, // [New]
     liquidGlassTuning: LiquidGlassTuning? = null,
-    backdrop: LayerBackdrop? = null // [New] Backdrop for refraction
+    backdrop: Backdrop? = null // [New] Backdrop for refraction
 ) {
     val density = LocalDensity.current
     val resolvedTuning = remember(liquidGlassStyle, liquidGlassTuning) {
@@ -181,11 +184,13 @@ fun LiquidIndicator(
                                     shape = { shape },
                                     effects = {
                                         lens(
-                                            refractionHeight = lensProfile.refractionHeight,
-                                            refractionAmount = lensProfile.refractionAmount,
+                                            refractionHeight = lensProfile.refractionHeight * lensHeightScale.coerceIn(0.1f, 1f),
+                                            refractionAmount = lensProfile.refractionAmount * lensAmountScale.coerceIn(0.1f, 1f),
                                             depthEffect = styleTuning.depthEffectEnabled,
-                                            chromaticAberration = styleTuning.allowChromaticAberration &&
-                                                lensProfile.aberrationStrength > 0.01f
+                                            chromaticAberration = forceChromaticAberration || (
+                                                styleTuning.allowChromaticAberration &&
+                                                    lensProfile.aberrationStrength > 0.01f
+                                                )
                                         )
                                     },
                                     onDrawSurface = {
@@ -241,7 +246,7 @@ fun SimpleLiquidIndicator(
     isLiquidGlassEnabled: Boolean = false,
     liquidGlassStyle: LiquidGlassStyle = LiquidGlassStyle.CLASSIC,
     liquidGlassTuning: LiquidGlassTuning? = null,
-    backdrop: LayerBackdrop? = null,
+    backdrop: Backdrop? = null,
     indicatorColor: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
     indicatorHeight: Dp = 34.dp,
     cornerRadius: Dp = 16.dp,

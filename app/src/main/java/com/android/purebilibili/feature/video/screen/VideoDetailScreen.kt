@@ -1081,6 +1081,7 @@ fun VideoDetailScreen(
     var portraitSyncSnapshotCid by remember { mutableLongStateOf(0L) }
     var portraitSyncSnapshotPositionMs by remember { mutableLongStateOf(0L) }
     var hasPendingPortraitSync by remember { mutableStateOf(false) }
+    var hasDeferredPortraitRestoreAfterExternalNavigation by rememberSaveable { mutableStateOf(false) }
     var pendingMainReloadBvidAfterPortrait by rememberSaveable { mutableStateOf<String?>(null) }
     var portraitPendingSelectionBvid by rememberSaveable { mutableStateOf<String?>(null) }
     var currentBvidCid by rememberSaveable { mutableLongStateOf(0L) }
@@ -1334,6 +1335,18 @@ fun VideoDetailScreen(
         }
     }
 
+    fun applyPortraitExitRestore() {
+        val target = com.android.purebilibili.feature.video.ui.pager.resolvePortraitExitRestoreTarget(
+            pendingMainReloadBvidAfterPortrait = pendingMainReloadBvidAfterPortrait,
+            portraitPendingSelectionBvid = portraitPendingSelectionBvid,
+            portraitSyncSnapshotBvid = portraitSyncSnapshotBvid,
+            portraitSyncSnapshotCid = portraitSyncSnapshotCid,
+            currentBvidCid = currentBvidCid
+        ) ?: return
+        currentBvid = target.bvid
+        currentBvidCid = target.cid
+    }
+
     
     
     // 同步状态到 playerState (可选，用于日志或内部逻辑)
@@ -1357,20 +1370,47 @@ fun VideoDetailScreen(
                  // 退出时恢复音量 (不自动播放，等待用户操作或 onResume)
                  playerState.player.volume = 1f
              }
-            val targetBvid = pendingMainReloadBvidAfterPortrait
-                ?: portraitPendingSelectionBvid
-                ?: portraitSyncSnapshotBvid
-            val targetCid = if (targetBvid == portraitSyncSnapshotBvid) {
-                portraitSyncSnapshotCid
-            } else {
-                currentBvidCid
+            if (!com.android.purebilibili.feature.video.ui.pager
+                    .shouldApplyDeferredPortraitRestoreOnResume(
+                        hasDeferredRestore = hasDeferredPortraitRestoreAfterExternalNavigation,
+                        isPortraitFullscreen = isPortraitFullscreen
+                    )
+            ) {
+                applyPortraitExitRestore()
+                pendingMainReloadBvidAfterPortrait = null
+                portraitPendingSelectionBvid = null
             }
-            if (!targetBvid.isNullOrBlank()) {
-                currentBvid = targetBvid
-                currentBvidCid = targetCid
+        }
+    }
+
+    DisposableEffect(
+        lifecycleOwner,
+        isPortraitFullscreen,
+        hasDeferredPortraitRestoreAfterExternalNavigation,
+        pendingMainReloadBvidAfterPortrait,
+        portraitPendingSelectionBvid,
+        portraitSyncSnapshotBvid,
+        portraitSyncSnapshotCid,
+        currentBvidCid
+    ) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event != androidx.lifecycle.Lifecycle.Event.ON_RESUME) return@LifecycleEventObserver
+            if (!com.android.purebilibili.feature.video.ui.pager
+                    .shouldApplyDeferredPortraitRestoreOnResume(
+                        hasDeferredRestore = hasDeferredPortraitRestoreAfterExternalNavigation,
+                        isPortraitFullscreen = isPortraitFullscreen
+                    )
+            ) {
+                return@LifecycleEventObserver
             }
+            applyPortraitExitRestore()
             pendingMainReloadBvidAfterPortrait = null
             portraitPendingSelectionBvid = null
+            hasDeferredPortraitRestoreAfterExternalNavigation = false
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 
@@ -2552,6 +2592,12 @@ fun VideoDetailScreen(
                     }
                 },
                 onSearchClick = {
+                    hasDeferredPortraitRestoreAfterExternalNavigation =
+                        com.android.purebilibili.feature.video.ui.pager
+                            .shouldDeferPortraitRestoreUntilForegroundResume(
+                                isPortraitFullscreen = isPortraitFullscreen,
+                                isExternalNavigation = true
+                            )
                     if (com.android.purebilibili.feature.video.ui.pager
                             .shouldExitPortraitForExternalNavigation(isPortraitFullscreen)
                     ) {
@@ -2573,6 +2619,12 @@ fun VideoDetailScreen(
                         }
                         pendingMainReloadBvidAfterPortrait = anchorBvid
                     }
+                    hasDeferredPortraitRestoreAfterExternalNavigation =
+                        com.android.purebilibili.feature.video.ui.pager
+                            .shouldDeferPortraitRestoreUntilForegroundResume(
+                                isPortraitFullscreen = isPortraitFullscreen,
+                                isExternalNavigation = true
+                            )
                     if (com.android.purebilibili.feature.video.ui.pager
                             .shouldExitPortraitForUserSpaceNavigation(isPortraitFullscreen)
                     ) {

@@ -5,11 +5,11 @@
 </p>
 
 <p align="center">
-  <sub>Last updated: 2026-03-20 · Synced to v7.0.0 RC2 (source of truth: <a href="CHANGELOG.md">CHANGELOG</a> + code)</sub>
+  <sub>Last updated: 2026-03-20 · Synced to v7.0.0 (source of truth: <a href="CHANGELOG.md">CHANGELOG</a> + code)</sub>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-7.0.0%20RC2-fb7299?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/Version-7.0.0-fb7299?style=flat-square" alt="Version">
   <img src="https://img.shields.io/github/stars/jay3-yy/BiliPai?style=flat-square&color=yellow" alt="Stars">
   <img src="https://img.shields.io/github/forks/jay3-yy/BiliPai?style=flat-square&color=green" alt="Forks">
   <img src="https://img.shields.io/github/last-commit/jay3-yy/BiliPai?style=flat-square&color=purple" alt="Last Commit">
@@ -405,12 +405,12 @@ A lightweight plugin format requiring **no coding**, just a simple JSON file to 
 
 See full changelog: [CHANGELOG.md](CHANGELOG.md)
 
-### Latest (v7.0.0 RC2 · 2026-03-20)
+### Latest (v7.0.0 · 2026-03-20)
 
-- 🫧 **Home liquid glass and chrome were tightened further**: the home top chrome, bottom bar, and tab shell now share a unified glass surface path, with new `CLEAR / BALANCED / FROSTED` liquid-glass modes plus strength control, while MD3 automatically avoids incompatible glass rendering.
-- 🔎 **Search deep links and top-level navigation were completed**: inbound links can now resolve search keywords directly into the in-app search screen, and routes for profile, history, favorites, watch later, and settings land more consistently.
-- 🎨 **Accent colors and list contrast are more stable**: onboarding, bangumi details, selection chips, and common lists now use adaptive accent policies that keep highlighted surfaces readable on dark and AMOLED-heavy themes.
-- 🎬 **Background playback sheds more UI and video overhead**: audio-only background mode now disables the video track, clears the video surface, stops background polling, and ties more state collection to lifecycle, while the debug panel shows richer bitrate/codec/decoder details.
+- 🎨 **A full visual pass landed for the official 7.0.0 release**: `iOS / MD3` presets, home chrome, liquid-glass modes and strength, adaptive accents, Material You fixes, and in-app font/scale/DPI controls are now part of one consolidated release.
+- 🔎 **Navigation and inbound routing are now unified**: `b23.tv / bilibili.com / bilibili://`, in-app WebView links, search deep links, and top-level entries such as history, favorites, watch later, and space all share the same target-resolution path.
+- 🎬 **Playback and background behavior are substantially more stable**: quality switching, audio mode, offline/background playback, notification/system media controls, richer debug info, and multiple detail-page interaction issues were cleaned up across the release cycle.
+- 🧪 **The release favors stability over experiments**: key policy tests were expanded across home/search/display/theme/player/update flows, and the experimental “video interface realtime blur” entry was removed.
 
 ---
 

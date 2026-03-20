@@ -527,6 +527,60 @@ class BackgroundPlaybackPolicyTest {
     }
 
     @Test
+    fun playbackNotificationVisibleOnlyWhilePlaybackIsActuallyActive() {
+        assertTrue(
+            shouldKeepPlaybackNotificationVisible(
+                isActive = true,
+                title = "测试视频",
+                isPlaying = true
+            )
+        )
+        assertFalse(
+            shouldKeepPlaybackNotificationVisible(
+                isActive = true,
+                title = "测试视频",
+                isPlaying = false
+            )
+        )
+        assertFalse(
+            shouldKeepPlaybackNotificationVisible(
+                isActive = false,
+                title = "测试视频",
+                isPlaying = true
+            )
+        )
+        assertFalse(
+            shouldKeepPlaybackNotificationVisible(
+                isActive = true,
+                title = "",
+                isPlaying = true
+            )
+        )
+    }
+
+    @Test
+    fun appResumeShouldClearStalePlaybackNotificationWhenIdle() {
+        assertTrue(
+            shouldClearStalePlaybackNotificationOnAppResume(
+                isActive = false,
+                playerIsPlaying = false
+            )
+        )
+        assertTrue(
+            shouldClearStalePlaybackNotificationOnAppResume(
+                isActive = true,
+                playerIsPlaying = false
+            )
+        )
+        assertFalse(
+            shouldClearStalePlaybackNotificationOnAppResume(
+                isActive = true,
+                playerIsPlaying = true
+            )
+        )
+    }
+
+    @Test
     fun metadataCoverUrlShouldFallbackToCachedValueWhenIncomingCoverEmpty() {
         assertEquals(
             "https://example.com/cached.jpg",

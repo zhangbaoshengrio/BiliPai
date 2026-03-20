@@ -187,6 +187,21 @@ internal fun shouldRefreshNotificationOnPlaybackStateChange(
     return isActive && title.isNotBlank()
 }
 
+internal fun shouldKeepPlaybackNotificationVisible(
+    isActive: Boolean,
+    title: String,
+    isPlaying: Boolean
+): Boolean {
+    return isActive && title.isNotBlank() && isPlaying
+}
+
+internal fun shouldClearStalePlaybackNotificationOnAppResume(
+    isActive: Boolean,
+    playerIsPlaying: Boolean
+): Boolean {
+    return !isActive || !playerIsPlaying
+}
+
 internal fun resolveEffectiveNotificationCoverUrl(
     incomingCoverUrl: String,
     cachedCoverUrl: String
@@ -972,6 +987,18 @@ class MiniPlayerManager private constructor(private val context: Context) :
             playerIsPlaying = currentPlayer.isPlaying,
             cachedIsPlaying = isPlaying
         )
+    }
+
+    fun clearPlaybackNotificationIfIdleOnResume() {
+        if (!shouldClearStalePlaybackNotificationOnAppResume(
+                isActive = isActive,
+                playerIsPlaying = player?.isPlaying == true
+            )
+        ) {
+            return
+        }
+        playbackServiceRequested = false
+        clearPlaybackNotificationArtifacts()
     }
     
     /**
@@ -1858,6 +1885,16 @@ class MiniPlayerManager private constructor(private val context: Context) :
             cachedIsPlaying = isPlaying
         )
         isPlaying = notificationIsPlaying
+        if (!shouldKeepPlaybackNotificationVisible(
+                isActive = isActive,
+                title = title,
+                isPlaying = notificationIsPlaying
+            )
+        ) {
+            playbackServiceRequested = false
+            clearPlaybackNotificationArtifacts()
+            return
+        }
         val effectiveArtworkBitmap = resolveEffectiveNotificationArtwork(
             incomingArtwork = bitmap,
             cachedArtwork = cachedArtworkBitmap

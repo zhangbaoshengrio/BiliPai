@@ -369,7 +369,6 @@ fun HomeScreen(
     
     var showEasterEggDialog by remember { mutableStateOf(false) }
     var refreshDeltaTipText by remember { mutableStateOf<String?>(null) }
-    var dividerRevealRefreshKey by rememberSaveable { mutableLongStateOf(0L) }
     
     //  [彩蛋] 下拉刷新成功后显示趣味提示（仅在开关开启时）
     LaunchedEffect(state.refreshKey, homeSettings.easterEggEnabled) {
@@ -408,8 +407,6 @@ fun HomeScreen(
             }
         }
         refreshDeltaTipText = if (count > 0) "新增 $count 条内容" else "暂无新内容"
-        // 分割线需等待用户发生下滑后再展示
-        if (count > 0) dividerRevealRefreshKey = 0L
         delay(2200)
         refreshDeltaTipText = null
         viewModel.markRefreshNewItemsHandled(refreshKey)
@@ -425,7 +422,7 @@ fun HomeScreen(
         if (state.currentCategory != HomeCategory.RECOMMEND) return@LaunchedEffect
         if ((state.refreshNewItemsCount ?: 0) <= 0) return@LaunchedEffect
         val targetKey = state.refreshNewItemsKey
-        if (targetKey <= 0L || dividerRevealRefreshKey == targetKey) return@LaunchedEffect
+        if (targetKey <= 0L || state.recommendOldContentRevealKey == targetKey) return@LaunchedEffect
 
         val anchorBvid = state.recommendOldContentAnchorBvid ?: return@LaunchedEffect
         val recommendVideos = state.categoryStates[HomeCategory.RECOMMEND]?.videos ?: return@LaunchedEffect
@@ -439,7 +436,7 @@ fun HomeScreen(
             val reachedByIndex = recommendState.firstVisibleItemIndex >= anchorIndex
             reachedByVisible || reachedByIndex
         }.first { it }
-        dividerRevealRefreshKey = targetKey
+        viewModel.markRecommendOldContentDividerRevealed(targetKey)
     }
     
     //  [彩蛋] 关闭确认对话框
@@ -1189,19 +1186,27 @@ fun HomeScreen(
                                      compactStatsOnCover = homeSettings.compactVideoStatsOnCover,
                                      showCoverGlassBadges = homeSettings.showHomeCoverGlassBadges,
                                      showInfoGlassBadges = homeSettings.showHomeInfoGlassBadges,
-                                     oldContentAnchorBvid = if (category == HomeCategory.RECOMMEND &&
-                                         dividerRevealRefreshKey == state.refreshNewItemsKey
+                                     oldContentAnchorBvid = if (shouldShowRecommendOldContentDivider(
+                                             currentCategory = category,
+                                             refreshNewItemsKey = state.refreshNewItemsKey,
+                                             revealedRefreshKey = state.recommendOldContentRevealKey,
+                                             anchorBvid = state.recommendOldContentAnchorBvid,
+                                             oldContentStartIndex = state.recommendOldContentStartIndex
+                                         )
                                      ) {
                                          state.recommendOldContentAnchorBvid
                                      } else {
                                          null
                                      },
-                                     oldContentStartIndex = if (category == HomeCategory.RECOMMEND) {
-                                         if (dividerRevealRefreshKey == state.refreshNewItemsKey) {
-                                             state.recommendOldContentStartIndex
-                                         } else {
-                                             null
-                                         }
+                                     oldContentStartIndex = if (shouldShowRecommendOldContentDivider(
+                                             currentCategory = category,
+                                             refreshNewItemsKey = state.refreshNewItemsKey,
+                                             revealedRefreshKey = state.recommendOldContentRevealKey,
+                                             anchorBvid = state.recommendOldContentAnchorBvid,
+                                             oldContentStartIndex = state.recommendOldContentStartIndex
+                                         )
+                                     ) {
+                                         state.recommendOldContentStartIndex
                                      } else {
                                          null
                                      },
