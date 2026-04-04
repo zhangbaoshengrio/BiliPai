@@ -8,6 +8,13 @@
   <strong>原生、纯净、可扩展 —— 重新定义你的 B 站体验</strong>
 </p>
 
+> **本仓库是 [jay3-yy/BiliPai](https://github.com/jay3-yy/BiliPai) 的修改版。**
+> 原项目地址：https://github.com/jay3-yy/BiliPai
+>
+> **改动内容：** 降低 ExoPlayer seek 后重新缓冲的等待时间，修复双击左/右跳转后出现短暂暂停（视频卡住）的问题。
+> - WiFi：`bufferForPlaybackAfterRebufferMs` 1800ms → 500ms
+> - 移动网络：3000ms → 800ms
+
 <p align="center">
   <sub>最后更新：2026-04-04 · 文档已同步至 v7.4.1（以 <a href="CHANGELOG.md">CHANGELOG</a> 与源码为准）</sub>
 </p>
