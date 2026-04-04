@@ -77,15 +77,15 @@ internal fun resolvePlayerBufferPolicy(isOnWifi: Boolean): PlayerBufferPolicy {
         PlayerBufferPolicy(
             minBufferMs = 10000,
             maxBufferMs = 40000,
-            bufferForPlaybackMs = 900,
-            bufferForPlaybackAfterRebufferMs = 1800
+            bufferForPlaybackMs = 500,
+            bufferForPlaybackAfterRebufferMs = 500
         )
     } else {
         PlayerBufferPolicy(
             minBufferMs = 15000,
             maxBufferMs = 50000,
-            bufferForPlaybackMs = 1600,
-            bufferForPlaybackAfterRebufferMs = 3000
+            bufferForPlaybackMs = 800,
+            bufferForPlaybackAfterRebufferMs = 800
         )
     }
 }
