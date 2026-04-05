@@ -1185,6 +1185,11 @@ fun VideoPlayerSection(
     //  [新增] 双击跳转视觉反馈状态
     var seekFeedbackText by remember { mutableStateOf<String?>(null) }
     var seekFeedbackVisible by remember { mutableStateOf(false) }
+    // 参考 PiliPlus：双击累加跳转，400ms 内连续双击可叠加秒数
+    var seekFeedbackRevision by remember { mutableIntStateOf(0) }
+    var accumulatedSeekMs by remember { mutableLongStateOf(0L) }
+    var seekAccumDirection by remember { mutableIntStateOf(0) } // -1=后退, 0=空, 1=快进
+    val seekAccumJob = remember { arrayOfNulls<kotlinx.coroutines.Job>(1) }
     
     //  [新增] 长按倍速设置和状态
     val longPressSpeed = playerInteractionSettings.longPressSpeed
@@ -2026,42 +2031,60 @@ fun VideoPlayerSection(
                     onDoubleTap = { offset ->
                         // 🔒 锁定时禁用双击
                         if (isScreenLocked) return@detectTapGestures
-                        
+
                         val screenWidth = size.width
                         val player = playerState.player
-                        
-                        //  [新增] 读取双击跳转开关
-                        // 注意：这里 directly accessing the state value captured in the closure
-                        // We need to ensure we have access to the latest value. 
-                        // Since `doubleTapSeekEnabled` is a state, we can read it here.
-                        
-                        // 逻辑：如果开启跳转 -> 以前的逻辑 (两侧跳转，中间暂停)
-                        //      如果关闭跳转 -> 全屏双击均为暂停/播放 (解决长屏按不到暂停的问题)
-                        
+
                         if (doubleTapSeekEnabled) {
                             when {
-                                // 右侧 1/3：快进
+                                // 右侧 1/3：快进（参考 PiliPlus：400ms 内连续双击累加秒数）
                                 offset.x > screenWidth * 2 / 3 -> {
-                                    val seekMs = seekForwardSeconds * 1000L
-                                    val newPos = (player.currentPosition + seekMs).coerceAtMost(player.duration.coerceAtLeast(0L))
-                                    seekPlayerFromUserAction(player, newPos)
-                                    danmakuManager.seekTo(newPos)
-                                    seekFeedbackText = "+${seekForwardSeconds}s"
+                                    if (seekAccumDirection != 1) {
+                                        accumulatedSeekMs = 0L
+                                        seekAccumDirection = 1
+                                    }
+                                    accumulatedSeekMs += seekForwardSeconds * 1000L
+                                    seekFeedbackText = "+${accumulatedSeekMs / 1000}s"
                                     seekFeedbackVisible = true
-                                    com.android.purebilibili.core.util.Logger.d("VideoPlayerSection") {
-                                        "⏩ DoubleTap right: +${seekForwardSeconds}s"
+                                    seekFeedbackRevision++
+                                    val capturedAccMs = accumulatedSeekMs
+                                    val capturedPos = player.currentPosition
+                                    seekAccumJob[0]?.cancel()
+                                    seekAccumJob[0] = settingsScope.launch {
+                                        kotlinx.coroutines.delay(400)
+                                        val newPos = (capturedPos + capturedAccMs).coerceAtMost(player.duration.coerceAtLeast(0L))
+                                        seekPlayerFromUserAction(player, newPos)
+                                        danmakuManager.seekTo(newPos)
+                                        accumulatedSeekMs = 0L
+                                        seekAccumDirection = 0
+                                        com.android.purebilibili.core.util.Logger.d("VideoPlayerSection") {
+                                            "⏩ DoubleTap right committed: +${capturedAccMs / 1000}s"
+                                        }
                                     }
                                 }
-                                // 左侧 1/3：后退
+                                // 左侧 1/3：后退（参考 PiliPlus：400ms 内连续双击累加秒数）
                                 offset.x < screenWidth / 3 -> {
-                                    val seekMs = seekBackwardSeconds * 1000L
-                                    val newPos = (player.currentPosition - seekMs).coerceAtLeast(0L)
-                                    seekPlayerFromUserAction(player, newPos)
-                                    danmakuManager.seekTo(newPos)
-                                    seekFeedbackText = "-${seekBackwardSeconds}s"
+                                    if (seekAccumDirection != -1) {
+                                        accumulatedSeekMs = 0L
+                                        seekAccumDirection = -1
+                                    }
+                                    accumulatedSeekMs += seekBackwardSeconds * 1000L
+                                    seekFeedbackText = "-${accumulatedSeekMs / 1000}s"
                                     seekFeedbackVisible = true
-                                    com.android.purebilibili.core.util.Logger.d("VideoPlayerSection") {
-                                        "⏪ DoubleTap left: -${seekBackwardSeconds}s"
+                                    seekFeedbackRevision++
+                                    val capturedAccMs = accumulatedSeekMs
+                                    val capturedPos = player.currentPosition
+                                    seekAccumJob[0]?.cancel()
+                                    seekAccumJob[0] = settingsScope.launch {
+                                        kotlinx.coroutines.delay(400)
+                                        val newPos = (capturedPos - capturedAccMs).coerceAtLeast(0L)
+                                        seekPlayerFromUserAction(player, newPos)
+                                        danmakuManager.seekTo(newPos)
+                                        accumulatedSeekMs = 0L
+                                        seekAccumDirection = 0
+                                        com.android.purebilibili.core.util.Logger.d("VideoPlayerSection") {
+                                            "⏪ DoubleTap left committed: -${capturedAccMs / 1000}s"
+                                        }
                                     }
                                 }
                                 // 中间：暂停/播放
@@ -3672,10 +3695,16 @@ fun VideoPlayerSection(
         }
         
         //  [新增] 双击跳转视觉反馈 (±Ns 提示)
-        LaunchedEffect(seekFeedbackVisible) {
+        // 参考 PiliPlus：每次双击更新 revision，重置 800ms 隐藏计时器
+        LaunchedEffect(seekFeedbackRevision) {
             if (seekFeedbackVisible) {
                 kotlinx.coroutines.delay(800)
                 seekFeedbackVisible = false
+            }
+        }
+        LaunchedEffect(seekFeedbackVisible) {
+            if (!seekFeedbackVisible) {
+                seekFeedbackRevision = 0
             }
         }
         

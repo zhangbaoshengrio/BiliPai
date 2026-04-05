@@ -72,18 +72,18 @@ internal data class PlayerBufferPolicy(
     val bufferForPlaybackAfterRebufferMs: Int
 )
 
-internal fun resolvePlayerBufferPolicy(isOnWifi: Boolean): PlayerBufferPolicy {
+internal fun resolvePlayerBufferPolicy(isOnWifi: Boolean, expandBuffer: Boolean = false): PlayerBufferPolicy {
     return if (isOnWifi) {
         PlayerBufferPolicy(
             minBufferMs = 10000,
-            maxBufferMs = 40000,
+            maxBufferMs = if (expandBuffer) 120000 else 40000,
             bufferForPlaybackMs = 500,
             bufferForPlaybackAfterRebufferMs = 500
         )
     } else {
         PlayerBufferPolicy(
             minBufferMs = 15000,
-            maxBufferMs = 50000,
+            maxBufferMs = if (expandBuffer) 120000 else 50000,
             bufferForPlaybackMs = 800,
             bufferForPlaybackAfterRebufferMs = 800
         )
@@ -760,11 +760,13 @@ fun rememberVideoPlayerState(
             //  [性能优化] 使用 PlayerSettingsCache 直接从内存读取，避免 I/O
             val hwDecodeEnabled = com.android.purebilibili.core.store.PlayerSettingsCache.isHwDecodeEnabled(context)
             val seekFastEnabled = com.android.purebilibili.core.store.PlayerSettingsCache.isSeekFastEnabled(context)
+            val expandBufferEnabled = com.android.purebilibili.core.store.PlayerSettingsCache.isExpandBufferEnabled(context)
             val miniPlayerMode = SettingsManager.getMiniPlayerModeSync(context)
             val stopPlaybackOnExit = SettingsManager.getStopPlaybackOnExitSync(context)
             val audioFocusEnabled = SettingsManager.getAudioFocusEnabledSync(context)
             val bufferPolicy = resolvePlayerBufferPolicy(
-                isOnWifi = NetworkUtils.isWifi(context)
+                isOnWifi = NetworkUtils.isWifi(context),
+                expandBuffer = expandBufferEnabled
             )
             Logger.d(
                 "VideoPlayerState",
@@ -797,6 +799,12 @@ fun rememberVideoPlayerState(
                             bufferPolicy.bufferForPlaybackAfterRebufferMs
                         )
                         .setPrioritizeTimeOverSizeThresholds(true)  // 优先保证播放时长
+                        .apply {
+                            // 参考 PiliPlus expandBuffer：扩展模式下使用 128MB 缓冲区（默认约 50MB）
+                            if (expandBufferEnabled) {
+                                setTargetBufferBytes(128 * 1024 * 1024)
+                            }
+                        }
                         .build()
                 )
                 //  [性能优化] 快速 Seek：跳转到最近的关键帧而非精确位置

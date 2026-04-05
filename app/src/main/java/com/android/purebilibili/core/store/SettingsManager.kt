@@ -643,6 +643,8 @@ object SettingsManager {
     private const val DEFAULT_BOTTOM_BAR_VISIBLE_TABS = "HOME,DYNAMIC,HISTORY,PROFILE"
     //  [新增] 评论默认排序（1=回复,2=最新,3=最热,4=点赞）
     private val KEY_COMMENT_DEFAULT_SORT_MODE = intPreferencesKey("comment_default_sort_mode")
+    //  [新增] 扩展播放缓冲区（参考 PiliPlus expandBuffer）
+    private val KEY_EXPAND_BUFFER = booleanPreferencesKey("expand_buffer")
     //  [新增] 离开播放页后停止播放（优先于小窗/画中画模式）
     private val KEY_STOP_PLAYBACK_ON_EXIT = booleanPreferencesKey("stop_playback_on_exit")
     private val KEY_BACKGROUND_PLAYBACK_ENABLED = booleanPreferencesKey("background_playback_enabled")
@@ -898,6 +900,15 @@ object SettingsManager {
         //  同步到 SharedPreferences，供同步读取使用
         context.getSharedPreferences("hw_decode_cache", Context.MODE_PRIVATE)
             .edit().putBoolean("hw_decode_enabled", value).apply()
+    }
+
+    // --- Expand Buffer (PiliPlus-style) ---
+    fun getExpandBuffer(context: Context): Flow<Boolean> = context.settingsDataStore.data
+        .map { preferences -> preferences[KEY_EXPAND_BUFFER] ?: false }
+
+    suspend fun setExpandBuffer(context: Context, value: Boolean) {
+        context.settingsDataStore.edit { preferences -> preferences[KEY_EXPAND_BUFFER] = value }
+        PlayerSettingsCache.setExpandBufferEnabled(context, value)
     }
 
     // --- Theme Mode ---

@@ -18,16 +18,20 @@ object PlayerSettingsCache {
     private const val KEY_HW_DECODE = "hw_decode_enabled"
     private const val KEY_SEEK_FAST = "seek_fast_enabled"
     private const val KEY_PLAYER_DIAGNOSTIC_LOGGING = "player_diagnostic_logging_enabled"
-    
+    private const val KEY_EXPAND_BUFFER = "expand_buffer_enabled"
+
     // 内存缓存
     @Volatile
     private var hwDecodeEnabled: Boolean? = null
-    
+
     @Volatile
     private var seekFastEnabled: Boolean? = null
 
     @Volatile
     private var playerDiagnosticLoggingEnabled: Boolean? = null
+
+    @Volatile
+    private var expandBufferEnabled: Boolean? = null
     
     /**
      * 初始化缓存（在 Application.onCreate 中调用）
@@ -40,10 +44,11 @@ object PlayerSettingsCache {
             KEY_PLAYER_DIAGNOSTIC_LOGGING,
             DEFAULT_PLAYER_DIAGNOSTIC_LOGGING_ENABLED
         )
+        expandBufferEnabled = prefs.getBoolean(KEY_EXPAND_BUFFER, false)
         Logger.d(
             TAG,
             "✅ 初始化完成: hwDecode=$hwDecodeEnabled, seekFast=$seekFastEnabled, " +
-                "playerDiagnosticLogging=$playerDiagnosticLoggingEnabled"
+                "playerDiagnosticLogging=$playerDiagnosticLoggingEnabled, expandBuffer=$expandBufferEnabled"
         )
     }
     
@@ -130,6 +135,30 @@ object PlayerSettingsCache {
     }
     
     /**
+     * 获取扩展缓冲区设置（参考 PiliPlus expandBuffer，默认关闭）
+     */
+    fun isExpandBufferEnabled(context: Context): Boolean {
+        return expandBufferEnabled ?: run {
+            val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val value = prefs.getBoolean(KEY_EXPAND_BUFFER, false)
+            expandBufferEnabled = value
+            value
+        }
+    }
+
+    /**
+     * 设置扩展缓冲区开关
+     */
+    fun setExpandBufferEnabled(context: Context, enabled: Boolean) {
+        expandBufferEnabled = enabled
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(KEY_EXPAND_BUFFER, enabled)
+            .apply()
+        Logger.d(TAG, "💾 扩展缓冲区设置已更新: $enabled")
+    }
+
+    /**
      * 强制刷新缓存（设置页面修改后调用）
      */
     fun refresh(context: Context) {
@@ -140,10 +169,11 @@ object PlayerSettingsCache {
             KEY_PLAYER_DIAGNOSTIC_LOGGING,
             DEFAULT_PLAYER_DIAGNOSTIC_LOGGING_ENABLED
         )
+        expandBufferEnabled = prefs.getBoolean(KEY_EXPAND_BUFFER, false)
         Logger.d(
             TAG,
             "🔄 缓存已刷新: hwDecode=$hwDecodeEnabled, seekFast=$seekFastEnabled, " +
-                "playerDiagnosticLogging=$playerDiagnosticLoggingEnabled"
+                "playerDiagnosticLogging=$playerDiagnosticLoggingEnabled, expandBuffer=$expandBufferEnabled"
         )
     }
 }

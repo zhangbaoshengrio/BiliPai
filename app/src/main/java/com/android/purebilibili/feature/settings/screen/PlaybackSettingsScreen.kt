@@ -237,18 +237,32 @@ fun PlaybackSettingsContent(
                         "av01" -> "高压缩，设备要求更高"
                         else -> "未知"
                     }
+                    val expandBuffer by SettingsManager.getExpandBuffer(context).collectAsState(initial = false)
                     IOSGroup {
                         IOSSwitchItem(
                             icon = CupertinoIcons.Default.Cpu,
                             title = "启用硬件解码",
                             subtitle = "减少发热和耗电 (推荐开启)",
                             checked = state.hwDecode,
-                            onCheckedChange = { 
+                            onCheckedChange = {
                                 viewModel.toggleHwDecode(it)
                                 //  [埋点] 设置变更追踪
                                 com.android.purebilibili.core.util.AnalyticsHelper.logSettingChange("hw_decode", it.toString())
                             },
                             iconTint = iOSGreen
+                        )
+                        IOSDivider()
+                        IOSSwitchItem(
+                            icon = CupertinoIcons.Default.ArrowTriangle2Circlepath,
+                            title = "扩展播放缓冲区",
+                            subtitle = if (expandBuffer) "已扩展至 120s / 128MB（需重开视频生效）" else "默认 40s / 50MB，开启可减少卡顿",
+                            checked = expandBuffer,
+                            onCheckedChange = {
+                                scope.launch {
+                                    SettingsManager.setExpandBuffer(context, it)
+                                }
+                            },
+                            iconTint = iOSTeal
                         )
                         IOSDivider()
                         IOSSlidingSegmentedSetting(
